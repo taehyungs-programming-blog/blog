@@ -1,6 +1,6 @@
 ---
 layout: default
-title: (Django) 7. CRUD 중 DELETE
+title: 7. CRUD 중 DELETE
 parent: (Django)
 grand_parent: Python
 nav_order: 5

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: (Django) 2. 개발환경구성
+title: 2. 개발환경구성
 parent: (Django)
 grand_parent: Python
 nav_order: 5

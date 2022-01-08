@@ -1,6 +1,6 @@
 ---
 layout: default
-title: (Django) 4. Web Server와 Web Application 차이점?
+title: 4. Web Server와 Web Application 차이점?
 parent: (Django)
 grand_parent: Python
 nav_order: 5

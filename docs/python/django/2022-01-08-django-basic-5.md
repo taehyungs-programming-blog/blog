@@ -1,6 +1,6 @@
 ---
 layout: default
-title: (Django) 5. CRUD 중 READ
+title: 5. CRUD 중 READ
 parent: (Django)
 grand_parent: Python
 nav_order: 5

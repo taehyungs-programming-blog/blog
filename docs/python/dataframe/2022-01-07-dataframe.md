@@ -1,9 +1,10 @@
 ---
 layout: default
-title: Dataframe 사용하기
-parent: Python
+title: 1. Dataframe 사용하기
+parent: (Dataframe)
+grand_parent: Python
+nav_order: 5
 ---
-
 
 ```python
 !pip install finance-datareader

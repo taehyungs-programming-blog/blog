@@ -1,6 +1,6 @@
 ---
 layout: default
-title: (Django) 1. Django는 왜 써야하나?
+title: 1. Django는 왜 써야하나?
 parent: (Django)
 grand_parent: Python
 nav_order: 5

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: (Django) 7. CRUD 중 UPDATE
+title: 8. CRUD 중 UPDATE
 parent: (Django)
 grand_parent: Python
 nav_order: 5

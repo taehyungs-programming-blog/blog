@@ -1,6 +1,6 @@
 ---
 layout: default
-title: (Django) 6. CRUD 중 CREATE
+title: 6. CRUD 중 CREATE
 parent: (Django)
 grand_parent: Python
 nav_order: 5

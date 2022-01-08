@@ -1,6 +1,6 @@
 ---
 layout: default
-title: (Django) 3. django 대략적 구조
+title: 3. django 대략적 구조
 parent: (Django)
 grand_parent: Python
 nav_order: 5
