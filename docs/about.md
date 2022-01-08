@@ -4,6 +4,10 @@ title: About
 nav_order: 2
 ---
 
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/about-me/photo.jpg" style="border-radius:5%;border:1px solid #e6e1e8"/>
+</p>
+
 ## 🙋‍♂️ About Me
 
 * 안녕하세요? 9년차 Windows Programming 개발자 김태형입니다.
