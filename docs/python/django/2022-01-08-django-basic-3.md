@@ -14,6 +14,8 @@ nav_order: 5
 
 ---
 
+## 이론으로 구조 설명
+
 django는 아래와 같이 구성된다.
 
 1. Client의 홈페이지 접속요청
@@ -39,6 +41,51 @@ Project(urls.py) ---- app1(urls.py) <-> view.py <-> model.py <-> db
 
 😺 아직 뭔지는 잘 모르겠지만 위에서 언급한 `views.py` 및 기타 파일들이 생성됨을 알수 있다.(단, `urls.py`는 개발자가 만들어 줘야함)
 
+---
+
+## 코드로 구조 설명
+
+😺 이제 좀 더 세부적으로 Project로 온 Client의 요청을 어떻게 처리하는지 보자
+
+```py
+# myproject\urls.py
+
+urlpatterns = [
+    path('admin/', admin.site.urls),    # 기본 관리자 화면
+    path('', include('myapp.urls'))
+    # 경로가 없이 home으로 온다면 myapp.urls로 라우팅 해주세요
+]
+```
+
+```py
+# myapp\urls.py
+# myapp내에 처음에는 urls.py가 없기에 생성해 줘야함
+
+urlpatterns = [
+    path('', views.index),
+    # views의 index함수를 호출합니다
+    path('create/', views.create),
+    # views의 create함수를 호출합니다
+    path('read/<id>/', views.read),
+    # views의 read함수를 호출합니다
+]
+```
+
+```py
+# myapp\views.py
+
+def index(request):
+    return HttpResponse('Welcome!')
+
+def create(request):
+    return HttpResponse('Create!')
+
+# 두 번째 인자가 <id>임을 기억하자
+def read(request, id):
+    return HttpResponse('Read!' + id)
+```
+
 <br>
 
 > - [참고한 사이트 (유튜부) 🌎](https://www.youtube.com/watch?v=QX8CQMycDa0&list=PLuHgQVnccGMDLp4GH-rgQhVKqqZawlNwG&index=4)
+> - [참고한 사이트2 (유튜부) 🌎](https://www.youtube.com/watch?v=AafeZ6dxMzo&list=PLuHgQVnccGMDLp4GH-rgQhVKqqZawlNwG&index=6)
