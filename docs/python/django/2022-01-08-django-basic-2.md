@@ -36,10 +36,32 @@ nav_order: 5
 
 😺 설치가 완료되었다면 `$ django-admin` 명령을 통해 django가 잘 설치되었나 확인한다
 
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/python/django/basic-2-3.png" style="border-radius:5%;border:1px solid #e6e1e8"/>
+</p>
+
+<br>
+
 😺 베이스가 될 프로젝트를 하나 생성한다 `$ django-admin startproject myproject`
 
-😺 서버를 열어본다 `$ python manager.py runserver {port주소}`
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/python/django/basic-2-4.png" style="border-radius:5%;border:1px solid #e6e1e8"/>
+</p>
 
+<br>
 
-> [참고한 사이트 (유튜부) 🌎](https://www.youtube.com/watch?v=xGdUNyVkAto)
-> [참고한 사이트 (내 옛날 블로그) 🌎](https://easycoding-7.github.io/blog/django/basic/1/#/)
+😺 서버를 열어본다 
+
+```bash
+$ cd ./myproject
+$ python manage.py runserver {port주소}
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/python/django/basic-2-5.png" style="border-radius:5%;border:1px solid #e6e1e8"/>
+</p>
+
+<br>
+
+> - [참고한 사이트 (유튜부) 🌎](https://www.youtube.com/watch?v=xGdUNyVkAto)
+> - [참고한 사이트 (내 옛날 블로그) 🌎](https://easycoding-7.github.io/blog/django/basic/1/#/)
