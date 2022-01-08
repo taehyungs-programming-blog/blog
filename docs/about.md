@@ -1,7 +1,8 @@
 ---
 layout: default
 title: About
-nav_order: 2
+nav_order: 1
+permalink: /
 ---
 
 <p align="center">
@@ -49,4 +50,15 @@ nav_order: 2
     * SVN, GIT
     * Sourcetree
     * Jira, Confluence
-    * Jenkins, 
+    * Jenkins, Spinnaker
+
+---
+
+## 🎠 Toy Project
+
+* Python을 이용한 코인 자동매매 시스템 💸
+    * 매수/매매를 알고리즘에 의한 타이밍으로 진행, 수익률 보장?!
+    * [Get This Code 😎]()
+* Python을 이용한 Quant 분석 📈
+    * 과거 주식 빅데이터를 기반으로 다양한 투자 전략의 백테스트
+    * [Get This Code 😎]()
