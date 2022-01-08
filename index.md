@@ -1,95 +1,64 @@
 ---
 layout: default
-title: Get Started
-nav_order: 2
-description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
+title: About
+nav_order: 1
+permalink: /
 ---
 
-# Focus on writing good documentation
-{: .fs-9 }
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/about-me/photo.jpg" style="border-radius:5%;border:1px solid #e6e1e8"/>
+</p>
 
-Just the Docs gives your documentation a jumpstart with a responsive Jekyll theme that is easily customizable and hosted on GitHub Pages.
-{: .fs-6 .fw-300 }
+## 🙋‍♂️ About Me
 
-[Get started now](#getting-started){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 } [View it on GitHub](https://github.com/pmarsceill/just-the-docs){: .btn .fs-5 .mb-4 .mb-md-0 }
-
----
-
-## Getting started
-
-### Dependencies
-
-Just the Docs is built for [Jekyll](https://jekyllrb.com), a static site generator. View the [quick start guide](https://jekyllrb.com/docs/) for more information. Just the Docs requires no special plugins and can run on GitHub Pages' standard Jekyll compiler. The [Jekyll SEO Tag plugin](https://github.com/jekyll/jekyll-seo-tag) is included by default (no need to run any special installation) to inject SEO and open graph metadata on docs pages. For information on how to configure SEO and open graph metadata visit the [Jekyll SEO Tag usage guide](https://jekyll.github.io/jekyll-seo-tag/usage/).
-
-### Quick start: Use as a GitHub Pages remote theme
-
-1. Add Just the Docs to your Jekyll site's `_config.yml` as a [remote theme](https://blog.github.com/2017-11-29-use-any-theme-with-github-pages/)
-```yaml
-remote_theme: pmarsceill/just-the-docs
-```
-<small>You must have GitHub Pages enabled on your repo, one or more Markdown files, and a `_config.yml` file. [See an example repository](https://github.com/pmarsceill/jtd-remote)</small>
-
-### Local installation: Use the gem-based theme
-
-1. Install the Ruby Gem
-```bash
-$ gem install just-the-docs
-```
-```yaml
-# .. or add it to your your Jekyll site’s Gemfile
-gem "just-the-docs"
-```
-2. Add Just the Docs to your Jekyll site’s `_config.yml`
-```yaml
-theme: "just-the-docs"
-```
-3. _Optional:_ Initialize search data (creates `search-data.json`)
-```bash
-$ bundle exec just-the-docs rake search:init
-```
-3. Run you local Jekyll server
-```bash
-$ jekyll serve
-```
-```bash
-# .. or if you're using a Gemfile (bundler)
-$ bundle exec jekyll serve
-```
-4. Point your web browser to [http://localhost:4000](http://localhost:4000)
-
-If you're hosting your site on GitHub Pages, [set up GitHub Pages and Jekyll locally](https://help.github.com/en/articles/setting-up-your-github-pages-site-locally-with-jekyll) so that you can more easily work in your development environment.
-
-### Configure Just the Docs
-
-- [See configuration options]({{ site.baseurl }}{% link docs/configuration.md %})
+* 안녕하세요? 9년차 Windows Programming 개발자 김태형입니다.
+* C/C++을 사랑하며 여러 사람들과의 협업을 즐깁니다.
+* 꾸준한 자기개발을 미덕이라 생각하고 행하고 있으며, 제가 공부한 사항을 항상 Blog에 정리하고 있습니다.
+* 저에게 관심이 있으신 분은 언제든 연락주세요!
 
 ---
 
-## About the project
+## 📞 Contact & Channel
 
-Just the Docs is &copy; 2017-{{ "now" | date: "%Y" }} by [Patrick Marsceill](http://patrickmarsceill.com).
+* Email : taehyeong77@naver.com
+* Github : https://github.com/EasyCoding-7
+* My old Blogs
+    * 1 : https://8bitscoding.github.io/
+    * 2 : https://easycoding-7.github.io/
+    * 모두 통합 예정인데 쉽지 않군요.. 
 
-### License
+---
 
-Just the Docs is distributed by an [MIT license](https://github.com/pmarsceill/just-the-docs/tree/master/LICENSE.txt).
+## 🔨 Skills
 
-### Contributing
+* 주 개발언어
+    * C/C++
 
-When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or any other method with the owners of this repository before making a change. Read more about becoming a contributor in [our GitHub repo](https://github.com/pmarsceill/just-the-docs#contributing).
+* 보조 언어
+    * C#
+    * Python
+    * Go
 
-#### Thank you to the contributors of Just the Docs!
+* 사용 개발 툴 & FrameWork
+    * Visual Studio
+    * Qt, PyQt
+    * Win32
+    * MFC
+    * Pandas, Numpy
 
-<ul class="list-style-none">
-{% for contributor in site.github.contributors %}
-  <li class="d-inline-block mr-1">
-     <a href="{{ contributor.html_url }}"><img src="{{ contributor.avatar_url }}" width="32" height="32" alt="{{ contributor.login }}"/></a>
-  </li>
-{% endfor %}
-</ul>
+* 협업 도구
+    * SVN, GIT
+    * Sourcetree
+    * Jira, Confluence
+    * Jenkins, Spinnaker
 
-### Code of Conduct
+---
 
-Just the Docs is committed to fostering a welcoming community.
+## 🎠 Toy Project
 
-[View our Code of Conduct](https://github.com/pmarsceill/just-the-docs/tree/master/CODE_OF_CONDUCT.md) on our GitHub repository.
+* Python을 이용한 코인 자동매매 시스템 💸
+    * 매수/매매를 알고리즘에 의한 타이밍으로 진행, 수익률 보장?!
+    * [Get This Code 😎]()
+* Python을 이용한 Quant 분석 📈
+    * 과거 주식 빅데이터를 기반으로 다양한 투자 전략의 백테스트
+    * [Get This Code 😎]()
