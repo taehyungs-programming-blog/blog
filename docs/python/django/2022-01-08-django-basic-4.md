@@ -14,7 +14,33 @@ nav_order: 5
 
 ---
 
+## Web Server, Web Application Server 종류
 
+- Web Server
+	- apache
+	- nginx
+	- IIS
+- Web Application Server
+	- django
+	- flask
+	- php
+	- jsp
+	- ROL
+
+## Web Server, Web Application Server 특징
+
+- Web Server
+	- html을 미리 만들어 두고 응답에 따라 보내준다
+	- 정적(static)이다 라고 한다
+	- 빠르다(성능이 좋다)
+	- 수정해야할 경우 대응이 어렵다
+- Web Application Server
+	- html을 실시간으로 만든다
+	- 동적(Dynamic)이다 라고한다
+	- 느리다
+	- 수정사항이 생길경우 대응이 쉽다
+
+😸 Client의 요청으로 부터 동적 처리할 사항이 많다면 Web Application Server를 사용하는것이 유리겠구나? 정도를 이해했다면 100점!
 
 <br>
 
