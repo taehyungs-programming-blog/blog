@@ -40,10 +40,10 @@ permalink: /
     * Go
 
 * 사용 개발 툴 & FrameWork
-    * Visual Studio
+    * Visual Studio, Code
+    * PyCharm
+    * Win32, MFC
     * Qt, PyQt
-    * Win32
-    * MFC
     * Pandas, Numpy
 
 * 협업 도구
