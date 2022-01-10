@@ -1,9 +1,8 @@
 ---
 layout: default
 title: Code with line numbers
-parent: Code
-grand_parent: UI Components
-permalink: /docs/ui-components/code/line-numbers/
+parent: UI Components
+grand_parent: (Just the Docs. 설명)
 ---
 
 # Code snippets with line numbers

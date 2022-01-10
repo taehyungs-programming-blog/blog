@@ -21,10 +21,10 @@ permalink: /
 ## 📞 Contact & Channel
 
 * Email : taehyeong77@naver.com
-* Github : https://github.com/EasyCoding-7
+* Github : [https://github.com/EasyCoding-7](https://github.com/EasyCoding-7)
 * My old Blogs
-    * 1 : https://8bitscoding.github.io/
-    * 2 : https://easycoding-7.github.io/
+    * 1 : [https://8bitscoding.github.io/](https://8bitscoding.github.io/)
+    * 2 : [https://easycoding-7.github.io/](https://easycoding-7.github.io/)
     * 모두 통합 예정인데 쉽지 않군요.. 
 
 ---
@@ -36,21 +36,21 @@ permalink: /
 
 * 보조 언어
     * C#
-    * Python
-    * Go
+    * [Python](https://www.python.org/)
+    * [Go](https://go.dev/)
 
 * 사용 개발 툴 & FrameWork
-    * Visual Studio, Code
-    * PyCharm
+    * [Visual Studio](https://visualstudio.microsoft.com/ko/), [Code](https://code.visualstudio.com/)
+    * [PyCharm](https://www.jetbrains.com/ko-kr/pycharm/download/#section=windows)
     * Win32, MFC
     * Qt, PyQt
     * Pandas, Numpy
 
 * 협업 도구
-    * SVN, GIT
-    * Sourcetree
+    * SVN, [GIT](https://git-scm.com/)
+    * [Sourcetree](https://www.sourcetreeapp.com/)
     * Jira, Confluence
-    * Jenkins, Spinnaker
+    * [Jenkins](https://www.jenkins.io/), [Spinnaker](https://spinnaker.io/)
 
 ---
 
