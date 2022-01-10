@@ -4,7 +4,7 @@ title: Utilities
 nav_order: 4
 has_children: true
 parent: (Just the Docs. 설명)
-permalink: docs/just the Docs 설명/utilities
+permalink: docs/just-the-Docs-설명/utilities
 ---
 
 # Utilities
