@@ -4,7 +4,7 @@ title: UI Components
 nav_order: 3
 has_children: true
 parent: (Just the Docs. 설명)
-permalink: /docs/just-the-Docs-설명/ui-components
+permalink: /docs/Just-the-Docs-설명/ui-components
 ---
 
 # UI Components
