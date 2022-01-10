@@ -2,6 +2,7 @@
 layout: default
 title: Typography
 parent: Utilities
+grand_parent: (Just the Docs. 설명)
 ---
 
 # Typography Utilities

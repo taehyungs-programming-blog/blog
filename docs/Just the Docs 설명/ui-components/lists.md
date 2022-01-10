@@ -2,6 +2,7 @@
 layout: default
 title: Lists
 parent: UI Components
+grand_parent: (Just the Docs. 설명)
 nav_order: 5
 ---
 

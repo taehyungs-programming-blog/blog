@@ -2,6 +2,7 @@
 layout: default
 title: Labels
 parent: UI Components
+grand_parent: (Just the Docs. 설명)
 nav_order: 3
 ---
 

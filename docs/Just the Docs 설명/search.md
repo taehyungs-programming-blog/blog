@@ -2,6 +2,7 @@
 layout: default
 title: Search
 nav_order: 7
+parent: (Just the Docs. 설명)
 ---
 
 # Search
