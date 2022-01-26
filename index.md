@@ -22,6 +22,7 @@ permalink: /
 
 * Email : taehyeong77@naver.com
 * Github : [https://github.com/EasyCoding-7](https://github.com/EasyCoding-7)
+* LinkedIn : [https://www.linkedin.com/in/taehyung-kim/](https://www.linkedin.com/in/taehyung-kim-a97025181/)
 * My old Blogs
     * 1 : [https://8bitscoding.github.io/](https://8bitscoding.github.io/)
     * 2 : [https://easycoding-7.github.io/](https://easycoding-7.github.io/)
