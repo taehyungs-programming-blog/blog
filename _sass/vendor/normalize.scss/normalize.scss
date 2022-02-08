@@ -272,6 +272,11 @@ textarea {
   height: 8px;
   background: #ffffff;
 }
+[type="navigation"]::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: #ff0000;
+}
 *::-webkit-scrollbar-thumb {
   border-radius: 3.5px;
   background-color: #ced4da;
