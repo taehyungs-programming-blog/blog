@@ -221,19 +221,19 @@
 /*
 * add basic-scroll
 */
-*::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 8px;
   height: 8px;
   background: #ff0000;
 }
-*::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   border-radius: 3.5px;
-  background-color: #ced4da;
+  background-color: #ff0000;
 
   &:hover {
-    background-color: #adb5bd;
+    background-color: #ff0000;
   }
 }
-*::-webkit-scrollbar-track {
-  background: #ffffff;
+::-webkit-scrollbar-track {
+  background: #ff0000;
 }
