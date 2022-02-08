@@ -219,21 +219,21 @@
 }
 
 /*
-* add basic-scroll
+* nav scroll-bar custom
 */
-::-webkit-scrollbar {
+[class="site-nav"]::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background: #ff0000;
+  background: #F5F6FB;
 }
-::-webkit-scrollbar-thumb {
+[class="site-nav"]::-webkit-scrollbar-thumb {
   border-radius: 3.5px;
-  background-color: #ff0000;
+  background-color: #ced4da;
 
   &:hover {
-    background-color: #ff0000;
+    background-color: #adb5bd;
   }
 }
-::-webkit-scrollbar-track {
-  background: #ff0000;
+[class="site-nav"]::-webkit-scrollbar-track {
+  background: #F5F6FB;
 }
