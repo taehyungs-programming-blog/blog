@@ -162,4 +162,38 @@ export default {
 
 💎 쉽게 말하면 **function을 생략**해도 된다.
 
+---
+
+## Enhanced Object Literals
+
+```js
+var dictionary = {
+    words: 100,
+    // ES5
+    lookup: function() {
+        console.log("find words");
+    },
+
+    // ES6
+    lookup() {
+        console.log("find words 6");
+    }
+};
+```
+
+---
+
+## Modules
+
+```js
+// libs/math.js 에 아래와 같은 함수가 정의되어 있다고 가정하자
+export function sum(x, y) {
+    return x + y;
+}
+
+// main.js
+import {sum} from 'libs/math.js'
+sum(1, 2);
+```
+
 {% endraw %}
