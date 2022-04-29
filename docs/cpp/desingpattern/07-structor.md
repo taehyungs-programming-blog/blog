@@ -1,0 +1,134 @@
+---
+layout: default
+title: "7. (기초) 객체생성 관리하는 방법"
+parent: (Desing Pattern)
+grand_parent: C++
+nav_order: 1
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+```cpp
+class Shape
+{
+public:
+    virtual ~Shape() {}
+};
+
+// 객체 생성을 관리해야할 상황이 있다면?
+    // Ex) Rect의 생성을 5개 이하로 제약을 주고싶다면?
+class Rect : public Shape
+{
+public:
+};
+class Circle : public Shape
+{
+public:
+};
+
+int main()
+{
+
+}
+```
+
+---
+
+## 1. 전역으로 관리해 보자.
+
+```cpp
+class Rect : public Shape
+{
+    Rect() {}       // 외부생성을 금지한다.
+public:
+    // 방법 1. - static 멤버 함수를 이용 객체 생성
+    static Rect* Create() { return new Rect; }
+};
+```
+
+```cpp
+void CreateAndDraw(Shape* (*f)())
+{
+    Shape* p = f();
+    p->Draw();
+}
+
+int main()
+{
+    CreateAndDraw(&Rect::Create);
+}
+```
+
+---
+
+## 2. 오브젝트(Factory)로 관리해 보자.
+
+```cpp
+class Rect : public Shape
+{
+    Rect() {}
+public:
+    friend class ShapeFactory;
+};
+class Circle : public Shape
+{
+    Circle() {}
+public:
+    friend class ShapeFactory;
+};
+
+// 방법2. 한 곳에서 객체를 만드는것을 담당하자
+class ShapeFactory
+{
+public:
+    Shape* CreateShape(int type)
+    {
+        Shape* p = 0;
+        switch(type)
+        {
+            case 1: p = new Rect; break;
+            case 2: p = new Circle; break;
+        }
+        return p;
+    }
+};
+
+int main()
+{
+    ShapeFactory factory;
+    Shape* p = factory.CreateShape(1);
+}
+```
+
+---
+
+## 3. 특정함수로 관리해 보자.
+
+```cpp
+class Shape
+{
+public:
+    virtual ~Shape() {}
+    // 방법 3. 복사해서 만드는 방법
+    virtual Shape* Clone() = 0;
+};
+
+class Rect : public Shape
+{
+    Rect() {}
+public:
+    virtual Shape* Clone() { return new Rect(*this); };
+};
+
+int main()
+{
+    Shape* p = new Rect;
+    Shape* p2 = p->Clone();
+}
+```
