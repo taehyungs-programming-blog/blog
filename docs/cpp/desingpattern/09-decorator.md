@@ -1,0 +1,209 @@
+---
+layout: default
+title: "9. Decorator Pattern"
+parent: (Desing Pattern)
+grand_parent: C++
+nav_order: 1
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## Decorator Pattern
+
+🍒 실행 시간에 객체에 기능을 추가<Br>
+🍒 객체에 동적으로 새로운 서비스를 추가<Br>
+🍒 기능 추가를 위해 서브 클래스를 사용하는 것 보다 융통성 있는 방법을 제공<Br>
+
+---
+
+## Example
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class SpaceCraft
+{
+    int color;
+    int speed;
+public:
+    void Fire() { cout << "Space Craft : ------------" << endl; }
+};
+
+int main()
+{
+    SpaceCraft sc;
+    sc.Fire();
+}
+```
+
+🍒 원시적인 방법으로 해결해 보자.
+
+```cpp
+// 상속을 써보자.
+class LeftMissile : public SpaceScraft
+{
+public:
+     void Fie()
+     {
+         SpaceCraft::Fire();
+         cout << "Left Missile : >>>>>>>>>>>>>>>>" << endl;
+     }
+};
+
+int main()
+{
+    SpaceCraft sc;
+    sc.Fire();
+
+    // 문제는 위의 sc와는 전혀 관계없는 새로운 오브젝트가 생긴것이다.
+    LeftMissile lm;
+    lm.Fire();
+}
+```
+
+```cpp
+// 구성(Composition)을 통한 기능추가
+class LeftMissile
+{
+    SpaceCraft* craft;
+public:
+    LeftMissile(SpaceCraft* p) : craft(p) {}
+    void Fire()
+    {
+        craft->Fire();
+        cout << "Left Missile : >>>>>>>>>>>>>>>>" << endl;
+    }
+};
+
+int main()
+{
+    SpaceCraft sc;
+    sc.Fire();
+
+    LeftMissile lm(&sc);
+    lm.Fire();
+}
+```
+
+🍒 상속에 의한 기능추가 : 클래스에 추가, 코드 작성시 기능 추가 가능<br>
+🍒 구성에 의한 기능추가 : 객체에 추가, 실행시간에 기능 추가 가능<br>
+
+```cpp
+class RightMissile
+{
+    SpaceCraft* craft;
+public:
+    RightMissile(SpaceCraft* p) : craft(p) {}
+    void Fire()
+    {
+        craft->Fire();
+        cout << "Right Missile : >>>>>>>>>>>>>>>>" << endl;
+    }
+};
+
+int main()
+{
+    SpaceCraft sc;
+    sc.Fire();
+
+    LeftMissile lm(&sc);
+    lm.Fire();
+
+    RightMissile rm(&sc);       
+    // 이러면 left missile은 fire되지 않는다
+    rm.Fire();
+}
+```
+
+```cpp
+struct Component
+{
+    virtual void Fire() = 0;
+    virtual ~Component() {}
+};
+
+class SpaceCraft : public Component
+{
+    int color;
+    int speed;
+public:
+    void Fire() { cout << "Space Craft : ------------" << endl; }
+};
+
+class LeftMissile : public Component
+{
+    Component* craft;
+public:
+    LeftMissile(Component* p) : craft(p) {}
+    void Fire()
+    {
+        craft->Fire();
+        cout << "Left Missile : >>>>>>>>>>>>>>>>" << endl;
+    }
+};
+
+class RightMissile : public Component
+{
+    Component* craft;
+public:
+    RightMissile(Component* p) : craft(p) {}
+    void Fire()
+    {
+        craft->Fire();
+        cout << "Right Missile : >>>>>>>>>>>>>>>>" << endl;
+    }
+};
+
+int main()
+{
+    SpaceCraft sc;
+    sc.Fire();
+
+    LeftMissile lm(&sc);
+    lm.Fire();
+
+    RightMissile rm(&lm);       // ok
+    rm.Fire();
+}
+```
+
+🍒 조금 더 진화해 보자면
+
+```cpp
+struct IDecorator : public Component
+{
+    Component* craft;
+public:
+    IDecorator(Component* p) : craft(p) {}
+    void Fire() { craft->Fire(); }
+};
+
+class LeftMissile : public IDecorator
+{
+public:
+    LeftMissile(Component* p) : IDecorator(p) {}
+    void Fire()
+    {
+        IDecorator::Fire();
+        cout << "Left Missile : >>>>>>>>>>>>>>>>" << endl;
+    }
+};
+
+class RightMissile : public IDecorator
+{
+public:
+    RightMissile(Component* p) : IDecorator(p) {}
+    void Fire()
+    {
+        IDecorator::Fire();
+        cout << "Right Missile : >>>>>>>>>>>>>>>>" << endl;
+    }
+};
+```
