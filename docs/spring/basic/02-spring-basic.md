@@ -83,9 +83,138 @@ public class MemberApp {
 
 ---
 
-##
+## Configuration
+
+🍒 스프링 컨테이너의 생성과정
+
+```java
+public class MemberApp {
+    public static void main(String[] args) {
+        ApplicationContext applicationContext = new
+                AnnotationConfigApplicationContext(AppConfig.class);
+
+        // ...
+```
+
+```java
+// 참고로 AppConfig는 @Configuration 기반이다.
+@Configuration
+public class AppConfig {
+    // ...
+```
+
+🍒 여기까지하면 스프링은 빈 컨테이너를 생성<br>
+🍒 빈 컨테이너 아래 Bean을 넣는다.
+
+```java
+@Configuration
+public class AppConfig {
+    @Bean
+    public MemberService memberService() {
+        return new MemberServiceImpl(memberRepository());
+    }
+    @Bean
+    public OrderService orderService() {
+        return new OrderServiceImpl(
+                memberRepository(),
+                discountPolicy());
+    }
+    @Bean
+    public MemberRepository memberRepository() {
+        return new MemoryMemberRepository();
+    }
+    @Bean
+    public DiscountPolicy discountPolicy() {
+        return new RateDiscountPolicy();
+    }
+}
+```
+
+🍒 컨테이너에 빈이 들어가고 이후 서로의 의존관계를 등록하게된다.<br>
+🍒 눈으로 확인할 수 없어 말로 설명해야하지만 대략 그렇다고 이해하자.
+
+---
+
+## Bean
+
+🍒 간단한 테스트로 컨테이너에 등록된 빈을 조회해 보자.
 
 * [Get Code 🌍](https://github.com/EasyCoding-7/spring-basic-tutorial/tree/2-2)
+
+```java
+class ApplicationContextInfoTest {
+    AnnotationConfigApplicationContext ac = new
+            AnnotationConfigApplicationContext(AppConfig.class);
+
+    @Test
+    @DisplayName("모든 빈 출력하기")    // 스프링 내부 빈 까지 모두 출력된다.
+    void findAllBean() {
+        String[] beanDefinitionNames = ac.getBeanDefinitionNames();
+        for (String beanDefinitionName : beanDefinitionNames) {
+            Object bean = ac.getBean(beanDefinitionName);
+            System.out.println("name=" + beanDefinitionName + " object=" +
+                    bean);
+        }
+    }
+
+    @Test
+    @DisplayName("애플리케이션 빈 출력하기")
+    void findApplicationBean() {
+        String[] beanDefinitionNames = ac.getBeanDefinitionNames();
+        for (String beanDefinitionName : beanDefinitionNames) {
+            BeanDefinition beanDefinition =
+                    ac.getBeanDefinition(beanDefinitionName);
+            //Role ROLE_APPLICATION: 직접 등록한 애플리케이션 빈
+            //Role ROLE_INFRASTRUCTURE: 스프링이 내부에서 사용하는 빈
+            if (beanDefinition.getRole() == BeanDefinition.ROLE_APPLICATION) {
+                Object bean = ac.getBean(beanDefinitionName);
+                System.out.println("name=" + beanDefinitionName + " object=" +
+                        bean);
+            }
+        }
+    }
+}
+```
+
+🍒 추가적으로 빈 조회하는 법
+
+```java
+class ApplicationContextBasicFindTest {
+    AnnotationConfigApplicationContext ac = new
+            AnnotationConfigApplicationContext(AppConfig.class);
+
+    @Test
+    @DisplayName("빈 이름으로 조회")
+    void findBeanByName() {
+        MemberService memberService = ac.getBean("memberService",
+                MemberService.class);
+        assertThat(memberService).isInstanceOf(MemberServiceImpl.class);
+    }
+
+    @Test
+    @DisplayName("이름 없이 타입만으로 조회")
+    void findBeanByType() {
+        MemberService memberService = ac.getBean(MemberService.class);
+        assertThat(memberService).isInstanceOf(MemberServiceImpl.class);
+    }
+
+    @Test
+    @DisplayName("구체 타입으로 조회")
+    void findBeanByName2() {
+        MemberServiceImpl memberService = ac.getBean("memberService",
+                MemberServiceImpl.class);
+        assertThat(memberService).isInstanceOf(MemberServiceImpl.class);
+    }
+
+    @Test
+    @DisplayName("빈 이름으로 조회X")
+    void findBeanByNameX() {
+        //ac.getBean("xxxxx", MemberService.class);
+        Assertions.assertThrows(NoSuchBeanDefinitionException.class, () ->
+                ac.getBean("xxxxx", MemberService.class));
+    }
+}
+```
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/spring/basic/2-1.png"/>
