@@ -90,3 +90,163 @@ namespace MMO_EFCore_Tutorial
 ```
 
 ---
+
+## READ를 하는 세 가지 방법
+
+* [Get Code 🌍](https://github.com/EasyCoding-7/MMO_EFCore_Tutorial/tree/3-2)
+
+```csharp
+public static void EagerLoading()
+{
+    Console.WriteLine("길드 이름은? :");
+    Console.Write("> ");
+    string name = Console.ReadLine();
+
+    // 장점 : DB 접근을 한 번에
+    // 단점 : 안쓰는 DB까지 로드할 수 있음
+
+    using (var db = new AppDbContext())
+    {
+        Guild guild = db.Guilds.AsNoTracking()
+            .Where(g => g.GuildName == name)
+            .Include(g => g.Members)    // Foreign인 Player 조회 예정
+            .ThenInclude(p => p.Item)   // Foreign인 Item까지 조회 예정
+            .First();                   // 하나만 찾아주세요
+
+        foreach(Player player in guild.Members)
+        {
+            Console.WriteLine($"ItemId - {player.Item.TemplateId} / Owner - {player.Name}");
+        }
+    }
+}
+
+public static void ExplicitLoading()
+{
+    Console.WriteLine("길드 이름은? :");
+    Console.Write("> ");
+    string name = Console.ReadLine();
+
+    // 장점 : 필요한 DB만 특정시점에 로드
+    // 단점 : 불필요한 선회가 있을 수 있음
+
+    using (var db = new AppDbContext())
+    {
+        Guild guild = db.Guilds
+            .Where(g => g.GuildName == name)
+            .First();                   // 하나만 찾아주세요
+
+        // Explicit
+        db.Entry(guild).Collection(g=>g.Members).Load();        // Player를 로드해주세요
+        
+        foreach(Player player in guild.Members)
+        {
+            db.Entry(player).Reference(p => p.Item).Load();
+        }
+
+        foreach (Player player in guild.Members)
+        {
+            Console.WriteLine($"ItemId - {player.Item.TemplateId} / Owner - {player.Name}");
+        }
+    }
+}
+
+public static void SelectLoading()
+{
+    // 길드원의 수만 출력하고 싶다면?
+
+    Console.WriteLine("길드 이름은? :");
+    Console.Write("> ");
+    string name = Console.ReadLine();
+
+    // 장점 : 필요한 정보만 뺄 수 있다.
+    // 단점 : 매번 필요한 정보를 코딩해야한다.
+
+    using (var db = new AppDbContext())
+    {
+        var info = db.Guilds
+            .Where(g => g.GuildName == name)
+            .Select(g => new
+            {
+                Name = g.GuildName,
+                MemberCount = g.Members.Count
+            })
+            .First();                   // 하나만 찾아주세요
+
+
+        Console.WriteLine($"GuildName - {info.Name} / MemeberCount - {info.MemberCount}");
+        
+    }
+}
+}
+```
+
+---
+
+## 코드 정리
+
+* [Get Code 🌍](https://github.com/EasyCoding-7/MMO_EFCore_Tutorial/tree/3-3)
+
+```csharp
+// 아래단점을 보완해보자.
+
+// 장점 : 필요한 정보만 뺄 수 있다.
+// 단점 : 매번 필요한 정보를 코딩해야한다.
+
+using (var db = new AppDbContext())
+{
+    var info = db.Guilds
+        .Where(g => g.GuildName == name)
+        .Select(g => new
+        {
+            Name = g.GuildName,
+            MemberCount = g.Members.Count
+        })
+        .First();                   // 하나만 찾아주세요
+```
+
+```csharp
+public static void SelectLoading()
+{
+    // 길드원의 수만 출력하고 싶다면?
+
+    Console.WriteLine("길드 이름은? :");
+    Console.Write("> ");
+    string name = Console.ReadLine();
+
+    // 장점 : 필요한 정보만 뺄 수 있다.
+    // 단점 : 매번 필요한 정보를 코딩해야한다.
+
+    using (var db = new AppDbContext())
+    {
+        var info = db.Guilds
+            .Where(g => g.GuildName == name)
+            /*
+            // DTO를 활용가능
+            .Select(g => new GuildDto
+            {
+                Name = g.GuildName,
+                MemberCount = g.Members.Count
+            })*/
+            .MapGuildToDto()            // Extension을 써도된다.
+            .First();                   // 하나만 찾아주세요
+
+
+        Console.WriteLine($"GuildName - {info.Name} / MemeberCount - {info.MemberCount}");
+        
+    }
+}
+```
+
+```csharp
+public static class Extensions
+{
+    public static IQueryable<GuildDto> MapGuildToDto(this IQueryable<Guild> guild)
+    {
+        return guild.Select(g => new GuildDto
+        {
+            Name = g.GuildName,
+            MemberCount = g.Members.Count
+        });
+    }
+}
+```
