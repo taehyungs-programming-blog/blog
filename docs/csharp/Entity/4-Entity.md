@@ -199,4 +199,271 @@ public static void UpdateFull()
 
 * [Get Code 🌍](https://github.com/EasyCoding-7/MMO_EFCore_Tutorial/tree/4-4)
 
+🛵 데이터엔 두 가지 데이터가 존재한다.<br>
+🛵 **Principal Entity** - 일반적 데이터 (Player)<br>
+🛵 **Dependent Entity** - 의존적 데이터, Foreign Key를 포함하는 쪽 (Item)<br>
+🛵 그렇다면 Dependent Entity는 Principal Entity없이 존재가 가능할까?(Null을 넣을수 있나?)<br>
+🛵 예를 들자면 주인이 없는 Item이 존재할수 있는데 그럼 주인(Owner)에 Null을 넣을수 있냐는 문제이다.<br>
 
+```csharp
+// 결론부터 말하면 nullable 변수를 선언하면 된다.
+int? nullablevar;
+```
+
+```csharp
+public class Item
+{
+    public int ItemId { get; set; }
+    public int TemplateId { get; set; }
+    public DateTime CreatedDate { get; set; }
+
+    // 아직은 Nullable이 아니기에
+    public int OwnerId { get; set; }
+    public Player Owner { get; set; }   
+```
+
+```csharp
+public static void ShowItems()
+{
+    using (AppDbContext db = new AppDbContext())
+    {
+        foreach (var item in db.Items.Include(i => i.Owner).ToList())
+        {
+            if (item.Owner == null)
+                Console.WriteLine($"ItemId({item.ItemId}) TemplateId({item.TemplateId}) Owner(0)");
+            else
+                Console.WriteLine($"ItemId({item.ItemId}) TemplateId({item.TemplateId}) Owner({item.Owner.PlayerId}) Owner({item.Owner.Name})");
+        }
+    }
+}
+
+public static void Test()
+{
+    ShowItems();
+
+    Console.WriteLine("Input Delete PlayerId");
+    Console.Write("> ");
+    int id = int.Parse(Console.ReadLine());
+
+    using (AppDbContext db = new AppDbContext())
+    {
+        Player player = db.Players
+            .Include(p => p.Item)
+            .Single(p => p.PlayerId == id);
+
+        db.Players.Remove(player);
+        db.SaveChanges();
+    }
+
+    Console.WriteLine("--- Test Complete ---");
+    ShowItems();
+}
+```
+
+🛵 Player가 지워지면 FK로 해당 Player를 참조하는 Item도 같이 삭제된다.
+
+```
+명령어 입력
+[0] Force Reset
+[1] Test
+> 1
+ItemId(1) TemplateId(101) Owner(1) Owner(Taehyung)
+ItemId(2) TemplateId(102) Owner(2) Owner(Unkwon Player 1)
+ItemId(3) TemplateId(103) Owner(3) Owner(Unkwon Player 2)
+Input Delete PlayerId
+> 1
+--- Test Complete ---
+ItemId(2) TemplateId(102) Owner(2) Owner(Unkwon Player 1)
+ItemId(3) TemplateId(103) Owner(3) Owner(Unkwon Player 2)
+>
+```
+
+```csharp
+public class Item
+{
+    public int ItemId { get; set; }
+    public int TemplateId { get; set; }
+    public DateTime CreatedDate { get; set; }
+
+    // Nullable로 만들어 보면
+    public int? OwnerId { get; set; }
+    public Player Owner { get; set; }   
+```
+
+```
+명령어 입력
+[0] Force Reset
+[1] Test
+> 0
+!!! DB is Reset !!!
+> 1
+ItemId(1) TemplateId(101) Owner(1) Owner(Taehyung)
+ItemId(2) TemplateId(102) Owner(2) Owner(Unkwon Player 1)
+ItemId(3) TemplateId(103) Owner(3) Owner(Unkwon Player 2)
+Input Delete PlayerId
+> 1
+--- Test Complete ---
+ItemId(1) TemplateId(101) Owner(0)
+ItemId(2) TemplateId(102) Owner(2) Owner(Unkwon Player 1)
+ItemId(3) TemplateId(103) Owner(3) Owner(Unkwon Player 2)
+>
+```
+
+---
+
+## Relationship Update
+
+* [Get Code 🌍](https://github.com/EasyCoding-7/MMO_EFCore_Tutorial/tree/4-5)
+
+```csharp
+// 1:1 Relationship Update
+
+public static void Update_1v1()
+{
+    ShowItems();
+
+    Console.WriteLine("Input ItemSwitch PlayerId");
+    Console.Write("> ");
+    int id = int.Parse(Console.ReadLine());
+
+    using (AppDbContext db = new AppDbContext())
+    {
+        Player player = db.Players
+            .Include(p => p.Item)
+            .Single(p => p.PlayerId == id);
+
+        player.Item = new Item()
+        {
+            TemplateId = 777,
+            CreatedDate = DateTime.Now
+        };
+
+        db.SaveChanges();
+    }
+
+    Console.WriteLine("--- Test Complete ---");
+    ShowItems();
+}
+```
+
+```
+명령어 입력
+[0] Force Reset
+[1] Update 1v1
+> 0
+!!! DB is Reset !!!
+> 1
+ItemId(1) TemplateId(101) Owner(1) Owner(Taehyung)
+ItemId(2) TemplateId(102) Owner(2) Owner(Unkwon Player 1)
+ItemId(3) TemplateId(103) Owner(3) Owner(Unkwon Player 2)
+Input ItemSwitch PlayerId
+> 1
+--- Test Complete ---
+ItemId(1) TemplateId(101) Owner(0)
+ItemId(2) TemplateId(102) Owner(2) Owner(Unkwon Player 1)
+ItemId(3) TemplateId(103) Owner(3) Owner(Unkwon Player 2)
+ItemId(4) TemplateId(777) Owner(1) Owner(Taehyung)
+>
+```
+
+```csharp
+public static void Update_1vN()
+{
+    ShowGuild();
+
+    Console.WriteLine("Input GuildId");
+    Console.Write("> ");
+    int id = int.Parse(Console.ReadLine());
+
+    using (AppDbContext db = new AppDbContext())
+    {
+        Guild guild = db.Guilds
+            .Include(p => p.Members)
+            .Single(p => p.GuildId == id);
+
+        guild.Members.Add(new Player()
+        {
+            Name = "NeBee"
+        });
+
+        db.SaveChanges();
+    }
+
+    Console.WriteLine("--- Test Complete ---");
+    ShowGuild();
+}
+```
+
+---
+
+## Delete
+
+* [Get Code 🌍](https://github.com/EasyCoding-7/MMO_EFCore_Tutorial/tree/4-6)
+
+```csharp
+public static void TestDelete()
+{
+    ShowItems();
+
+    Console.WriteLine("Select Delete ItemId");
+    Console.Write("> ");
+    int id = int.Parse(Console.ReadLine());
+
+    using (AppDbContext db = new AppDbContext())
+    {
+        Item item = db.Items.Find(id);
+        db.Items.Remove(item); 
+        db.SaveChanges();
+    }
+
+    Console.WriteLine("--- TestDelete Complete ---");
+    ShowItems();
+}
+```
+
+🛵 만약 삭제했던 아이템을 복구해야한다면? <br>
+🛵 약간의 트릭이 필요하다
+
+```csharp
+[Table("Item")]
+public class Item
+{
+    // softdelete를 만들어둔다.
+    public bool SoftDeleted { get; set; }
+
+    // ...
+```
+
+```csharp
+    public class AppDbContext : DbContext
+    {
+        // ...
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            // Item에 접근시 필터링
+            builder.Entity<Item>().HasQueryFilter(i => i.SoftDeleted == false);
+        }
+```
+
+```csharp
+public static void TestDelete()
+{
+    ShowItems();
+
+    Console.WriteLine("Select Delete ItemId");
+    Console.Write("> ");
+    int id = int.Parse(Console.ReadLine());
+
+    using (AppDbContext db = new AppDbContext())
+    {
+        Item item = db.Items.Find(id);
+        // db.Items.Remove(item); 
+        item.SoftDeleted = true;    
+        db.SaveChanges();
+    }
+
+    Console.WriteLine("--- TestDelete Complete ---");
+    ShowItems();
+}
+```
