@@ -1,9 +1,17 @@
 ---
 layout: default
 title: "6. Condition Variable"
-parent: (IOCP)
+parent: "(C++ IOCP)"
 grand_parent: C++
 nav_order: 1
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
 ---
 
 ## Event 방식의 문제점
@@ -145,3 +153,4 @@ int main()
     t2.join();
 }
 ```
+

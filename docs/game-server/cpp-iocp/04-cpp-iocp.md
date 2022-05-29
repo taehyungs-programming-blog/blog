@@ -1,15 +1,22 @@
 ---
 layout: default
 title: "4. Sleep Lock"
-parent: (IOCP)
+parent: "(C++ IOCP)"
 grand_parent: C++
 nav_order: 1
 ---
 
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
 ## Sleep
 
-😺 Sleep은 운영체제의 스케쥴링과 연관이 된다.
-
+😺 Sleep은 운영체제의 스케쥴링과 연관이 된다.<br>
 😺 SpinkLock에서 Sleep만 추가해 주면 된다.
 
 ```cpp

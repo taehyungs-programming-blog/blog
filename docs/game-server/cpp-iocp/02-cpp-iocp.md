@@ -1,9 +1,17 @@
 ---
 layout: default
-title: "2. std::thread 생성, atomic, mutex, deadlock"
-parent: (IOCP)
+title: "2. Thread 정리(atomic, mutex, deadlock, jthread)"
+parent: "(C++ IOCP)"
 grand_parent: C++
 nav_order: 1
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
 ---
 
 ## `std::thread` 생성
@@ -365,3 +373,101 @@ void ProcessLogin()
 ```
 
 😺 Lock을 사용할때 주의해야 한다.
+
+---
+
+## jthread(C++20)
+
+* [참고사이트 🌎](https://taehyungs-programming-blog.github.io/blog/docs/cpp/concurrency/04.jthread/)
+
+🦄 기존 thread의 문제점??
+
+```cpp
+#include <iostream>
+#include <thread>
+#include <chrono>
+using namespace std::literals;
+
+void foo(int a, double d)
+{
+    std::cout << "start foo" << std::endl;
+    std::this_thread::sleep_for(2s);
+    std::cout << "finish foo" << std::endl;
+}
+
+int main()
+{
+    std::thread t(foo, 10, 3.4);
+    t.join();
+    // 반드시 join, detach를 해야한다. -> 소멸자에서 자동으로 join하게 해준다면??
+}
+```
+
+```cpp
+// 이렇게 해결하곤 했다.
+class mythread
+{
+    std::thread th;
+public:
+    template<typename F, typename ... ARGS>
+    explicit mythread(F&& f, ARGS&& . args) : th(std::forward<F>(f), std::forward<ARGS>(args)...) {}
+    
+    ~mythread()
+    {
+        if(th.joinable())
+            th.join();
+    }
+};
+```
+
+---
+
+🦄 이걸 표준(C++20)에서 지원해줌
+
+```cpp
+int main()
+{
+    std::jthread f(foo, 10, 3.4);
+}
+```
+
+```cpp
+#include <iostream>
+#include <thread>
+#include <chrono>
+using namespace std::literals;
+
+void foo(int a, double d)
+{
+    for(int i = 0; i < 10; i++)
+    {
+        std::this_thread::sleep_for(500ms);
+        std::cout << "foo : " << i << std::endl;
+    }
+}
+
+void goo(std::stop_token token)
+{
+    for(int i = 0; i < 10; i++)
+    {
+        if(token.stop_requested())
+        {
+            std::cout << "중지요청" << std::endl;
+            return;
+        }
+        std::this_thread::sleep_for(500ms);
+        std::cout << "goo : " << i << std::endl;
+    }
+}
+
+int main()
+{
+    std::jthread j1(foo);
+    std::jthread j2(goo);
+    std::this_thread::sleep_for(2s);
+
+    // 중지요청
+    j1.request_stop();
+    j2.request_stop();
+}
+```

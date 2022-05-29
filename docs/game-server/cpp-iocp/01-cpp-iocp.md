@@ -1,12 +1,23 @@
 ---
 layout: default
 title: "1. 환경설정"
-parent: (IOCP)
+parent: "(C++ IOCP)"
 grand_parent: C++
 nav_order: 1
 ---
 
-* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial)
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-01)
+
+🧔 정리를 하자면 ... **그냥 Git Clone** 하자<br>
+🧔 **VisualStudio2017** 기준으로 생성 함.(물론 바꿔도 상관없음.)
 
 ---
 
