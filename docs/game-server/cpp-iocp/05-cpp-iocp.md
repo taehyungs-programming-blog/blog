@@ -2,7 +2,7 @@
 layout: default
 title: "5. Event Lock"
 parent: "(C++ IOCP)"
-grand_parent: C++
+grand_parent: "Game Server 👾"
 nav_order: 1
 ---
 

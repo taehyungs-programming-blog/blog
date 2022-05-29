@@ -2,7 +2,7 @@
 layout: default
 title: "2. Thread 정리(atomic, mutex, deadlock, jthread)"
 parent: "(C++ IOCP)"
-grand_parent: C++
+grand_parent: "Game Server 👾"
 nav_order: 1
 ---
 
