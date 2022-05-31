@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "8. 컴퓨터 구조(Cash, CPU pipeline)"
+title: "[이론] 컴퓨터 구조(Cash, CPU pipeline)"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 1

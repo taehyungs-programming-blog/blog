@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "4. Sleep Lock"
+title: "[이론] Sleep Lock"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 1

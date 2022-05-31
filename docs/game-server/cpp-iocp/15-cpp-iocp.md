@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "15. LOCK을 좀 더 쉽게 사용하게 구현"
+title: "[구현] READ, WRITE LOCK"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 2

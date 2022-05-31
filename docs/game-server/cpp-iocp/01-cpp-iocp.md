@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "1. 환경설정"
+title: "[환경설정]"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 1

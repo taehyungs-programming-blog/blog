@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "13. Lock-Free Queue 구현"
+title: "[이론] Lock-Free Queue 구현"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 2

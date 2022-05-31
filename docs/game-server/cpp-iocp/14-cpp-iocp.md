@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "14. ThreadManager Class 구현해보기"
+title: "[구현] ThreadManager"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 2

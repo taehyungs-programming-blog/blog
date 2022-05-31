@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "7. future & promise"
+title: "[이론] future & promise"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 1

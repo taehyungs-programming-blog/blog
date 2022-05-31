@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "10. TLS(Thread Local Storage)"
+title: "[이론] TLS(Thread Local Storage)"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 2

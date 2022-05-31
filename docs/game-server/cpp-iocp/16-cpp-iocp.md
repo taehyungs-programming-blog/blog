@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "16. DEADLOCK 감지기 구현"
+title: "[구현] DEADLOCK 감지기"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 2
@@ -148,9 +148,9 @@ void DeadLockProfiler::PushLock(const char* name)
 	if (_lockStack.empty() == false)
 	{
 		/*
-        일단 여기 들어온 이상, 다른 스레드에서 
-		lock 잡고 있는 상태에서
-        내가 lock잡으려고 시도한 케이스
+            일단 여기 들어온 이상, 다른 스레드에서 
+            lock 잡고 있는 상태에서
+            내가 lock잡으려고 시도한 케이스
 		*/
 
 		// 기존에 발견되지 않은 케이스라면 데드락 여부 다시 확인한다.
@@ -158,17 +158,16 @@ void DeadLockProfiler::PushLock(const char* name)
 		if (lockId != prevId)   // 내 스레드가 아니라면 데드락 확인
 		{
             // 다른 쓰레드가 락을 잡고있네?
-			set<int32>& history = _lockHistory[prevId];
+			set<int32>& history = _lockHistory[prevId]; // _lockHistory ->> prevId가 lockId를 잡고있음을 알린다.
 			if (history.find(lockId) == history.end())
 			{
                 // prevId가 lockId에 lock에 걸릴수 있음을 의미
                 /*
 
-                * 그래프로 표현하자면
+                    * 그래프로 표현하자면
 
-                [A] -> [B]
-
-                [B] -> [A]을 확인하면 된다.
+                    [A] -> [B]
+                    [B] -> [A]을 확인하면 된다.
 
                 */
 
@@ -223,7 +222,7 @@ void DeadLockProfiler::Dfs(int32 here)
 	_discoveredOrder[here] = _discoveredCount++;
 
 	// 모든 인접한 정점을 순회한다.
-	auto findIt = _lockHistory.find(here);
+	auto findIt = _lockHistory.find(here);  // here가 어떤 Thread를 lock잡고있는지 확인
 	if (findIt == _lockHistory.end())
 	{
         // 다른 정점을 잡고있는 애가 없음.

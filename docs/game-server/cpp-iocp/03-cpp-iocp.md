@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "3. Lock 개념, SpinLock"
+title: "[이론] Lock 개념, SpinLock"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 1

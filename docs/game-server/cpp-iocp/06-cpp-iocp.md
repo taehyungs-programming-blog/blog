@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "6. Condition Variable"
+title: "[이론] Condition Variable"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 1

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "11. Multi-Thread safe Stack/Queue 구현"
+title: "[이론] Multi-Thread safe Stack/Queue 구현"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 2

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "9. Memory model"
+title: "[이론] Memory model"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 1

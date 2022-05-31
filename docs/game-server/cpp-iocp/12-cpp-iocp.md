@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "12. Lock-Free Stack 구현"
+title: "[이론] Lock-Free Stack 구현"
 parent: "(C++ IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 2
