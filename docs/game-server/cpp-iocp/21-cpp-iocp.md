@@ -1,16 +1,84 @@
 ---
 layout: default
-title: "21. Memory pool 구현 - 1"
-parent: (IOCP)
-grand_parent: C++
+title: "[구현] Memory pool - 1"
+parent: "(C++ IOCP)"
+grand_parent: "Game Server 👾"
 nav_order: 3
 ---
 
-😺 이제 파편화, 재사용 문제를 해결해 보자
+## Table of contents
+{: .no_toc .text-delta }
 
-😺 `Memory Pool` : 메모리를 바로 해지하지말고 임시로 보관했다가 필요하면 꺼내쓰겠다(재 할당 시간을 아껴보자, 메모리파편화도 일어날 수 있음.)
+1. TOC
+{:toc}
 
-😺 참고로 아래 내용을 보다보면 `MemoryHeader`를 굳이 왜쓰는지 싶은데 이후에 Header에 필요한 부분이 추가되기에 이번 강좌에서는 받아들이자.
+---
+
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-09)
+
+---
+
+## 하고자 하는 것.
+
+* 이제 파편화, 재사용 문제를 해결해 보자
+    * `Memory Pool` : 메모리를 바로 해지하지말고 임시로 보관했다가 필요하면 꺼내쓰겠다
+    * 👉 재 할당 시간을 아껴보자, 메모리파편화 방지도 할 수 있을 듯
+    * 참고로 아래 내용을 보다보면 `MemoryHeader`를 굳이 왜쓰는지 싶은데 이후에 Header에 필요한 부분이 추가되기에 이번 강좌에서는 받아들이자.
+
+---
+
+## 실사용
+
+```cpp
+int main()
+{
+	for (int32 i = 0; i < 5; i++)
+	{
+		GThreadManager->Launch([]()
+			{
+				while (true)
+				{
+					Vector<Knight> v(10);
+
+                    // 메모리 할당시 구현한 Allocator를 이용해 할당하는데
+					Map<int32, Knight> m;
+					m[100] = Knight();
+
+					this_thread::sleep_for(10ms);
+				}
+			});
+	}
+
+	GThreadManager->Join();
+}
+```
+
+```cpp
+// 메모리풀 Allocator를 사용하게 강제할 예정이다.
+
+void* Memory::Allocate(int32 size)
+{
+	MemoryHeader* header = nullptr;
+	const int32 allocSize = size + sizeof(MemoryHeader);
+
+	if (allocSize > MAX_ALLOC_SIZE)
+	{
+		// 메모리 풀링 최대 크기를 벗어나면 일반 할당
+		header = reinterpret_cast<MemoryHeader*>(::malloc(allocSize));
+	}
+	else
+	{
+		// 메모리 풀에서 꺼내온다
+		header = _poolTable[allocSize]->Pop();
+	}
+
+	return MemoryHeader::AttachHeader(header, allocSize);
+}
+```
+
+---
+
+## 구현
 
 ```cpp
 #pragma once
@@ -37,6 +105,7 @@ struct MemoryHeader
         return header;
     }
 
+    // 아직은 헤더에 Size말고 별도의 정보는 없다.
     int32 allocSize;
 
     // TODO : 필요한 추가 정보
