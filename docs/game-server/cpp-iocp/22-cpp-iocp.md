@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "22. Memory pool 구현 - 2"
-parent: (IOCP)
-grand_parent: C++
+title: "[구현] Memory pool - 2"
+parent: "(C++ IOCP)"
+grand_parent: "Game Server 👾"
 nav_order: 3
 ---
 
@@ -14,11 +14,46 @@ nav_order: 3
 
 ---
 
-* 개선했으면 하는 사항
-    * Memory Pool에서 Lock을 건다
-    * queue에 메모리 헤더를 넣는데, queue자체가 동적할당을 쓰기에 이 부분도 Memory Pool에 넣고 싶다
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-10)
 
-😺 우선 아래서 하고자 하는것은 queue를 직접구현하는 것이다.
+---
+
+## 기존 코드의 문제점?
+
+* Memory Pool에서 Lock을 건다
+
+```cpp
+void MemoryPool::Push(MemoryHeader* ptr)
+{
+    WRITE_LOCK;
+    
+    // ...
+
+MemoryHeader* MemoryPool::Pop()
+{
+    MemoryHeader* header = nullptr;
+    {
+        WRITE_LOCK;
+
+        // ...
+```
+
+* queue에 메모리 헤더를 넣는데, queue자체가 동적할당을 쓰기에 이 부분도 Memory Pool에 넣고 싶다
+
+```cpp
+class MemoryPool
+{
+    // ...
+
+    USE_LOCK;
+    // 그냥 queue말고 Memory Pool을 쓰는 queue에 넣고자 한다.
+    queue<MemoryHeader*> _queue;
+};
+```
+
+---
+
+## Memory Pool을 쓰는 queue 구현
 
 ```cpp
 #pragma once
@@ -93,7 +128,7 @@ int main()
 }
 ```
 
-좋긴한데 멀티쓰레드 환경에 적합하진 않다.
+💩 문제점 - **좋긴한데 멀티쓰레드 환경에 적합하진 않다.**
 
 ---
 

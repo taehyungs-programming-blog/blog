@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "23. Memory pool 구현 - 3"
-parent: (IOCP)
-grand_parent: C++
+title: "[구현] Memory pool - 3"
+parent: "(C++ IOCP)"
+grand_parent: "Game Server 👾"
 nav_order: 3
 ---
 
@@ -14,8 +14,11 @@ nav_order: 3
 
 ---
 
-😺 사실 [22. Memory pool 구현 - 2]에서 구현했던 list를 매번직접 구현하지 않아도 된다.
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-11)
 
+---
+
+😺 사실 **[구현] Memory pool - 3**에서 구현했던 list를 매번직접 구현하지 않아도 된다.<br>
 😻 Win32에서 이미 다 구현해 둠 ㅎㅎ
 
 ```cpp
