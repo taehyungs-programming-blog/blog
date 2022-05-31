@@ -1,9 +1,17 @@
 ---
 layout: default
 title: "9. Memory model"
-parent: (IOCP)
-grand_parent: C++
+parent: "(C++ IOCP)"
+grand_parent: "Game Server 👾"
 nav_order: 1
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
 ---
 
 😺 내용 정리가 생각보다 엉성해서 다시 정리한다.
@@ -38,9 +46,7 @@ void goo()
 }
 ```
 
-<br>
-
-😺 이게 무슨 소리지?? -> 이게 re-ordering problem이다. CPU는 최적화를 위해 코드를 재 정렬 하기도 한다.
+😺 이게 무슨 소리지?? 👉 이게 re-ordering problem이다. CPU는 최적화를 위해 **코드를 재정렬** 하기도 한다.
 
 ```cpp
 void foo()
@@ -53,9 +59,7 @@ void foo()
 }
 ```
 
-<br>
-
-😺 해결방법은 없나? -> `fence` 활용
+😺 해결방법은 없나? 👉 `fence` 활용
 
 ```cpp
 #include <atomic>
@@ -109,9 +113,9 @@ int main()
 }
 ```
 
-<br>
+### 해결책 1차
 
-😺 해결책 1차 -> memory_order 중 `std::memory_order_relaxed`를 써보자
+😺 memory_order 중 `std::memory_order_relaxed`를 써보자
 
 ```cpp
 #include <thread>
@@ -140,8 +144,6 @@ int main()
     t1.join(); t2.join();
 }
 ```
-
-<br>
 
 😺 단적인 예로
 
@@ -179,9 +181,11 @@ int main()
 }
 ```
 
-<br>
+---
 
-😺 그럼 re-ordering까지 막고싶다면? -> `std::memory_order_release`, `std::memory_order_acquire` 활용
+### 해결책 2차
+
+😺 그럼 re-ordering까지 막고싶다면? 👉 `std::memory_order_release`, `std::memory_order_acquire` 활용
 
 ```cpp
 void foo()
@@ -204,7 +208,7 @@ void goo()
 }
 ```
 
-<br>
+### 해결책 3차
 
 😺 뭐야 이거.. 무서워 간단히 쓸 방법은 없나?
 
@@ -212,8 +216,10 @@ void goo()
 #include <thread>
 #include <atomic>
 #include <cassert>
+
 std::atomic<int> data1 = 0;
 std::atomic<int> data2 = 0;
+
 int main()
 {
     // std::memory_order_seq_cst : atomic, re-ordering 모두 보장해 달라
@@ -223,9 +229,8 @@ int main()
 }
 ```
 
-<br>
-
 ---
+
 ## 정리를 해 보자면?
 
 * `std::memory_order_relaxed` - atomic은 보장, re-ordering 보장 못함
@@ -279,9 +284,9 @@ void Thread_Observer()
 
 ### 추가) atomic은 보장된다 말 할수 있나??
 
-😺 그럼 atomic하게 CPU가 처리하고있는지 아닌지 어떻게 알지? 그냥 atomic만써주면 다 원자적으로 처리하는가?
-😺 당연히 아니다. 예를들어 32bits환경에선 64bits 변수를 atomic하게 데이터변경이 불가능(메모리주소를 2번 옮겨야함)
-😺 atomic하게 처리가능한지 확인할 방법(`is_lock_free`)이 있다.
+😺 그럼 atomic하게 CPU가 처리하고있는지 아닌지 어떻게 알지? 그냥 atomic만써주면 다 원자적으로 처리하는가?<br>
+😺 당연히 아니다. 예를들어 32bits환경에선 64bits 변수를 atomic하게 데이터변경이 불가능(메모리주소를 2번 옮겨야함)<br>
+😺 atomic하게 처리가능한지 확인할 방법(`is_lock_free`)이 있다.<br>
 
 ```cpp
 // Example

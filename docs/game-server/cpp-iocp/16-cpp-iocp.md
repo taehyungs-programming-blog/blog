@@ -1,12 +1,24 @@
 ---
 layout: default
 title: "16. DEADLOCK 감지기 구현"
-parent: (IOCP)
-grand_parent: C++
+parent: "(C++ IOCP)"
+grand_parent: "Game Server 👾"
 nav_order: 2
 ---
 
-🐱 보통 DeadLock은 어떤상황에 나타날까?
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-04)
+
+---
+
+## 보통 DeadLock은 어떤상황에 나타날까?
 
 ```
 ----<A>----                     ----<B>----
@@ -16,19 +28,14 @@ nav_order: 2
 -----------                     -----------
 ```
 
-<br>
-
-😺 A와 B 두개의 Thread가 있을때 각각을 Lock 잡은 이후 서로 상대방의 Lock을 기다릴때 Deadlock이 발생한다.
-
-😺 이 Deadlock을 graph적으로 표현하면 위 그림처럼 서로를 가리키는 모습이된다.
-
-😺 그럼 이런 사이클(서로를 가리키는)모양의 그래프가 발생하지 않으면 되겠군?
-
-😺 목표 : **각 Thread를 graph화 하고, 사이클모양의 그래프가 발견될시 Crash를 발생해보자.**
+😺 A와 B 두개의 Thread가 있을때 각각을 Lock 잡은 이후 서로 상대방의 Lock을 기다릴때 Deadlock이 발생한다.<br>
+😺 이 Deadlock을 graph적으로 표현하면 위 그림처럼 서로를 가리키는 모습이된다.<br>
+😺 그럼 이런 사이클(서로를 가리키는)모양의 그래프가 발생하지 않으면 되겠군?<br>
+😺 목표 : **각 Thread를 graph화 하고, 사이클모양의 그래프가 발견될시 Crash를 발생해보자.**<br>
 
 ---
 
-😻 실사용은 이렇게 하고자 한다
+## 실사용은 이렇게 하고자 한다
 
 ```cpp
 // ...
@@ -52,11 +59,9 @@ void Lock::WriteUnlock(const char* name)
 	// ...
 ```
 
-<br>
-
 ---
 
-😺 구현해보자
+## 구현해보자
 
 ```cpp
 #pragma once

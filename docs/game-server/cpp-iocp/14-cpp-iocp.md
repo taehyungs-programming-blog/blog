@@ -1,26 +1,30 @@
 ---
 layout: default
 title: "14. ThreadManager Class 구현해보기"
-parent: (IOCP)
-grand_parent: C++
+parent: "(C++ IOCP)"
+grand_parent: "Game Server 👾"
 nav_order: 2
 ---
 
-```cpp
-class ThreadManager
-{
-	// ...
+## Table of contents
+{: .no_toc .text-delta }
 
-    // Launch에 callback으로 thread함수 등록
-	void	Launch(function<void(void)> callback);
+1. TOC
+{:toc}
 
-    // Join으로 Launch된 Thread 실행
-	void	Join();
+---
 
-	// ...
-```
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-02)
 
-사용을 해보자
+---
+
+## 정리
+
+🍒 `GThreadManager->Launch(callback);` 을 통해서 Thread를 간단하게 써보자.
+
+---
+
+## 구현
 
 ```cpp
 // GameServer.cpp

@@ -1,26 +1,29 @@
 ---
 layout: default
 title: "10. TLS(Thread Local Storage)"
-parent: (IOCP)
-grand_parent: C++
+parent: "(C++ IOCP)"
+grand_parent: "Game Server 👾"
 nav_order: 2
 ---
 
-* Thread마다 각자의 스택영역이 존재하며
-* Heap(new), 데이터(static)은 공유해서 쓴다.
-* 하지만 여기서 빠진 영역이 하나있는데 그 영역이 Thread Local Storage(TLS)이다.
+## Table of contents
+{: .no_toc .text-delta }
 
-<Br>
+1. TOC
+{:toc}
 
+---
+
+* TLS 란?
+    * Thread마다 각자의 스택영역이 존재하며
+    * **Heap(new), 데이터(static)**은 공유해서 쓴다.
+    * 하지만 여기서 빠진 영역이 하나있는데 그 영역이 **Thread Local Storage(TLS)**이다.
 * TLS는 어떠한 경우에 쓸까?
-* Heap, 데이터 영역에 데이터를 항상 읽어쓰기에는 경합이 자주발생해 속도가 느릴수 있다.
-* TLS에 Heap, 데이터 영역의 데이터를 미리 복사해 놓고 사용하게 된다.
-
-<Br>
-
+    * Heap, 데이터 영역에 데이터를 항상 읽어쓰기에는 **경합이 자주발생해 속도가 느릴**수 있다.
+    * TLS에 Heap, 데이터 영역의 데이터를 **미리 복사해 놓고** 사용하게 된다.
 * 그럼 스택과 무슨차이인가?
-* 스택은 함수내에서 사용하는 불안정적인 데이터이다.
-* 한 Thread에서 사용할 데이터의 저장은 TLS에 저장해 두는것이 맞다
+    * 스택은 함수내에서 사용하는 불안정적인 데이터이다.
+    * 한 Thread에서 사용할 데이터의 저장은 TLS에 저장해 두는것이 맞다
 
 ```cpp
 // __declspec(thread) int32 value;  // 이전방식
@@ -49,11 +52,9 @@ int main()
 }
 ```
 
-<br>
-
 ---
 
-😺 조금더 예제를 원할경우? [예전 정리자료 🌏](https://easycoding-7.github.io/blog/cpp/concurrency-new/9/#/)
+😺 조금더 예제를 원할경우? 👉 [예전 정리자료 🌏](https://easycoding-7.github.io/blog/cpp/concurrency-new/9/#/)
 
 ```cpp
 #include <iostream>

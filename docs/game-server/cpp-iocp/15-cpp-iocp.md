@@ -1,12 +1,24 @@
 ---
 layout: default
 title: "15. LOCK을 좀 더 쉽게 사용하게 구현"
-parent: (IOCP)
-grand_parent: C++
+parent: "(C++ IOCP)"
+grand_parent: "Game Server 👾"
 nav_order: 2
 ---
 
-😻 대략 이렇게 쓰고싶다
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-03)
+
+---
+
+## 대략 이렇게 쓰고싶다
 
 ```cpp
 class TestLock
@@ -52,7 +64,7 @@ public:
 
 ---
 
-😾 구현해보자
+## 구현해보자
 
 ```cpp
 /*--------------------------------------------

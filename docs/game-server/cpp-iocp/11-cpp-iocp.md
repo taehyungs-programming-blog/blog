@@ -1,12 +1,22 @@
 ---
 layout: default
 title: "11. Multi-Thread safe Stack/Queue 구현"
-parent: (IOCP)
-grand_parent: C++
+parent: "(C++ IOCP)"
+grand_parent: "Game Server 👾"
 nav_order: 2
 ---
 
-😾 쉽기에 별도의 설명은 생략!
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+😾 이란 Lock-Free가 아니기에 Lock을 잡고 기본적으로 동작한다.<br>
+😾 약간 헷갈리는 부분은 condition-variable을 어디에 쓰느냐 인데<br>
+😾 데이터 유무를 체크 후 스레드를 넘겨주는 역할로 쓰이게 된다(그냥 코드를 보자...)
 
 ---
 
@@ -63,8 +73,6 @@ private:
 	condition_variable _condVar;
 };
 ```
-
-<br>
 
 ---
 
