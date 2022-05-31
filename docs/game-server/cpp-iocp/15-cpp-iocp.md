@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "[구현] READ, WRITE LOCK"
-parent: "(C++ IOCP)"
+parent: "(C++) Multi Thread"
 grand_parent: "Game Server 👾"
 nav_order: 2
 ---

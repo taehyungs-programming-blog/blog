@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "[이론] 내가 만드는 smart pointer"
-parent: "(C++ IOCP)"
+parent: "(C++) Memory Management"
 grand_parent: "Game Server 👾"
 nav_order: 2
 ---

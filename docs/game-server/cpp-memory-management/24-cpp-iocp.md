@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "24. ObjectPool"
-parent: (IOCP)
-grand_parent: C++
+title: "[구현] ObjectPool"
+parent: "(C++) Memory Management"
+grand_parent: "Game Server 👾"
 nav_order: 3
 ---
 
@@ -11,6 +11,10 @@ nav_order: 3
 
 1. TOC
 {:toc}
+
+---
+
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-12)
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "[이론] 컴퓨터 구조(Cash, CPU pipeline)"
-parent: "(C++ IOCP)"
+parent: "(C++) Multi Thread"
 grand_parent: "Game Server 👾"
 nav_order: 1
 ---

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "[구현] 메모리 Allocator - 1 (new, delete 커스터 마이징)"
-parent: "(C++ IOCP)"
+parent: "(C++) Memory Management"
 grand_parent: "Game Server 👾"
 nav_order: 2
 ---

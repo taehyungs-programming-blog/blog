@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "[구현] Memory pool - 2"
-parent: "(C++ IOCP)"
+parent: "(C++) Memory Management"
 grand_parent: "Game Server 👾"
 nav_order: 3
 ---

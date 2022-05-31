@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "[구현] "
-parent: "(C++ IOCP)"
+parent: "(C++) Network"
 grand_parent: "Game Server 👾"
 nav_order: 3
 ---
@@ -13,3 +13,4 @@ nav_order: 3
 {:toc}
 
 ---
+

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "[이론] 메모리 오염에 관하여(VirtualAlloc, VirtualFree)"
-parent: "(C++ IOCP)"
+parent: "(C++) Memory Management"
 grand_parent: "Game Server 👾"
 nav_order: 2
 ---

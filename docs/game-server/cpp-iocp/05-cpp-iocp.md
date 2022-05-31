@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "[이론] Event Lock"
-parent: "(C++ IOCP)"
+parent: "(C++) Multi Thread"
 grand_parent: "Game Server 👾"
 nav_order: 1
 ---
