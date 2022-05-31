@@ -1,16 +1,26 @@
 ---
 layout: default
-title: "19. 메모리 오염에 관하여"
-parent: (IOCP)
-grand_parent: C++
+title: "[이론] 메모리 오염에 관하여(VirtualAlloc, VirtualFree)"
+parent: "(C++ IOCP)"
+grand_parent: "Game Server 👾"
 nav_order: 2
 ---
 
-😺 메모리 오염의 문제 Example을 확인해보자
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## 메모리 오염 Example
+
+### Example 1
+
+💩 삭제 후 재접근 1
 
 ```cpp
-// 메모리 오염 예시1
-
 Knight k1 = new Knight();
 
 k1->hp = 200;
@@ -25,9 +35,11 @@ k1->hp = 100;       // ??? -> 여기서 crash가 날 수도 안 날 수도 있�
 // 만약 k1->hp 메모리 공간에 다른 메모리가 써진다면??? -> 그 데이터를 오염시킬 수 있다.
 ```
 
-```cpp
-// 메모리 오염 예시2
+### Example 2
 
+💩 삭제 후 재접근 2
+
+```cpp
 vector<int32> v{1,2,3,4,5};
 
 for(int32 i = 0; i < 5; i++)
@@ -45,9 +57,11 @@ for(int32 i = 0; i < 5; i++)
 }
 ```
 
-```cpp
-// 메모리 오염 예시3
+### Example 3
 
+💩 캐스팅 미스
+
+```cpp
 class Player
 {
 
@@ -63,12 +77,11 @@ Knight* k = static_cast<Knight*>(p);
 // dynamic_cast로 잡아야하지만 성능이슈로 static_cast로 잡았는데 잘못 캐스팅함.
 ```
 
-<br>
-
 ---
 
-😺 다양한 문제가 있구나? 어떻게 해결해야 할까?
+## 사용자 영역 메모리에 대해서 
 
+😺 다양한 문제가 있구나? 어떻게 해결해야 할까?<br>
 😺 우선 OS의 메모리에 대해 이해해야한다.
 
 ```cpp
@@ -130,8 +143,6 @@ void StompAllocator::Release(void* ptr)
 // VirtualFree는 실제로 메모리 공간을 밀어버린다.
     // 메모리 오염문제를 방지할 수 있다.
 ```
-
-<br>
 
 * `VirtualAlloc`, `VirtualFree`를 사용시 메모리 오염의 문제는 해결됐지만
     * 메모리 파편화, 재사용의 문제는 해결되지 않았다.

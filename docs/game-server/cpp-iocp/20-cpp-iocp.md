@@ -1,13 +1,50 @@
 ---
 layout: default
-title: "20. STL 컨테이너 메모리 직접할당"
-parent: (IOCP)
-grand_parent: C++
+title: "[구현] 메모리 Allocator - 2 (Stomp, STL Allocator)"
+parent: "(C++ IOCP)"
+grand_parent: "Game Server 👾"
 nav_order: 3
 ---
 
-😺 STL container도 개발자가 직접 메모리 allocation할 수 있을까??
+## Table of contents
+{: .no_toc .text-delta }
 
+1. TOC
+{:toc}
+
+---
+
+* [Get This Code(Stomp) 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-07)
+* [Get This Code(STL) 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-08)
+
+---
+
+## Stomp Allocator
+
+🦄 `VirtualAlloc`, `VirtualFree`를 활용해 new, delete를 커스텀해보자.
+
+```cpp
+void* StompAllocator::Alloc(int32 size)
+{
+    const int64 pageCount = (size + PAGE_SIZE - 1) / PAGE_SIZE;
+    const int64 dataOffset = pageCount * PAGE_SIZE - size;
+    void* baseAddress = ::VirtualAlloc(NULL, pageCount * PAGE_SIZE, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+    return static_cast<void*>(static_cast<int8*>(baseAddress) + dataOffset);
+}
+
+void StompAllocator::Release(void* ptr)
+{
+    const int64 address = reinterpret_cast<int64>(ptr);
+    const int64 baseAddress = address - (address % PAGE_SIZE);
+    ::VirtualFree(reinterpret_cast<void*>(baseAddress), 0, MEM_RELEASE);
+}
+```
+
+---
+
+## STL Allocator
+
+😺 STL container도 개발자가 직접 메모리 allocation할 수 있을까??<Br>
 😺 STL 생성자를 따라가보면 Allocator를 받아줌을 알수 있다.
 
 ```cpp
@@ -18,8 +55,6 @@ class vector { // varying size array of values
 private:
 // ...
 ```
-
-<br>
 
 😺 STL에서 사용가능한 Allocator를 만들어보자.
 
@@ -55,8 +90,6 @@ public:
 #else
 // ...
 ```
-
-<br>
 
 😺 사용의 편의성을 위해서 매크로를 만들어 사용하자
 
