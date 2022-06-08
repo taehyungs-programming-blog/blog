@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "[이론] Block vs Non-Block / Sync vs ASync"
-parent: "(C++) Network"
+parent: "(C++) Socket"
 grand_parent: "Game Server 👾"
 nav_order: 3
 ---

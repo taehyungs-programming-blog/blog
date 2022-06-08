@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "[이론/구현] UDP, TCP 비교"
-parent: "(C++) Network"
+parent: "(C++) Socket"
 grand_parent: "Game Server 👾"
 nav_order: 3
 ---

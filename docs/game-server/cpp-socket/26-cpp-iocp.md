@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "[구현] 기본 winsock programming"
-parent: "(C++) Network"
+parent: "(C++) Socket"
 grand_parent: "Game Server 👾"
 nav_order: 3
 ---

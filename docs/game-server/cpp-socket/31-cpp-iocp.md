@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "[구현] Select 모델 구현"
-parent: "(C++) Network"
+parent: "(C++) Socket"
 grand_parent: "Game Server 👾"
 nav_order: 3
 ---
