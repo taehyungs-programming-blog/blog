@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "29. socket option"
-parent: (IOCP)
-grand_parent: C++
+title: "[이론] socket option"
+parent: "(C++) Network"
+grand_parent: "Game Server 👾"
 nav_order: 3
 ---
 
@@ -13,8 +13,6 @@ nav_order: 3
 {:toc}
 
 ---
-
-## sock option
 
 😺 모두 다 설명은 불가능 하고 대략 이런것이 있다고 받아들이며 더 자세한 사항은 [MSDN](https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-setsockopt)참고
 

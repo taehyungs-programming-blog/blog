@@ -1,17 +1,27 @@
 ---
 layout: default
-title: "33. Block vs Non-Block / Sync vs ASync 개념 정리"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 4
+title: "[이론] Block vs Non-Block / Sync vs ASync"
+parent: "(C++) Network"
+grand_parent: "Game Server 👾"
+nav_order: 3
 ---
 
-* Blocking - 호출 후 대기
-* Non-Blocking - 호출 후 대기 없음
-* Synchronous - 호출 즉시 실행 후 응답(꼭 결과가 아니라 진행중을 리턴해도 됨)
-* Asynchronous - 호출 즉시 실행되지 않아도 되며 Callback으로 응답
+## Table of contents
+{: .no_toc .text-delta }
 
-네 가지를 조합해 보면.
+1. TOC
+{:toc}
+
+---
+
+* **Blocking** - 호출 후 대기
+* **Non-Blocking** - 호출 후 대기 없음
+* **Synchronous** - 호출 즉시 실행 후 응답(꼭 결과가 아니라 진행중을 리턴해도 됨)
+* **Asynchronous** - 호출 즉시 실행되지 않아도 되며 Callback으로 응답
+
+<br>
+
+* 네 가지를 조합해 보면.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/iocp/iocp-33-1.png" style="border-radius:5%;border:1px solid #e6e1e8"/>

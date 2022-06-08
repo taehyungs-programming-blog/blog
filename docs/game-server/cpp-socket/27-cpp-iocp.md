@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "27. TCP 이론 설명/구현"
-parent: (IOCP)
-grand_parent: C++
+title: "[이론/구현] TCP"
+parent: "(C++) Network"
+grand_parent: "Game Server 👾"
 nav_order: 3
 ---
 
@@ -14,7 +14,7 @@ nav_order: 3
 
 ---
 
-😺 TCP 서버 실습
+## 이론
 
 😺 Client와 Server가 연결되면 아래와 같이 Kernel 영역에 Recv, Send Buffer가 생성된다.
 
@@ -83,9 +83,7 @@ nav_order: 3
 ----------------------------           --------------
 ```
 
-<br>
-
-😺 그런데 이런식으로 코드가 블럭되는 형태로 게임을 구현하는게 좋은방법일까?? 👉 그에 대한 설명은 다음강좌에서 진행
+😺 그런데 이런식으로 코드가 블럭되는 형태로 게임을 구현하는게 좋은방법일까?? 👉 **그에 대한 설명은 다음강좌에서 진행**
 
 ---
 
@@ -121,17 +119,18 @@ int main()
         
         cout << "Send Data! Len = " << sizeof(sendBuffer) << endl;
         /*
-        char recvBuffer[1000];
-        int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
-        // 여기서 데이터를 받지 않으면 무한대기
-        if (recvLen <= 0)
-        {
-            int32 errCode = ::WSAGetLastError();
-            cout << "Recv ErrorCode : " << errCode << endl;
-            return 0;
-        }
-        cout << "Recv Data! Data = " << recvBuffer << endl;
-        cout << "Recv Data! Len = " << recvLen << endl;
+            // echo server를 만들고 싶다면?
+            char recvBuffer[1000];
+            int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
+            // 여기서 데이터를 받지 않으면 무한대기
+            if (recvLen <= 0)
+            {
+                int32 errCode = ::WSAGetLastError();
+                cout << "Recv ErrorCode : " << errCode << endl;
+                return 0;
+            }
+            cout << "Recv Data! Data = " << recvBuffer << endl;
+            cout << "Recv Data! Len = " << recvLen << endl;
         */
         this_thread::sleep_for(1s);
     }

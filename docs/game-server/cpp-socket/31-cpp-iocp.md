@@ -1,12 +1,20 @@
 ---
 layout: default
-title: "31. Select 모델 구현"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 4
+title: "[구현] Select 모델 구현"
+parent: "(C++) Network"
+grand_parent: "Game Server 👾"
+nav_order: 3
 ---
 
-## Select 모델
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## 이론
 
 * 현재 문제가 되는 상황 👉
     * 수신버퍼에 데이터가 없는데, read 한다거나!
@@ -15,7 +23,31 @@ nav_order: 4
 - 블로킹 소켓 : 조건이 만족되지 않아서 블로킹되는 상황 예방
 - 논블로킹 소켓 : 조건이 만족되지 않아서 불필요하게 반복 체크하는 상황을 예방
 
-😺 send, recv를 하기 이전에 먼저 체크를 할 수 있다가 핵심
+😺 **send, recv**를 하기 이전에 **먼저 체크**를 할 수 있다가 핵심
+
+* 대략적 절차 정리
+    * 1) 읽기소켓, 쓰기소켓, 예외(OOB)소켓 관찰 대상이 될 소켓 등록
+        * (참고) 예외(OutOfBand)는 send() 마지막 인자 MSG_OOB로 보내는 특별한 데이터
+        * (참고) 받는 쪽에서도 recv OOB 세팅을 해야 읽을 수 있음(잘 사용안되기에 이런게 있다고만 알자)
+    * 2) `::select(readSet, writeSet, exceptSet);` -> 관찰 시작해 주세요
+    * 3) 적어도 하나의 소켓이 준비되면 리턴 -> 리턴이 되었다는게 어느 하나라도 준비가 되었다는 말 AND 낙오자(fd_set)는 알아서 제거됨
+    * 4) 남은 소켓 체크해서 진행
+
+```cpp
+fd_set set;
+
+FD_ZERO(set);// 비운다
+
+FD_SET(s, &set); // 소켓 s를 넣는다
+
+FD_CLR(s, &set); // 소켓 s를 제거
+
+auto ret = FD_ISSET(set); // 소켓 s가 set에 들어있으면 0이 아닌 값을 리턴한다
+```
+
+---
+
+## 구현
 
 ```cpp
 #include "pch.h"
@@ -59,6 +91,7 @@ int main()
 		return 0;
 
 	u_long on = 1;
+    // non-block으로 만든다.
 	if (::ioctlsocket(listenSocket, FIONBIO, &on) == INVALID_SOCKET)
 		return 0;
 
@@ -76,24 +109,6 @@ int main()
 
 	cout << "Accept" << endl;
 
-	// socket set
-	// 1) 읽기소켓, 쓰기소켓, 예외(OOB)소켓 관찰 대상이 될 소켓 등록
-		// 예외(OutOfBand)는 send() 마지막 인자 MSG_OOB로 보내는 특별한 데이터
-		// 받는 쪽에서도 recv OOB 세팅을 해야 읽을 수 있음(잘 사용안되기에 이런게 있다고만 알자)
-	// 2) ::select(readSet, writeSet, exceptSet); -> 관찰 시작해 주세요
-	// 3) 적어도 하나의 소켓이 준비되면 리턴 -> 리턴이 되었다는게 어느 하나라도 준비가 되었다는 말 AND 낙오자(fd_set)는 알아서 제거됨
-	// 4) 남은 소켓 체크해서 진행
-
-	// fd_set set;
-	// FD_ZERO : 비운다
-	// ex) FD_ZERO(set);
-	// FD_SET : 소켓 s를 넣는다
-	// ex) FD_SET(s, &set);
-	// FD_CLR : 소켓 s를 제거
-	// ex) FD_CLR(s, &set);
-	// FD_ISSET : 소켓 s가 set에 들어있으면 0이 아닌 값을 리턴한다
-
-
 	vector<Session> sessions;
 	sessions.reserve(100);
 
@@ -102,6 +117,9 @@ int main()
 
 	while (true)
 	{
+        // 그냥 여기서 바로 단점 지적!!
+            // (단점1) 매번 FD_ZERO, FD_SET을 해야함 
+
 		// 소켓 셋 초기화(에코서버라서 리슨, 라이트 둘로 나뉨)
 		FD_ZERO(&reads);
 		FD_ZERO(&writes);
@@ -112,6 +130,7 @@ int main()
 		// 소켓 등록
 		for (Session& s : sessions)
 		{
+            // (단점2) FD_SET이 Flag값을 올리는 것 이기에 64개밖에 socket을 못쓴다
 			if (s.recvBytes <= s.sendBytes)
             // 받은 애가 보낼 애보다 적은 경우 더 읽어라
 				FD_SET(s.socket, &reads);
