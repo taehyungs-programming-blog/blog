@@ -1,19 +1,45 @@
 ---
 layout: default
-title: "34. Overlapped Event 모델 구현"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 4
+title: "[구현] Overlapped Event 모델"
+parent: "(C++) Socket"
+grand_parent: "Game Server 👾"
+nav_order: 3
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
 ---
 
 ## Overlapped IO (비동기 + 논블로킹)
 
-* 비동기(당장 동시에 실행이 되지 않아도 됨) + 논블로킹(코드를 잡지않는다)
+* **Overlapped IO** : 비동기(당장 동시에 실행이 되지 않아도 됨) + 논블로킹(코드를 잡지않는다)
+
+<br>
 
 * Overlapped 함수를 건다 (`WSARecv`, `WSASend`)
 * Overlapped 함수가 성공했는지 확인 후
     * 성공했으면 결과 얻어서 처리
     * 실패했으면 사유를 확인
+
+<br>
+	
+* Overlapped 모델 (이벤트 기반)
+    * 비동기 입출력 지원하는 소켓 생성 + 통지 받기 위한 이벤트 객체 생성
+    * 비동기 입출력 함수 호출 (1에서 만든 이벤트 객체를 같이 넘겨줌)
+    * 비동기 작업이 바로 완료되지 않으면, WSA_IO_PENDING 오류 코드
+    * 운영체제는 이벤트 객체를 signaled 상태로 만들어서 완료 상태 알려줌
+        * `WSAWaitForMultipleEvents` 함수 호출해서 이벤트 객체의 signal 판별
+        * `WSAGetOverlappedResult` 호출해서 비동기 입출력 결과 확인 및 데이터 처리
+
+<br>
+
+* 음? `WSAEventSelect`도 Event를 통해 Signal을 받는데. 뭐가 다른가?
+    * **Overlapped** 로 동작하는게 핵심이다. 비동기 + 논블로킹
+    * 아래에 `WSAWaitForMultipleEvents`이 있어서 Pending되는거 같이 보이나 `WSAWaitForMultipleEvents`를 호출하지 않는다면 비동기 + 논블로킹으로 동작하게 된다.
 
 ---
 
@@ -77,31 +103,6 @@ int main()
 		return 0;
 
 	cout << "Accept" << endl;
-
-	// 1) 비동기 입출력 소켓
-	// 2) WSABUF 배열의 시작 주소 + 개수 // Scatter-Gather
-	// 3) 보내고/받은 바이트 수
-	// 4) 상세 옵션인데 0
-	// 5) WSAOVERLAPPED 구조체 주소값
-	// 6) 입출력이 완료되면 OS가 호출할 콜백 함수
-	// WSASend
-	// WSARecv
-	
-	// Overlapped 모델 (이벤트 기반)
-	// - 비동기 입출력 지원하는 소켓 생성 + 통지 받기 위한 이벤트 객체 생성
-	// - 비동기 입출력 함수 호출 (1에서 만든 이벤트 객체를 같이 넘겨줌)
-	// - 비동기 작업이 바로 완료되지 않으면, WSA_IO_PENDING 오류 코드
-	// 운영체제는 이벤트 객체를 signaled 상태로 만들어서 완료 상태 알려줌
-	// - WSAWaitForMultipleEvents 함수 호출해서 이벤트 객체의 signal 판별
-	// - WSAGetOverlappedResult 호출해서 비동기 입출력 결과 확인 및 데이터 처리
-
-	// 1) 비동기 소켓
-	// 2) 넘겨준 overlapped 구조체
-	// 3) 전송된 바이트 수
-	// 4) 비동기 입출력 작업이 끝날때까지 대기할지?
-	// false
-	// 5) 비동기 입출력 작업 관련 부가 정보. 거의 사용 안 함.
-	// WSAGetOverlappedResult
 
 	while (true)
 	{

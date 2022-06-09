@@ -1,10 +1,37 @@
 ---
 layout: default
-title: "36. Completion Port 구현"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 4
+title: "[구현] Completion Port"
+parent: "(C++) Socket"
+grand_parent: "Game Server 👾"
+nav_order: 3
 ---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## 이론
+
+* **Overlapped 모델** (Completion Routine 콜백 기반)
+    * 비동기 입출력 함수 완료되면, 쓰레드마다 있는 APC(Async Procedure Call) 큐에 일감이 쌓임
+    * Alertable Wait 상태로 들어가서 APC 큐 비우기 (콜백 함수)
+    * 단점) APC큐 쓰레드마다 있다! Alertable Wait 자체도 조금 부담!
+    * 단점) 이벤트 방식 소켓:이벤트 1:1 대응
+
+* **IOCP (Completion Port)** 모델
+    * APC 대신 Completion Port 사용 (쓰레드마다 있는건 아니고 1개. 중앙에서 관리하는 APC 큐?)
+    * Alertable Wait -> CP 결과 처리를 GetQueuedCompletionStatus
+쓰레드랑 궁합이 아주 좋다!
+
+* `CreateIoCompletionPort`, `GetQueuedCompletionStatus`
+
+---
+
+## 구현
 
 ```cpp
 #include "pch.h"
@@ -110,20 +137,6 @@ int main()
 
 	cout << "Accept" << endl;
 	
-	// Overlapped 모델 (Completion Routine 콜백 기반)
-	// - 비동기 입출력 함수 완료되면, 쓰레드마다 있는 APC(Async Procedure Call) 큐에 일감이 쌓임
-	// - Alertable Wait 상태로 들어가서 APC 큐 비우기 (콜백 함수)
-	// 단점) APC큐 쓰레드마다 있다! Alertable Wait 자체도 조금 부담!
-	// 단점) 이벤트 방식 소켓:이벤트 1:1 대응
-
-	// IOCP (Completion Port) 모델
-	// - APC 대신 Completion Port 사용 (쓰레드마다 있는건 아니고 1개. 중앙에서 관리하는 APC 큐?)
-	// - Alertable Wait -> CP 결과 처리를 GetQueuedCompletionStatus
-	// 쓰레드랑 궁합이 아주 좋다!
-
-	// CreateIoCompletionPort
-	// GetQueuedCompletionStatus
-
 	vector<Session*> sessionManager;
 
 	// CP 생성
