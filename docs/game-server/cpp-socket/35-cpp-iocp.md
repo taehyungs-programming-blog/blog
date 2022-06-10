@@ -58,7 +58,7 @@ nav_order: 3
 * **Overlapped (이벤트 기반)**
     * 장점) 성능
     * 단점) 64개 제한(소켓하나당 Event하나를 연결)
-* Overlapped (콜백 기반)
+* **Overlapped (콜백 기반)**
     * 장점) 성능
     * 단점1) 모든 비동기 소켓 함수에서 사용 가능하진 않음 (accept).
     * 단점2) 빈번한 Alertable Wait으로 인한 성능 저하
