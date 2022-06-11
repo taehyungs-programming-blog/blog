@@ -176,7 +176,7 @@ static inline bool SetSockOpt(SOCKET socket, int32 level, int32 optName, T optVa
 ```
 
  🦄 일단 `ConnectEx, DisconnectEx, AcceptEx`를 사용하지 않으니 이해가 되지 않을 수 있다<br>
- 🦄 런타임에 `ConnectEx, DisconnectEx, AcceptEx`의 함수포인터를 구해오는 함수라 이해하자.(다음강에서 실사용 예제를 보여준다.)
+ 🦄 런타임에 `ConnectEx, DisconnectEx, AcceptEx`의 이벤트가 발생시 알려주세요 용도(다음강에서 실사용 예제를 보여준다.)
 
 ```cpp
 #include "pch.h"

@@ -22,6 +22,19 @@ nav_order: 1
 
 😺 `IocpCore` 클래스를 두고 iocp를 관리하고자 한다
 
+```
+[ IocpObject ] ---> [ Listener ]
+                |
+                --> [ Session ]
+
+[ IocpCore ] -> Dispatch Loop를 돌며 IocpObject를 Dispatch한다.
+```
+
+* 눈 여겨 볼 부분
+    * (1) IocpCore에 IocpObject를 등록하는 부분(Listner, Session을 어떻게 등록하는지)
+    * (2) IocpCore를 어떻게 Dispatch하는지
+    * (3) IocpCore에 등록된 IocpObject를 어떻게 파싱하는지
+
 ```cpp
 // ...
 
@@ -68,6 +81,54 @@ bool IocpCore::Dispatch(uint32 timeoutMs)
 	}
 
     // ...
+```
+
+😺 (???) `Listener`를 언제 IocpCore에 등록한 거지 ???
+
+```cpp
+void Listener::RegisterAccept(AcceptEvent* acceptEvent)
+{
+    // 더미 세션을 만들고
+	Session* session = xnew<Session>();
+
+    // 이벤트에 담에서
+	acceptEvent->Init();
+	acceptEvent->SetSession(session);
+
+	DWORD bytesReceived = 0;
+
+    // Accept Event가 발생시 알려달라고 등록한다.
+	if (false == SocketUtils::AcceptEx(_socket, session->GetSocket(), session->_recvBuffer, 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, OUT & bytesReceived, static_cast<LPOVERLAPPED>(acceptEvent)))
+	{
+```
+
+```cpp
+int main()
+{
+	Listener listener;
+	listener.StartAccept(NetAddress(L"127.0.0.1", 7777));
+
+	for (int32 i = 0; i < 5; i++)
+	{
+		GThreadManager->Launch([=]()
+			{
+				while (true)
+				{
+                    // 실제 Accept Event 발생시 IocpCore에서 Dispatch가 알려주며
+					GIocpCore.Dispatch();
+				}				
+			});
+	}	
+```
+
+```cpp
+// Listner에게 들어오게 된다.
+void Listener::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
+{
+	ASSERT_CRASH(iocpEvent->GetType() == EventType::Accept);
+	AcceptEvent* acceptEvent = static_cast<AcceptEvent*>(iocpEvent);
+	ProcessAccept(acceptEvent);
+}
 ```
 
 ---
