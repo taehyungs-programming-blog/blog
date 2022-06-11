@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "37. iocp 함수 콜백받기(Socket Utils 구현)"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 4
+title: "[구현] SocketUtils"
+parent: "(C++) 상세 구현"
+grand_parent: "Game Server 👾"
+nav_order: 1
 ---
 
 ## Table of contents
@@ -14,14 +14,20 @@ nav_order: 4
 
 ---
 
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-14)
+
+---
+
 ## `SocketUtils`의 필요성/사용
 
-😺 매번 win32 socket을 할당하는 코드를 넣을 수 없으니 `SocketUtils`라는 클래스를 별도로 만들어보자
+😺 매번 win32 socket을 할당하는 코드를 넣을 수 없으니 `SocketUtils`라는 클래스를 별도로 만들어보자<br>
+😺 하고자 하는 것!
 
 ```cpp
 int main()
 {
     // SocketUtils라는 전역의 클래스를 이용하여
+
 	// 아래와 같이 쓰고싶어서 만든다
 	SOCKET socket = SocketUtils::CreateSocket();
 	SocketUtils::BindAnyAddress(socket, 7777);
@@ -39,6 +45,10 @@ int main()
 	GThreadManager->Join();
 }
 ```
+
+---
+
+## 구현
 
 ```cpp
 // SocketUtils의 초기화/삭제는 아래와 같이 글로벌로 관리
@@ -63,11 +73,9 @@ public:
 } GCoreGlobal;
 ```
 
-<br>
-
 ---
 
-## `NetAddress`의 사용
+### `NetAddress`
 
 😺 IP Address를 관리할 클래스도 별도로 만들자
 
@@ -119,11 +127,10 @@ IN_ADDR NetAddress::Ip2Address(const WCHAR* ip)
 }
 ```
 
-<br>
 
 ---
 
-## `SocketUtils` 내부구현
+### (핵심) `SocketUtils` 🦄
 
 ```cpp
 #pragma once
@@ -167,6 +174,9 @@ static inline bool SetSockOpt(SOCKET socket, int32 level, int32 optName, T optVa
 	return SOCKET_ERROR != ::setsockopt(socket, level, optName, reinterpret_cast<char*>(&optVal), sizeof(T));
 }
 ```
+
+ 🦄 일단 `ConnectEx, DisconnectEx, AcceptEx`를 사용하지 않으니 이해가 되지 않을 수 있다<br>
+ 🦄 런타임에 `ConnectEx, DisconnectEx, AcceptEx`의 함수포인터를 구해오는 함수라 이해하자.(다음강에서 실사용 예제를 보여준다.)
 
 ```cpp
 #include "pch.h"

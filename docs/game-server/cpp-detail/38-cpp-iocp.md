@@ -1,10 +1,24 @@
 ---
 layout: default
-title: "38. IOCP Core 구현"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 4
+title: "[구현] IOCP Core"
+parent: "(C++) 상세 구현"
+grand_parent: "Game Server 👾"
+nav_order: 1
 ---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-15)
+
+---
+
+## 하고자 하는 것.
 
 😺 `IocpCore` 클래스를 두고 iocp를 관리하고자 한다
 
@@ -56,9 +70,9 @@ bool IocpCore::Dispatch(uint32 timeoutMs)
     // ...
 ```
 
-<Br>
+---
 
-😺 IOCPCore 내부
+## IOCPCore 내부
 
 ```cpp
 #pragma once
