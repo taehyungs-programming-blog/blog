@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "[구현] Session 구현 - 3"
+title: "[구현] Recv Buffer"
 parent: "(C++) 상세 구현"
 grand_parent: "Game Server 👾"
 nav_order: 1
@@ -15,6 +15,26 @@ nav_order: 1
 ---
 
 * [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-19)
+
+---
+
+💩 구현자체는 어렵지 않다. 굳이 Recv Buffer를 **왜 구현**하는가가 문제인데<br>
+💩 우선 현재 어떻게 구현되어 있는지 보자.
+
+```cpp
+public:
+    // 그냥 BYTE 배열을 선언 후
+    BYTE _recvBuffer[1000];
+
+// ...
+
+// 매번 BYTE배열을 덮어 쓰는 형태로 쓰고있다.
+OnRecv(_recvBuffer, numOfBytes);
+```
+
+💩 문제는 이거다. 매번 배열을 초기화 하는것이 맞는가?<br>
+💩 배열에 접근이 너무 쉬운거 같은데?<br>
+💩 Circular Buffer같은 기술을 쓰고싶은데?
 
 ---
 
