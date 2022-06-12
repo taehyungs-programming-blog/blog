@@ -1,19 +1,29 @@
 ---
 layout: default
-title: "39. Server Service"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 4
+title: "[구현] Server Service"
+parent: "(C++) 상세 구현"
+grand_parent: "Game Server 👾"
+nav_order: 1
 ---
 
-* [Get Code 🌍](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial)
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
 
 ---
+
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-16)
+
+---
+
+## 하고자 하는 것!
 
 ```cpp
 class GameSession : public Session
 {
-
+    // 아직까진 GameSession을 Dispatch하지는 않음.(이후 강의에 넣을 예정)
 };
 
 
@@ -45,11 +55,39 @@ int main()
 }
 ```
 
-<Br>
+🤷‍♂️ 간단하게 몇 가지만 정리하고 들어간다.<Br>
+🤷‍♂️ `MakeShared<IocpCore>()` 를 넘기는 이유? 👉 말 그대로 IocpCore를 생성후 넘긴다.<br>
+🤷‍♂️ `MakeShared<GameSession>` 를 넘기는 이유? 👉 
+
+```cpp
+Service::Service(ServiceType type,
+ NetAddress address, 
+ IocpCoreRef core, 
+ SessionFactory factory, 
+ int32 maxSessionCount)
+	: _type(type), 
+    _netAddress(address), 
+    _iocpCore(core), 
+    _sessionFactory(factory),           // GameSession을 넘기면 factory로 들어가게 되고
+    _maxSessionCount(maxSessionCount)
+{
+
+}
+
+// SessionFactory는 shared_ptr의 함수포인터이다.
+using SessionRef		= std::shared_ptr<class Session>;
+using SessionFactory = function<SessionRef(void)>;
+
+// 따라서 아래와 같이 호출 시 Session을 생성하게 된다
+SessionRef Service::CreateSession()
+{
+	SessionRef session = _sessionFactory();
+    // ...
+```
 
 ---
 
-😺 Service 내부
+## Service
 
 ```cpp
 #pragma once
