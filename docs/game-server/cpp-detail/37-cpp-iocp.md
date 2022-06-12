@@ -4,6 +4,7 @@ title: "[구현] SocketUtils"
 parent: "(C++) 상세 구현"
 grand_parent: "Game Server 👾"
 nav_order: 1
+permalink: game-server/37-1-cpp-iocp
 ---
 
 ## Table of contents

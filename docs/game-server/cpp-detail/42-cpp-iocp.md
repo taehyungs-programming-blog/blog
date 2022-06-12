@@ -1,12 +1,20 @@
 ---
 layout: default
-title: "42. Recv Buffer 구현"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 5
+title: "[구현] Session 구현 - 3"
+parent: "(C++) 상세 구현"
+grand_parent: "Game Server 👾"
+nav_order: 1
 ---
 
-* [Get Code 🌍](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial)
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-19)
 
 ---
 
