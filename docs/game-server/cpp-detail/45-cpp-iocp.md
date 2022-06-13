@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "45. PacketHandler"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 5
+title: "[구현] PacketHandler"
+parent: "(C++) 상세 구현"
+grand_parent: "Game Server 👾"
+nav_order: 1
 ---
 
 ## Table of contents
@@ -11,6 +11,10 @@ nav_order: 5
 
 1. TOC
 {:toc}
+
+---
+
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-23)
 
 ---
 
@@ -47,11 +51,35 @@ virtual int32 OnRecvPacket(BYTE* buffer, int32 len) override
 ---
 
 ```cpp
-virtual void OnRecvPacket(BYTE* buffer, int32 len) override
+class ServerSession : public PacketSession
 {
-    // 패킷이 들어올 경우 Handler에게 보내고
-    ClientPacketHandler::HandlePacket(buffer, len);
-}
+public:
+	~ServerSession()
+	{
+		cout << "~ServerSession" << endl;
+	}
+
+	virtual void OnConnected() override
+	{
+		//cout << "Connected To Server" << endl;
+	}
+
+	virtual void OnRecvPacket(BYTE* buffer, int32 len) override
+	{
+        // 패킷이 들어올 경우 Handler에게 보내고
+		ClientPacketHandler::HandlePacket(buffer, len);
+	}
+
+	virtual void OnSend(int32 len) override
+	{
+		//cout << "OnSend Len = " << len << endl;
+	}
+
+	virtual void OnDisconnected() override
+	{
+		//cout << "Disconnected" << endl;
+	}
+};
 ```
 
 ```cpp
@@ -118,4 +146,66 @@ while (true)
 
     this_thread::sleep_for(250ms);
 }
+```
+
+---
+
+🦄 헷갈리는 부분 복습 👉 **어떻게 OnRecvPacket까지 오게되는가?**
+
+```cpp
+void Session::RegisterRecv()
+{
+	// Completion Port를 채우고
+	if (SOCKET_ERROR == ::WSARecv(_socket, &wsaBuf, 1, OUT &numOfBytes, OUT &flags, &_recvEvent, nullptr))
+```
+
+```cpp
+bool IocpCore::Dispatch(uint32 timeoutMs)
+{
+	DWORD numOfBytes = 0;
+	ULONG_PTR key = 0;
+	IocpEvent* iocpEvent = nullptr;
+
+    // Completion Port의 응답을 받으면, IocpObject의 Dispatch를 호출
+	if (::GetQueuedCompletionStatus(_iocpHandle, OUT & numOfBytes, OUT & key, OUT reinterpret_cast<LPOVERLAPPED*>(&iocpEvent), timeoutMs))
+	{
+		IocpObjectRef iocpObject = iocpEvent->owner;
+		iocpObject->Dispatch(iocpEvent, numOfBytes);
+	}
+```
+
+```cpp
+void Session::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
+{
+	switch (iocpEvent->eventType)
+	{
+	case EventType::Connect:
+		ProcessConnect();
+		break;
+	case EventType::Disconnect:
+		ProcessDisconnect();
+		break;
+	case EventType::Recv:
+		ProcessRecv(numOfBytes);
+```
+
+```cpp
+void Session::ProcessRecv(int32 numOfBytes)
+{
+	_recvEvent.owner = nullptr; // RELEASE_REF
+
+	if (numOfBytes == 0)
+	{
+		Disconnect(L"Recv 0");
+		return;
+	}
+
+	if (_recvBuffer.OnWrite(numOfBytes) == false)
+	{
+		Disconnect(L"OnWrite Overflow");
+		return;
+	}
+
+	int32 dataSize = _recvBuffer.DataSize();
+	int32 processLen = OnRecv(_recvBuffer.ReadPos(), dataSize); // 컨텐츠 코드에서 재정의
 ```

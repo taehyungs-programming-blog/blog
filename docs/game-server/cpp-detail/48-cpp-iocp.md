@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "48. 패킷직렬화-2"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 5
+title: "[구현] 패킷직렬화-2"
+parent: "(C++) 상세 구현"
+grand_parent: "Game Server 👾"
+nav_order: 1
 ---
 
 ## Table of contents
@@ -14,9 +14,13 @@ nav_order: 5
 
 ---
 
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-26)
+
+---
+
 ## 문제
 
-🍅 이번 강의 내용은 크게 없음, 간단히 성능개선만 해볼 예정<br>
+🍅 이번 강의 내용은 크게 없음, 간단히 **성능개선**만 해볼 예정<br>
 🍅 현재 코드에도 약간의 문제가 있는데
 
 ```cpp

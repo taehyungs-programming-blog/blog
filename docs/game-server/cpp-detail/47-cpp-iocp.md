@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "47. 패킷직렬화-1"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 5
+title: "[구현] 패킷직렬화-1"
+parent: "(C++) 상세 구현"
+grand_parent: "Game Server 👾"
+nav_order: 1
 ---
 
 ## Table of contents
@@ -11,6 +11,10 @@ nav_order: 5
 
 1. TOC
 {:toc}
+
+---
+
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-25)
 
 ---
 
@@ -60,7 +64,7 @@ struct PKT_S_TEST
 
 🦩 다시 돌아가서 현재 코드의 문제점을 보자면...
 
-* (서버/클라) 패킷의 정보를 별도로 관리해야만 한다.
+* (서버/클라) **패킷의 정보를 별도로 관리**해야만 한다.
 
 ```cpp
 // 서버/클라 서로가 이 정보를 항상 맞춰야한다.
@@ -81,7 +85,7 @@ struct S_TEST
 };
 ```
 
-* 패킷이 추가될때마다 함수가 추가되어야 하고 실수의 여지가 있다
+* 패킷이 추가될때마다 **함수가 추가**되어야 하고 실수의 여지가 있다
 
 ```cpp
 void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)

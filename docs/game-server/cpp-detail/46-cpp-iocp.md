@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "46. Unicode"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 5
+title: "[이론/구현] Unicode"
+parent: "(C++) 상세 구현"
+grand_parent: "Game Server 👾"
+nav_order: 1
 ---
 
 ## Table of contents
@@ -13,6 +13,12 @@ nav_order: 5
 {:toc}
 
 ---
+
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-24)
+
+---
+
+## 이론
 
 👀 문자열(string, wsring)은 어떻게 보낼까?
 
@@ -27,8 +33,6 @@ TCHAR snedData[1000] = _T("가");
 // 가변길이 문자열은 위와같이 다양하게 표기가 가능한데 무슨차일까?
 // 서버와 클라는 이런 복잡한 문자열을 어떻게 맞춰야할까?
 ```
-
-## 문자(Character)
 
 * [참고(UTF-8 Encoding/Decoding) 🌎](https://mothereff.in/utf-8)
 
@@ -115,7 +119,7 @@ int main()
 
 ---
 
-## 멀티바이트 문자집합 Vs 유니코드 문자집합
+### 멀티바이트 문자집합 Vs 유니코드 문자집합
 
 * 멀티바이트 문자집합 / MBCS(Multi Byte Character Set) : (char) 개별 문자를 다수의 바이트로 표현(시스템 로캘을 바탕으로 문자집합을 기준으로 문자를 파싱)
 * 유니코드 문자집합 / WBCS(Wide Byte Character Set) : (wchar) 유니코드 기반의 character set(UTF-16)
@@ -131,7 +135,8 @@ TCHAR snedData[1000] = _T("가");
 
 ---
 
-## 가변 문자열 받기/보내기
+## 구현
+
 
 ```cpp
 WCHAR sendData3[1000] = L"가"; // UTF16 = Unicode (한글/로마 2바이트)
