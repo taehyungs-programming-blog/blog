@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "1. 간단 사용법 정리"
-parent: (Protobuf)
-grand_parent: C++
+title: "[구현] Protobuf"
+parent: "(C++) 상세 구현"
+grand_parent: "Game Server 👾"
 nav_order: 1
 ---
 

@@ -64,7 +64,7 @@ struct PKT_S_TEST
 
 🦩 다시 돌아가서 현재 코드의 문제점을 보자면...
 
-* (서버/클라) **패킷의 정보를 별도로 관리**해야만 한다.
+* (문제 1) 서버, 클라가 **패킷의 정보를 별도로 관리**해야만 한다.
 
 ```cpp
 // 서버/클라 서로가 이 정보를 항상 맞춰야한다.
@@ -85,7 +85,7 @@ struct S_TEST
 };
 ```
 
-* 패킷이 추가될때마다 **함수가 추가**되어야 하고 실수의 여지가 있다
+* (문제 2) 패킷이 추가될때마다 **함수가 추가**되어야 하고 실수의 여지가 있다
 
 ```cpp
 void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
@@ -136,8 +136,10 @@ void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 
 ## 해결법
 
+* 당장 패킷직렬화 1~3에서 해결한 문제는 아니고 차차 해결할 예정
+
 🦩 패킷의 정보를 공통으로 관리해보자<br>
-🦩 그 방법중 하나는 xml, json 등으로 패킷의 정보를 관리하고 xml, json기반에서 코드를 뽑아내도록 만들면 된다.(이걸 앞으로 할 예정)
+🦩 그 방법중 하나는 xml, json 등으로 패킷의 정보를 관리하고 xml, json기반에서 **코드를 뽑아내도록** 만들면 된다.(이걸 앞으로 할 예정)
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -154,7 +156,7 @@ void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 </PDL>
 ```
 
-🦩 추가적으로 가변데이터의 처리는 고정데이터를 먼저 놓고 그 뒤에, `uint16 buffsOffset;`, `uint16 buffsCount;` 두 변수를 통해 가변데이터를 처리할 예정
+🦩 추가적으로 가변데이터의 처리는 고정데이터를 먼저 놓고 그 뒤에, `uint16 buffsOffset;`, `uint16 buffsCount;` 두 변수를 통해 **가변데이터를 처리**할 예정
 
 ```cpp
 #pragma pack(1)

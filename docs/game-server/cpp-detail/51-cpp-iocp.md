@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "51. JobQueue-1"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 6
+title: "[구현] JobQueue - 1"
+parent: "(C++) 상세 구현"
+grand_parent: "Game Server 👾"
+nav_order: 1
 ---
 
 ## Table of contents
@@ -14,11 +14,15 @@ nav_order: 6
 
 ---
 
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-29)
+
+---
+
 ## JobQueue의 필요성?
 
 👀 예를 들어 설명하자면 Client로 부터 온 메시지를 아래 처럼 브로드캐스팅 해준다고 가정해 보자.<br>
-👀 Client가 하나면 모르겠는데 100명 1000명 이라면? 모두 저 Broadcast에서 lock을 잡히게 된다.<br>
-👀 특히 lock이 spin-lock이라면 모든 thread가 무한 대기를 하게 되는데 ... 이게 과연 효율적인 방법일까?
+👀 Client가 하나면 모르겠는데 100명 1000명 이라면? 모두 저 **Broadcast에서 lock**을 잡히게 된다.<br>
+👀 특히 lock이 spin-lock이라면 모든 **thread가 무한 대기**를 하게 되는데 ... 이게 과연 효율적인 방법일까?
 
 ```cpp
 bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt)
@@ -29,20 +33,22 @@ bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt)
 	chatPkt.set_msg(pkt.msg());
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(chatPkt);
 
-	GRoom.Broadcast(sendBuffer); // WRITE_LOCK
-    /*
-        // 내부에서 lock을 잡게 된다.
-        void Room::Broadcast(SendBufferRef sendBuffer)
-        {
-            WRITE_LOCK;
-            for (auto& p : _players)
-            {
-                p.second->ownerSession->Send(sendBuffer);
-            }
-        }
-    */
+	GRoom.Broadcast(sendBuffer); // 아래참고
 
 	return true;
+}
+```
+
+```cpp
+void Room::Broadcast(SendBufferRef sendBuffer)
+{
+    // 일단 락을 잡고
+    WRITE_LOCK;
+    for (auto& p : _players)
+    {
+        // 다 돌때까지 기다려야 한다.
+        p.second->ownerSession->Send(sendBuffer);
+    }
 }
 ```
 
@@ -61,22 +67,25 @@ int main()
     // main thread에서 job을 flush
 	while (true)
 	{
-		GRoom.FlushJob();
-        /*
-            void Room::FlushJob()
-            {
-                while (true)
-                {
-                    JobRef job = _jobs.Pop();
-                    if (job == nullptr)
-                        break;
+		GRoom.FlushJob();   // 아래 참고
 
-                    job->Execute();
-                }
-            }
-        */
 		this_thread::sleep_for(1ms);
 	}
+```
+
+```cpp
+void Room::FlushJob()
+{
+    while (true)
+    {
+        // _jobs가 있는동안 main thread에서 잡고있는다.
+        JobRef job = _jobs.Pop();
+        if (job == nullptr)
+            break;
+
+        job->Execute();
+    }
+}
 ```
 
 ```cpp
@@ -157,6 +166,10 @@ public:
 };
 ```
 
+👀 아직까지 문제는 **Job을 매번 만들어야 하며**<br>
+👀 main thread(특정 thread)에서 job이 **모두 처리될때**까지 돌아야 한다
+
+---
 ---
 
 👀 복습) 송신측

@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "50. 패킷 자동화"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 6
+title: "[구현] 패킷 자동화(Protobuf 활용, 코드자동화)"
+parent: "(C++) 상세 구현"
+grand_parent: "Game Server 👾"
+nav_order: 1
 ---
 
 ## Table of contents
@@ -11,6 +11,11 @@ nav_order: 6
 
 1. TOC
 {:toc}
+
+---
+
+* [Get This Code 🌎(Protobuf)](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-27)
+* [Get This Code 🌎(코드 자동화)](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-28)
 
 ---
 

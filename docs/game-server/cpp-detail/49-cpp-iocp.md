@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "49. 패킷직렬화-3"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 5
+title: "[구현] 패킷직렬화-3"
+parent: "(C++) 상세 구현"
+grand_parent: "Game Server 👾"
+nav_order: 1
 ---
 
 ## Table of contents
@@ -13,6 +13,11 @@ nav_order: 5
 {:toc}
 
 ---
+
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-27)
+
+---
+
 
 🐶 Send Buffer에 데이터를 바로 써서 Send하는 기능을 구현해 보자.
 
@@ -29,22 +34,16 @@ while (true)
                                 10);    // attack
 
     // [ PKT_S_TEST ][BuffsListItem BuffsListItem BuffsListItem]
+    // 버퍼 리스트를 3개 할당.
     PKT_S_TEST_WRITE::BuffsList buffList = pktWriter.ReserveBuffsList(3);
-    /*
-        BuffsList ReserveBuffsList(uint16 buffCount)
-        {
-            BuffsListItem* firstBuffsListItem = _bw.Reserve<BuffsListItem>(buffCount);
-            _pkt->buffsOffset = (uint64)firstBuffsListItem - (uint64)_pkt;
-            _pkt->buffsCount = buffCount;
-            return BuffsList(firstBuffsListItem, buffCount);
-        }
-    */
+
     buffList[0] = { 100, 1.5f };
     buffList[1] = { 200, 2.3f };
     buffList[2] = { 300, 0.7f };
 
     PKT_S_TEST_WRITE::BuffsVictimsList vic0 = pktWriter.ReserveBuffsVictimsList(&buffList[0], 3);
     {
+        // 내부적으로 다시 할당 가능.
         vic0[0] = 1000;
         vic0[1] = 2000;
         vic0[2] = 3000;
@@ -62,6 +61,16 @@ while (true)
     }
 
     SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+```
+
+```cpp
+BuffsList ReserveBuffsList(uint16 buffCount)
+{
+    BuffsListItem* firstBuffsListItem = _bw.Reserve<BuffsListItem>(buffCount);
+    _pkt->buffsOffset = (uint64)firstBuffsListItem - (uint64)_pkt;
+    _pkt->buffsCount = buffCount;
+    return BuffsList(firstBuffsListItem, buffCount);
+}
 ```
 
 ---
@@ -203,6 +212,7 @@ buffList[2] = { 300, 0.7f };
 // BuffsListItem* firstBuffsListItem = _bw.Reserve<BuffsListItem>(buffCount);
 ```
 
+---
 ---
 
 ## 복습, 수신 부분은?
