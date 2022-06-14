@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "57. XML Parser"
-parent: (IOCP)
-grand_parent: C++
-nav_order: 6
+title: "[구현] XML Parser"
+parent: "(C++) 상세 구현"
+grand_parent: "Game Server 👾"
+nav_order: 1
 ---
 
 ## Table of contents
@@ -11,6 +11,10 @@ nav_order: 6
 
 1. TOC
 {:toc}
+
+---
+
+* [Get This Code 🌎](https://github.com/EasyCoding-7/Windows_Game_Server_Tutorial/tree/RA-Tag-36)
 
 ---
 
