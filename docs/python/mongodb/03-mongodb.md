@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "3. MongoDB 간단 사용"
-parent: (NoSQL)
-grand_parent: Python
+title: "3. MongoDB(Robo 3T) 간단 사용"
+parent: "MongoDB 💾"
+grand_parent: "Python"
 nav_order: 1
 ---
 
@@ -16,8 +16,14 @@ nav_order: 1
 
 ## MongoDB(Robo 3T) 간단 사용
 
-👺 Robo 3T에서 예제를 실행함.<br>
-👺 우클릭 -> Create Database
+👺 [Robo 3T](https://robomongo.org/)환경에서 MongoDB를 간단히 사용해 보자.<br>
+👺 localhost에 MongoDB가 설치되었다면 localhost로 Connection을 하자<br>
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/python/nosql/nosql-3-11.png"/>
+</p>
+
+👺 LocalConnection 우클릭 👉 Create Database
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/python/nosql/nosql-3-1.png"/>
@@ -29,13 +35,13 @@ nav_order: 1
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/python/nosql/nosql-3-2.png"/>
 </p>
 
-👺 Collections 폴더 우클릭 -> Create Collection...
+👺 Collections 폴더 우클릭 👉 Create Collection... 👉 mycollection라는 이름으로 만들어 보자.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/python/nosql/nosql-3-3.png"/>
 </p>
 
-👺 Collection 우클릭 -> Insert Document
+👺 Collection 우클릭 👉 Insert Document
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/python/nosql/nosql-3-4.png"/>
@@ -44,11 +50,19 @@ nav_order: 1
 👺 JSON을 기입할 수 있는 에디터가 나타난다.<br>
 👺 JSON 형식으로 데이터를 기입 후 확인
 
+```json
+{
+    ID: "C-01",
+    name: "taehyung",
+    age: 34
+}
+```
+
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/python/nosql/nosql-3-5.png"/>
 </p>
 
-👺 신기한건 _id는 넣지 않았는데 들어가 있는데 Document의 유효성을 위해 기본적으로 들어간다.<br>
+👺 신기한건 **_id**는 넣지 않았는데 들어가 있는데 Document의 유효성을 위해 기본적으로 들어간다.<br>
 👺 하나 더 넣어 보자.
 
 <p align="center">

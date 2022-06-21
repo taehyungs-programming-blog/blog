@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "4. MongoDB 입력/읽기/수정/삭제"
-parent: (NoSQL)
-grand_parent: Python
+title: "4. CRUD"
+parent: "MongoDB 💾"
+grand_parent: "Python"
 nav_order: 1
 ---
 
@@ -90,6 +90,8 @@ INSERT INTO people(user_id, age, status)
 VALUES ("user1", 45, "A")
 ```
 
+### Create Example
+
 👩 여러 document를 넣어보자.
 
 ```s
@@ -128,7 +130,7 @@ db.users.find(
 * `.find({ status: "A" })` : status가 A일때만 가져와 달라
 * `.find({ $or: [ { status: "A"} , { age: 50}]})` : or연산 가능
 
-### Example
+### Read Example
 
 ```json
 db.users.find({}, {user_id: 1, status: 1})
