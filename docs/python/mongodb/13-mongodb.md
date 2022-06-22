@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "9. crawlling - 4"
-parent: (NoSQL)
-grand_parent: Python
-nav_order: 1
+title: "13. [Crawlling] 4"
+parent: "MongoDB 💾"
+grand_parent: "Python"
+nav_order: 2
 ---
 
 ## Table of contents
@@ -251,3 +251,20 @@ print(actors_detail_info_list)
         actor_info_dict['rank'] = actor_rank
         actor_info_dict['출연작'] = movie_titles_list
 ```
+
+---
+
+## crawlling 후 db저장
+
+* [Get Code 🌍](https://github.com/EasyCoding-7/pymongo_examples/blob/main/pymongo_1/pymongo_1/pymongo_4.py)
+
+```py
+# ...
+
+actor_collection.insert_many(actors_detail_info_list)
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/python/nosql/nosql-10-1.png"/>
+</p>
+

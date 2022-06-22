@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "13. mongodb 인덱스"
-parent: (NoSQL)
-grand_parent: Python
-nav_order: 2
+title: "8. pymongo index"
+parent: "MongoDB 💾"
+grand_parent: "Python"
+nav_order: 1
 ---
 
 ## Table of contents

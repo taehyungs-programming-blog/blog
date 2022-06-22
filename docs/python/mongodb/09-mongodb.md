@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "14. 데이터 분석"
-parent: (NoSQL)
-grand_parent: Python
-nav_order: 2
+title: "9. 데이터 분석"
+parent: "MongoDB 💾"
+grand_parent: "Python"
+nav_order: 1
 ---
 
 ## Table of contents
@@ -51,4 +51,3 @@ docs = text_collection.find(
     }
 )
 ```
-

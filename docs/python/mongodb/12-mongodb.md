@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "8. crawlling - 3"
-parent: (NoSQL)
-grand_parent: Python
-nav_order: 1
+title: "12. [Crawlling] 3"
+parent: "MongoDB 💾"
+grand_parent: "Python"
+nav_order: 2
 ---
 
 ## Table of contents
@@ -152,4 +152,3 @@ for index, actor in enumerate(actors):
     # print(hits[index])
     print(int(hits[index].text.replace(',', '')))
 ```
-

@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "7. crawlling - 2"
-parent: (NoSQL)
-grand_parent: Python
-nav_order: 1
+title: "11. [Crawlling] 2"
+parent: "MongoDB 💾"
+grand_parent: "Python"
+nav_order: 2
 ---
 
 ## Table of contents

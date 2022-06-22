@@ -1,8 +1,8 @@
 ---
 layout: default
 title: "5. pymongo"
-parent: (NoSQL)
-grand_parent: Python
+parent: "MongoDB 💾"
+grand_parent: "Python"
 nav_order: 1
 ---
 
@@ -14,7 +14,7 @@ nav_order: 1
 
 ---
 
-## 라이브러리 사용법
+## python 라이브러리 사용법(필요하다면 보세요.)
 
 ```py
 # math 라이브러리 안에 sqrt, factorial만 import하겠다.

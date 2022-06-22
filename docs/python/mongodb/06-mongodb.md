@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "11. mongodb 문법 - 1"
-parent: (NoSQL)
-grand_parent: Python
-nav_order: 2
+title: "6. pymongo 문법 - 1"
+parent: "MongoDB 💾"
+grand_parent: "Python"
+nav_order: 1
 ---
 
 ## Table of contents
@@ -21,10 +21,9 @@ nav_order: 2
 ## mongo db 데이터 쌓기
 
 🎈 시작하기 전 기존의 코드로 mongodb에 데이터를 쌓아두자<br>
-🎈 아래는 기존코드(한번 돌리면 됨.)
+🎈 아래는 기존코드(한번 돌리면 됨 / 약간 시간이 걸리니 알아두자.)
 
 ```py
-
 import configparser
 import pymongo
 import requests
@@ -40,7 +39,8 @@ ini_parser = configparser.ConfigParser()
 ini_parser.read(iniFile)
 
 # connection db, collection
-conn = pymongo.MongoClient(str(ini_parser['aws']['ip']), int(ini_parser['aws']['port']))
+# conn = pymongo.MongoClient(str(ini_parser['aws']['ip']), int(ini_parser['aws']['port']))
+conn = pymongo.MongoClient('localhost', 27017)
 actor_db = conn.cine21_actor
 actor_collection = actor_db.actor_collection
 actor_collection.delete_many({})
@@ -122,7 +122,8 @@ ini_parser = configparser.ConfigParser()
 ini_parser.read(iniFile)
 
 # connection db, collection
-conn = pymongo.MongoClient(str(ini_parser['aws']['ip']), int(ini_parser['aws']['port']))
+# conn = pymongo.MongoClient(str(ini_parser['aws']['ip']), int(ini_parser['aws']['port']))
+conn = pymongo.MongoClient('localhost', 27017)
 actor_db = conn.cine21_actor
 actor_collection = actor_db.actor_collection
 
