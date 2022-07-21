@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "1. Get Code & Version Info"
-title: "Unity-Code-Review"
+parent: "Unity-Code-Review"
 nav_order: 1
 ---
 
