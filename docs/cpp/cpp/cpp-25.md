@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "25. (C++17) std::optional"
+title: "25. [C++17] std::optional"
 parent: (C++)
 grand_parent: C++
 nav_order: 3

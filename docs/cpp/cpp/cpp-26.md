@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "26. (C++17) std::variant"
+title: "26. [C++17] std::variant"
 parent: (C++)
 grand_parent: C++
 nav_order: 3
