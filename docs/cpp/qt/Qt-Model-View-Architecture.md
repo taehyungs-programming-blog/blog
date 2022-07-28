@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Qt Model View Architecture 정리 - 1"
+title: "Qt Model View Architecture 정리"
 parent: (QT)
 grand_parent: C++
 nav_order: 1
