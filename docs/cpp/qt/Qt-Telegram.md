@@ -16,7 +16,7 @@ nav_order: 1
 
 ## 빌드(22.01.19 기준)
 
-😺 [Telegram Github 🌍](https://github.com/telegramdesktop/tdesktop) 에서 시키는데로 하면 된다.
+😺 [Telegram Github 🌍](https://github.com/telegramdesktop/tdesktop) 에서 시키는데로 하면 된다.<br>
 
 🙀 하지만 막히는 부분이 몇 군데 있을 텐데 그 부분만 정리한다.
 
@@ -34,9 +34,9 @@ nav_order: 1
 
 ### DPI를 어떻게 유지하는지?
 
-🐱 결론부터 말하자면 ... 아래 방식이 최선이 아니다.
-
-😺 만약 프로그램을 재실행하지 않아야 한다면 아래 방법밖에 없지만. 재실행해도 무방하다면 차라리 아래처럼 사용하는게 낫다.
+🐱 결론부터 말하자면 ... 아래 방식이 최선이 아니다.<br>
+😺 만약 프로그램을 재실행하지 않아야 한다면 아래 방법밖에 없지만. 재실행해도 무방하다면 차라리 아래처럼 사용하는게 낫다.<br>
+😺 특히 Qt 6.3.X ~ 이후 버전은 Monitor Scale 125%(1.25), 150%(1.5) 와 같은 소수점 처리도 가능하기에 아래 방법이 더 좋은 방법이라 할 수 있다.
 
 ```cpp
 // DPI(Scale)의 변화를 처리하도록 설정
@@ -45,6 +45,8 @@ SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_SYSTEM_AWARE);
 // Scale Factor를 직접 입력하도록 한다.
 QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);	// High DPI 쓴다고 선언
 qputenv("QT_SCALE_FACTOR", "2");							// 200 % 확대
+
+// (주의) Qt 5.X 버전에서는 정수 High DPI만 설정이 가능함
 
 // 이렇게 쓰는것을 추천... 아래는 코드 수정이 너무너무너무 많음.
 ```
@@ -61,8 +63,6 @@ void Launcher::init() {
 	QApplication::setApplicationName(qsl("TelegramDesktop"));
 	QApplication::setAttribute(Qt::AA_DisableHighDpiScaling, true);
 ```
-
-<br>
 
 😺 그래서 전역으로 `cSetScreenScale(250)` 스케일 값을 저장해 두고 스캐일값에 따라 확대, 축소 시킨다
 
@@ -88,8 +88,6 @@ void Sandbox::setupScreenScale() {
 		cSetScreenScale(300); // 300%: 288 DPI (264-inf)
 	}
 ```
-
-<br>
 
 😺 ScreenScale이 어떻게 모든 UI에 반영될까?
 
@@ -209,9 +207,8 @@ cSetScreenScale(80);
 
 ### .style파일(코드 자동화) 활용법?
 
-😺 `codegen_style.exe`로 부터 .style에서 .cpp로 뽑아낸다.
-
-😺 style파일은 아래와 같이 구성되어 있다.
+😺 `codegen_style.exe`로 부터 .style에서 .cpp로 뽑아낸다.<br>
+😺 style파일은 아래와 같이 구성되어 있다.<br>
 
 ```
 // basic.style
@@ -242,12 +239,15 @@ boxTextFont: font(boxFontSize);
 // ...
 ```
 
-<br>
+😺 별도로 분석을 하지 않는 이유는 python으로 더 간단히 구현이 가능하고 이후에 필요할 경우 👉 `codegen_style`프로젝트를 분석해 보자.<br>
+😺 이건 확실히 python으로 코드 자동화하는게 훨 씬 더 편함(**python jinja2**)
 
-😺 별도로 분석을 하지 않는 이유는 python으로 더 간단히 구현이 가능하고 이후에 필요할 경우 👉 `codegen_style`프로젝트를 분석해 보자.
+---
 
-### 이미지가 깔끔하게 나오는데 svg로 처리하는지? (그렇다면 방법은?)
+### 무한 스크롤의 구현
 
-### 애니메이션(+이모니콘 애니) 처리방법은?
+🐳 아래 그림 처럼 채팅이 있다면 무한으로 scrolling이 가능한데 어떻게 구현이 됐을까?
 
-
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/qt/telegram-1.gif"/>
+</p>
