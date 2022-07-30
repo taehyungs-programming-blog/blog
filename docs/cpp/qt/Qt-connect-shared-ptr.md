@@ -67,7 +67,17 @@ QtWidgetsApplication1::QtWidgetsApplication1(QWidget *parent)
 }
 ```
 
-🏄‍♂️ 그럼 sharedpointer의 this는 어떻게 표현할까?
+🏄‍♂️ 궁금한 것은 ref count인데 ref count 관리가 어떻게 될까?
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/qt/connect-shared-ptr-1.png"/>
+</p>
+
+🏄‍♂️ weak ref가 하나 올라간 것을 볼 수 있다. (strong ref가 아니기에 조심히 써야함.)
+
+---
+
+🏄‍♂️ (참고) sharedpointer의 **this** 표현법
 
 ```cpp
 class A : public QWidget, public QEnableSharedFromThis<A>
