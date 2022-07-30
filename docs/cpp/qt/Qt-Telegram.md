@@ -16,7 +16,19 @@ nav_order: 1
 
 ## 빌드(22.01.19 기준)
 
-😺 [Telegram Github 🌍](https://github.com/telegramdesktop/tdesktop) 에서 시키는데로 하면 된다.<br>
+😺 [Telegram Github 🌍](https://github.com/telegramdesktop/tdesktop/blob/dev/docs/building-win-x64.md) 에서 시키는데로 하면 된다.<br>
+
+* 환경
+	* Visual Studio 2022 (10.0.22000.0 SDK)
+	* Commit : bf0ad9e7ca22f94c9cb7eb64de1c77cb3b7235cd [bf0ad9e] / 
+	* Tag : v4.0.2
+* 빌드
+	* `BuildPath\ThirdParty`, `BuildPath\Libraries` 두 폴더 생성
+	* 각 ThirdParty software를 설치한다.
+	* pip install `$ python -m pip install pywin32`
+	* clone code `$ git clone --recursive https://github.com/telegramdesktop/tdesktop.git`
+	* bat start `$ tdesktop\Telegram\build\prepare\win.bat`
+	* build `$ configure.bat x64 -D TDESKTOP_API_ID=YOUR_API_ID -D TDESKTOP_API_HASH=YOUR_API_HASH -D DESKTOP_APP_USE_PACKAGED=OFF -D DESKTOP_APP_DISABLE_CRASH_REPORTS=OFF`
 
 🙀 하지만 막히는 부분이 몇 군데 있을 텐데 그 부분만 정리한다.
 
@@ -251,3 +263,45 @@ boxTextFont: font(boxFontSize);
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/qt/telegram-1.gif"/>
 </p>
+
+🐳 우선 잘 모르겠으나 파일 이름이 `continuous_scroll.h` continuous?? 뭔가 여기서 부터 보면될 것 같다.
+
+```cpp
+void ContinuousScroll::wheelEvent(QWheelEvent *e) {
+	if (_tracking
+		&& !e->angleDelta().isNull()
+		&& (e->angleDelta().y() < 0)
+		&& (scrollTopMax() == scrollTop())) {
+		// 오? 이름부터 addContentRequest!! 여기가 맞는듯
+		_addContentRequests.fire({});
+		if (base::take(_contentAdded)) {
+			viewportEvent(e);
+		}
+		return;
+	}
+	ScrollArea::wheelEvent(e);
+}
+```
+
+```cpp
+class ContinuousScroll final : public ScrollArea {
+	// ...
+
+	// telegram내부적으로 사용되는 event stream같은데 ... 조금 더 분석이 필요할듯
+	rpl::event_stream<> _addContentRequests;
+```
+
+```cpp
+HistoryWidget::HistoryWidget(
+	
+	// ...
+
+_scroll->addContentRequests() | rpl::start_with_next([=] {
+	if (_history
+		&& _history->loadedAtBottom()
+		&& session().data().sponsoredMessages().append(_history)) 
+	{
+		_scroll->contentAdded();
+	}
+}, lifetime());
+```
