@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Qt Model View Architecture 정리"
+title: "Model View Architecture"
 parent: (QT)
 grand_parent: C++
 nav_order: 1
@@ -16,6 +16,14 @@ nav_order: 1
 
 🍓 **Model View Architecture**는 모두 정리하자면 내용이 너무 방대하다.<br>
 🍓 필요한 내용위주로 간단간단하게 정리하고 **코드 위주**로 설명하겠다.(안그럼 내용이 너무많음 ㅠ)
+
+<br>
+
+🍓 결론부터 말하자면 Qt는 MVD(Model-View-Delegate)구조를 선호한다.<br>
+🍓 **Model** : 데이터를 관리<br>
+🍓 **View** : UI를 담을 틀을 의미<br>
+🍓 **Delegate** : UI를 세부적으로 어떻게 그릴지 <br>
+🍓 뭔 소리인가 싶겠지만 아래를 보면 알게 됨.
 
 ---
 
@@ -394,7 +402,8 @@ void Widget::on_matchStringLineEdit_textChanged(const QString &arg1)
 
 ## (Custom Model) Read Only Model
 
-🍓 하나의 Model을 여러 View로 표현하고자한다.
+🍓 하나의 Model을 여러 View로 표현하고자한다.<br>
+🍓 + **Model을 통하여 데이터를 관리하고자 한다.**
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/qt/model-view-arc-7.png"/>
@@ -878,6 +887,8 @@ QHash<int, QByteArray> PersonModel::roleNames() const
 ---
 
 ## (Custom Model) Delegate
+
+🍓 **이제 Delegate를 통하여 세부적 UI를 어떻게 표현할지 정하려 한다.**
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/qt/model-view-arc-10.png"/>
