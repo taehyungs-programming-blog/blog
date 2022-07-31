@@ -28,7 +28,7 @@ nav_order: 1
 	* pip install `$ python -m pip install pywin32`
 	* clone code `$ git clone --recursive https://github.com/telegramdesktop/tdesktop.git`
 	* bat start `$ tdesktop\Telegram\build\prepare\win.bat`
-	* build `$ configure.bat x64 -D TDESKTOP_API_ID=YOUR_API_ID -D TDESKTOP_API_HASH=YOUR_API_HASH -D DESKTOP_APP_USE_PACKAGED=OFF -D DESKTOP_APP_DISABLE_CRASH_REPORTS=OFF`
+	* build `$ configure.bat x64 -D TDESKTOP_API_ID=[[api id]] -D TDESKTOP_API_HASH=[[api hash]] -D DESKTOP_APP_USE_PACKAGED=OFF -D DESKTOP_APP_DISABLE_CRASH_REPORTS=OFF`
 
 🙀 하지만 막히는 부분이 몇 군데 있을 텐데 그 부분만 정리한다.
 
@@ -264,44 +264,95 @@ boxTextFont: font(boxFontSize);
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/qt/telegram-1.gif"/>
 </p>
 
-🐳 우선 잘 모르겠으나 파일 이름이 `continuous_scroll.h` continuous?? 뭔가 여기서 부터 보면될 것 같다.
+🐳 우선 어디 부터 봐야할지 모르겠는데 채팅위젯의 이름이 `history_widget`이다. 여기서 부터 보면된다.
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/qt/telegram-1.png"/>
+</p>
 
 ```cpp
-void ContinuousScroll::wheelEvent(QWheelEvent *e) {
-	if (_tracking
-		&& !e->angleDelta().isNull()
-		&& (e->angleDelta().y() < 0)
-		&& (scrollTopMax() == scrollTop())) {
-		// 오? 이름부터 addContentRequest!! 여기가 맞는듯
-		_addContentRequests.fire({});
-		if (base::take(_contentAdded)) {
-			viewportEvent(e);
-		}
+void HistoryWidget::handleScroll() {
+	if (!_itemsRevealHeight) {
+		// 추가 로딩이 필요한 경우
+		preloadHistoryIfNeeded();
+	}
+
+	// ...
+```
+
+```cpp
+void HistoryWidget::preloadHistoryIfNeeded() {
+	if (_firstLoadRequest
+		|| _delayedShowAtRequest
+		|| _scroll->isHidden()
+		|| !_peer
+		|| !_historyInited) {
 		return;
 	}
-	ScrollArea::wheelEvent(e);
+
+	updateHistoryDownVisibility();
+	updateUnreadThingsVisibility();
+	if (!_scrollToAnimation.animating()) {
+		// 여기로 호출
+		preloadHistoryByScroll();
+		checkReplyReturns();
+	}
 }
 ```
 
 ```cpp
-class ContinuousScroll final : public ScrollArea {
-	// ...
+void HistoryWidget::preloadHistoryByScroll() {
+	if (_firstLoadRequest
+		|| _delayedShowAtRequest
+		|| _scroll->isHidden()
+		|| !_peer
+		|| !_historyInited) {
+		return;
+	}
 
-	// telegram내부적으로 사용되는 event stream같은데 ... 조금 더 분석이 필요할듯
-	rpl::event_stream<> _addContentRequests;
+	auto scrollTop = _scroll->scrollTop();
+	auto scrollTopMax = _scroll->scrollTopMax();
+	auto scrollHeight = _scroll->height();
+	if (scrollTop + kPreloadHeightsCount * scrollHeight >= scrollTopMax) {
+		loadMessagesDown();
+	}
+	if (scrollTop <= kPreloadHeightsCount * scrollHeight) {
+		// 결국 loadMessage를 호출하게 된다.
+		loadMessages();
+	}
+	if (session().supportMode()) {
+		crl::on_main(this, [=] { checkSupportPreload(); });
+	}
+}
 ```
 
 ```cpp
-HistoryWidget::HistoryWidget(
-	
+void HistoryWidget::loadMessages() {
 	// ...
 
-_scroll->addContentRequests() | rpl::start_with_next([=] {
-	if (_history
-		&& _history->loadedAtBottom()
-		&& session().data().sponsoredMessages().append(_history)) 
-	{
-		_scroll->contentAdded();
-	}
-}, lifetime());
+	const auto history = from;
+	const auto type = Data::Histories::RequestType::History;
+	auto &histories = history->owner().histories();
+	_preloadRequest = histories.sendRequest(history, type, [=](Fn<void()> finish) {
+		// 결국 그냥 request를 쏘고 received한다.
+		return history->session().api().request(MTPmessages_GetHistory(
+			history->peer->input,
+			MTP_int(offsetId),
+			MTP_int(offsetDate),
+			MTP_int(addOffset),
+			MTP_int(loadCount),
+			MTP_int(maxId),
+			MTP_int(minId),
+			MTP_long(historyHash)
+		)).done([=](const MTPmessages_Messages &result) {
+			messagesReceived(history->peer, result, _preloadRequest);
+			finish();
+		}).fail([=](const MTP::Error &error) {
+			messagesFailed(error, _preloadRequest);
+			finish();
+		}).send();
+	});
+}
 ```
+
+🐳 별거없구나 ㅎㅎ;;
