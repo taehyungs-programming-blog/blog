@@ -135,7 +135,7 @@ int main()
 
 ---
 
-## Example
+## Example) Application Framework는 어떻게 구현되어 있을까?
 
 ```cpp
 // Application Framework 제작자는 아래 코드를 제공해준다.
@@ -149,6 +149,7 @@ CWinApp* g_app = 0;
 class CWinApp
 {
 public;
+    // (2) 생성자에선 this를 g_app에 담게된다. 이후 main()이 호출됨
     CWinApp() { g_app = this; }
 
     // 어떻게 쓸 것인지는 개발자가 정하면 된다.
@@ -157,8 +158,11 @@ public;
     virtual int Run() { return 0; }
 };
 
+// (4) main은 라이브러리에 숨긴다.
 int main()
 {
+    // (3) g_app은 선언되었기에 아래 함수들이 호출됨.
+        // (5) 이런식으로 Application Framework는 직접 main을 호출하지 않더라도 함수형으로 Framework를 구성
     if( g_app->InitInstance() == true )
         g_app->Run();
     g_app->ExitInstance();
@@ -177,7 +181,7 @@ public:
     }
 };
 
-// 아래를 선언하면 정상적으로 App이 동작한다
+// (1) 전역으로 MyApp이 선언되었기에 생성자가 호출됨
 MyApp theApp;
 ```
 

@@ -86,3 +86,11 @@ public:
     virtual void Cry() override { cout << "Dog Cry" << endl; }
 };
 ```
+
+```
+Item ---- Group
+       |
+       -- Shape ---- Rect
+                  |
+                  -- Circle
+```

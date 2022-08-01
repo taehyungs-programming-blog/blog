@@ -79,6 +79,7 @@ class Car
 public:
     Car() {}
 
+    // 이런식으로 소멸해야함.
     void Destroy() { delete this; }
 
 protected:

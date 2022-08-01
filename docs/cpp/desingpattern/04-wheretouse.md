@@ -142,3 +142,171 @@ int main()
 * 변하는 것을 **인터페이스화** 해서 파생클래스로 만들어 보는게 어떨까? -> **Strategy Composition**
 * 더 자세한 설명은 **Template, Strategy Pattern**에서 설명
 
+---
+
+## Example) 변하는 부분과 변화지 않는 부분을 분리하는 법 (Template Method)
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Shape
+{
+protected:
+    // 변하는 것을 가상함수로 뽑아낸다.
+    virtual void DrawImp()
+    {
+        cout << "Draw Shape" << endl;
+    }
+
+public:
+    // final : 파생 클래스가 재정의 할수 없게 한다.
+    virtual void Draw() final
+    {
+        cout << "mutex lock" << endl;
+
+        DrawImp();
+        cout << "mutex unlock" << endl;
+    }
+
+
+    virtual Shape* Clone() { return new Shape(*this);}
+};
+
+
+class Rect : public Shape
+{
+public:
+    virtual void DrawImp() { cout << "Draw Rect" << endl;}
+
+    virtual Shape* Clone() { return new Rect(*this);}
+};
+
+class Circle: public Shape
+{
+public:
+    virtual void DrawImp() { cout << "Draw Circle" << endl;}
+    virtual Shape* Clone() { return new Circle(*this);}
+};
+
+
+int main()
+{
+    vector<Shape*> v;
+
+    while(1)
+    {
+        int cmd;
+        cin >> cmd;
+
+        if      ( cmd == 1 ) v.push_back(new Rect);
+        else if ( cmd == 2 ) v.push_back(new Circle);
+        else if ( cmd == 8 )
+        {
+            cout << "index >> ";
+            int k;
+            cin >> k;
+            v.push_back( v[k]->Clone() );
+        }
+        else if ( cmd == 9 )
+        {
+            for ( auto p : v)
+                p->Draw();
+        }
+    }
+
+}
+```
+
+---
+
+## Example) Prototype Pattern
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Shape
+{
+public:
+    int type;
+    virtual void Draw() { cout << "Draw Shape" << endl;}
+
+    // 자신의 복사본을 만드는 가상함수.
+    virtual Shape* Clone() { return new Shape(*this);}
+};
+
+
+class Rect : public Shape
+{
+public:
+    Rect() { type = 1;}
+    virtual void Draw() { cout << "Draw Rect" << endl;}
+
+    virtual Shape* Clone() { return new Rect(*this);}
+};
+
+class Circle: public Shape
+{
+public:
+    Circle() { type = 2;}
+    virtual void Draw() { cout << "Draw Circle" << endl;}
+
+    virtual Shape* Clone() { return new Circle(*this);}
+};
+
+
+
+class Triangle : public Shape
+{
+public:
+    virtual void Draw() { cout << "Draw Triangle" << endl;}
+};
+
+int main()
+{
+    vector<Shape*> v;
+
+    while(1)
+    {
+        int cmd;
+        cin >> cmd;
+
+        if      ( cmd == 1 ) v.push_back(new Rect);
+        else if ( cmd == 2 ) v.push_back(new Circle);
+
+
+
+        else if ( cmd == 8 )
+        {
+            cout << "index >> ";
+            int k;
+            cin >> k;
+
+            // k 번째 도형의 복사본을 v에 추가한다.
+
+            v.push_back( v[k]->Clone() ); // 다형성.
+
+/*
+            // k 번째 도형의 복사본을 v에 추가한다.
+            switch( v[k]->type )
+            {
+            case 1:  break;
+            case 2:  break;
+            }
+            */
+
+        }
+
+
+        else if ( cmd == 9 )
+        {
+            for ( auto p : v)
+                p->Draw();  // 다형성
+        }
+    }
+
+}
+```
