@@ -1,8 +1,7 @@
 ---
 layout: default
-title: "네트워크 분석"
+title: "네트워크 분석 📨"
 parent: "Etc 🛠"
-has_children: true
 nav_order: 2
 ---
 
