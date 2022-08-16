@@ -195,3 +195,77 @@ public class MemberService {
     }
 }
 ```
+
+---
+
+## Service Test만들기
+
+* [Clone Code 🌍](https://github.com/EasyCoding-7/spring-entry/tree/4-4)
+
+🐍 테스트하고 싶은 클래스에서 `shift` + `Ctrl` + `T`를 누른다
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/spring/entry/entry-4-1.png"/>
+</p>
+
+```java
+
+class MemberServiceTest {
+
+    MemberService memberService;
+    MemoryMemberRepository memberRepository;
+
+    @BeforeEach
+    public void beforeEach(){
+        memberRepository = new MemoryMemberRepository();
+        memberService = new MemberService(memberRepository);
+    }
+
+    @AfterEach
+    public void afterEach() {
+        memberRepository.clearStore();
+    }
+
+    // 한글로 작성해도 상관없다.
+    @Test
+    void 회원가입() {
+        // given
+        Member member = new Member();
+        member.setName("hello");
+
+        // when
+        Long saveId = memberService.join(member);
+
+        // then
+        Member findMember = memberService.findOne(saveId).get();
+        Assertions.assertThat(member.getName()).isEqualTo(findMember.getName());
+    }
+
+    @Test
+    public void 중복_회원_예약() {
+        // given
+        Member member1 = new Member();
+        member1.setName("spring");
+
+        Member member2 = new Member();
+        member2.setName("spring");
+
+        // when
+        memberService.join(member1);
+
+        /*
+        // 이런 방법도 존재하나 더 좋은 방법이 있음.
+        try{
+            memberService.join(member2);
+            fail();
+        } catch (IllegalStateException e) {
+            Assertions.assertThat((e.getMessage())).isEqualTo("이미 존재하는 회원");
+        }
+         */
+        IllegalStateException e = Assertions.assertThrows(IllegalStateException.class, () -> memberService.join(member2));
+        Assertions.assertEquals(e.getMessage(), "이미 존재하는 회원");
+
+        // then
+    }
+}
+```
