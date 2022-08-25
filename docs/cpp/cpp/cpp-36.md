@@ -240,4 +240,37 @@ int main()
     */
 ```
 
+```cpp
+// 마지막 참고 아래도 move가 먹는다!!
+
+std::vector<movetesterclass> fn()
+{
+    std::vector<movetesterclass> vv;
+    vv.reserve(5);
+
+    movetesterclass a;
+    vv.push_back(a);
+    movetesterclass b;
+    vv.push_back(b);
+
+    return std::move(vv);
+}
+
+int main()
+{
+    std::vector<movetesterclass> vv = fn();
+
+    /*
+        movetesterclass()
+        movetesterclass(movetesterclass&)
+        movetesterclass()
+        movetesterclass(movetesterclass&)
+        ~movetesterclass()
+        ~movetesterclass()
+        ~movetesterclass()
+        ~movetesterclass()
+    */
+}
+```
+
 {% endraw %}
