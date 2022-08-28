@@ -166,6 +166,8 @@ $ sudo vi /etc/mongod.conf
 # bindip: 0.0.0.0 변경
 ```
 
+🐱‍🚀 **(주의)** 변경 후 서비스 -> MongoDB 재시작 해줘야함<br>
+
 * 접속해보자 -> [Robo 3R(Robo-Mongo) 🌍](https://robomongo.org/download) (Studio 말고 그냥 3T 다운 받을 것)
 
 <p align="center">
