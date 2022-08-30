@@ -14,7 +14,7 @@ nav_order: 1
 
 ---
 
-* [Clone Code 🌎]()
+* [Clone Code 🌎](https://github.com/EasyCoding-7/qt_exmaple_sizehint)
 
 ## sizeHint
 
