@@ -14,7 +14,7 @@ nav_order: 1
 
 ---
 
-* [Clone Code 🌎](https://github.com/EasyCoding-7/Dx11ExampleWithImgui)
+* [Clone Code 🌎](https://github.com/EasyCoding-7/Dx11ExampleWithImgui/tree/master/02)
 
 ## imgui 사용하기
 
@@ -262,6 +262,7 @@ textureDesc.Usage = D3D11_USAGE_DYNAMIC;
 textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 textureDesc.MiscFlags = 0;
 textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+// canvasWidth x canvasHeight의 Texture를 하나 생성한다.
 textureDesc.Width = canvasWidth;
 textureDesc.Height = canvasHeight;
 
@@ -269,6 +270,7 @@ device->CreateTexture2D(&textureDesc, nullptr, &canvasTexture);
 
 if (canvasTexture)
 {
+    // device를 통해 shader resource view를 생성
     device->CreateShaderResourceView(canvasTexture, nullptr, &canvasTextureView);
 
     D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
@@ -282,6 +284,19 @@ else
 {
     std::cout << "CreateRenderTargetView() error" << std::endl;
 }
+
+// ...
+
+// 픽셀 쉐이더 리소스로 넘기게 된다.
+deviceContext->PSSetShaderResources(0, 1, &canvasTextureView);
+
+// ...
+
+// update
+D3D11_MAPPED_SUBRESOURCE ms;
+deviceContext->Map(canvasTexture, NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
+memcpy(ms.pData, pixels.data(), pixels.size() * sizeof(Vec4));
+deviceContext->Unmap(canvasTexture, NULL);
 ```
 
 ```cpp
