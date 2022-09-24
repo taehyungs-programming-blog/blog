@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "09. Socket Programming - 2"
+title: "09. Socket - 2"
 parent: "(C# IOCP)"
 grand_parent: "Game Server 👾"
 nav_order: 1
