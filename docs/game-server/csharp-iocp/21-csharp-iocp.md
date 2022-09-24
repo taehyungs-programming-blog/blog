@@ -14,6 +14,8 @@ nav_order: 3
 
 ---
 
+{% raw %}
+
 * [Get Code](https://github.com/EasyCoding-7/CSharp_Windows_GameServer_Tutorial/tree/Tag-33-PacketGenerator-3)
 
 🍁 패킷을 좀 더 자동화 해보자.
@@ -111,3 +113,5 @@ class Program
             + Environment.NewLine + "\t";
     }
 ```
+
+{% endraw %}

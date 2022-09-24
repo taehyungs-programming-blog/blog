@@ -14,6 +14,8 @@ nav_order: 3
 
 ---
 
+{% raw %}
+
 * [Get Code](https://github.com/EasyCoding-7/CSharp_Windows_GameServer_Tutorial/tree/Tag-32-PacketGenerator-2)
 
 🍁 Packet Generator에 List를 넣을수 있게 해보자.
@@ -150,3 +152,5 @@ count += sizeof(ushort);
 foreach ({0} {1} in this.{1}s)
 	success &= {1}.Write(s, ref count);";
 ```
+
+{% endraw %}
