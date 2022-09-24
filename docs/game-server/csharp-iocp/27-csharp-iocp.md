@@ -66,6 +66,7 @@ static void Main(string[] args)
     {
         // 이제 main thread에서 packet을 모았다 Flush하게 할 예정
         Room.Push(() => Room.Flush());
+        Thread.Sleep(250);
     }
 }
 ```
