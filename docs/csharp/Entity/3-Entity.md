@@ -95,6 +95,53 @@ namespace MMO_EFCore_Tutorial
 
 * [Get Code 🌍](https://github.com/EasyCoding-7/MMO_EFCore_Tutorial/tree/3-2)
 
+* `EagerLoading`
+* `ExplicitLoading`
+* `SelectLoading`
+
+```csharp
+// 테이블의 구조를 조금 수정함.
+
+namespace MMO_EFCore_Tutorial
+{
+    // 테이블 이름 Item으로 고정(안할시 변수명으로 설정됨)
+    [Table("Item")]
+    public class Item
+    {
+        // PK(Primary Key)
+        public int ItemId { get; set; }
+        public int TemplateId { get; set; }
+        public DateTime CreatedDate { get; set; }
+
+        [ForeignKey("OwnerId")] 
+        public Player Owner { get; set; }   
+    }
+
+    [Table("Player")]
+    public class Player
+    {
+        public int PlayerId { get; set; }
+        public string Name { get; set; }
+
+        // Player와 Item은 1:1의 관계이고
+        public Item Item { get; set; }
+
+        // Player와 Guild는 1:N의 관계이다.
+        public Guild Guild { get; set; }
+    }
+
+    [Table("Guild")]
+    public class Guild
+    {
+        public int GuildId { get; set;}
+        public string GuildName { get; set; }
+
+        public ICollection<Player> Members { get; set; }
+    }
+}
+
+```
+
 ```csharp
 public static void EagerLoading()
 {
@@ -119,7 +166,9 @@ public static void EagerLoading()
         }
     }
 }
+```
 
+```csharp
 public static void ExplicitLoading()
 {
     Console.WriteLine("길드 이름은? :");
@@ -149,7 +198,9 @@ public static void ExplicitLoading()
         }
     }
 }
+```
 
+```csharp
 public static void SelectLoading()
 {
     // 길드원의 수만 출력하고 싶다면?
