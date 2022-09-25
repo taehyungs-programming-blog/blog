@@ -68,7 +68,9 @@ namespace MMO_EFCore_Tutorial
                 }
             };
 
+            // AddRange는 여러개를 한번에 적용해 달라
             db.Items.AddRange(items);
+            // SaveChanges : 반영해주세요
             db.SaveChanges();
         }
     }

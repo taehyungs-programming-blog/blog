@@ -14,6 +14,16 @@ nav_order: 1
 
 ---
 
+## ORM 장점
+
+* 개발 속도가 빨라진다
+    * SQL을 직접작성하지 않아도 된다.
+* 버전 관리
+    * 라이브를 고려 유동적 DB 관리가 편하다
+    * Migration 스크립트 자동 생성
+
+---
+
 ## 환경설정
 
 * [Get Code 🌍](https://github.com/EasyCoding-7/MMO_EFCore_Tutorial)
@@ -64,6 +74,7 @@ namespace MMO_EFCore_Tutorial
 
 ```csharp
 // DB 모델링
+// DataModel.cs
 
 namespace MMO_EFCore_Tutorial
 {
