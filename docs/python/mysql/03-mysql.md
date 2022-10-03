@@ -157,3 +157,72 @@ db.commit()
 
 db.close()
 ```
+
+---
+
+## Example
+
+🍁 우선 sql문을 하나만들어보자.
+
+```sql
+-- student.sql
+
+DROP DATABASE IF EXISTS student_mgmt;
+CREATE DATABASE student_mgmt DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+USE student_mgmt;
+DROP TABLE IF EXISTS students;
+CREATE TABLE students (
+  id TINYINT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(10) NOT NULL,
+  gender ENUM('man','woman') NOT NULL,  
+  -- ENUM은 man or woman만 선택가능
+  birth DATE NOT NULL,
+  english TINYINT NOT NULL,
+  math TINYINT NOT NULL,
+  korean TINYINT NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- ENGINE은 SQL엔진을 선택하는 것이라 생각
+-- InnoDB는 MySQL Default Engine정도라 생각하자(명시적 선언)
+
+INSERT INTO students (name, gender, birth, english, math, korean) VALUES ('dave', 'man', '1983-07-16', 90, 80, 71);
+INSERT INTO students (name, gender, birth, english, math, korean) VALUES ('minsun', 'woman', '1982-10-16', 30, 88, 60);
+INSERT INTO students (name, gender, birth, english, math, korean) VALUES ('david', 'man', '1982-12-10', 78, 77, 30);
+INSERT INTO students (name, gender, birth, english, math, korean) VALUES ('jade', 'man', '1979-11-1', 45, 66, 20);
+INSERT INTO students (name, gender, birth, english, math, korean) VALUES ('jane', 'man', '1990-11-12', 65, 32, 90);
+INSERT INTO students (name, gender, birth, english, math, korean) VALUES ('wage', 'woman', '1982-1-13', 76, 30, 80);
+INSERT INTO students (name, gender, birth, english, math, korean) VALUES ('tina', 'woman', '1982-12-3', 87, 62, 71);
+```
+
+🍁 이걸 python으로 load해보자
+
+```py
+import pymysql
+import pandas as pd
+
+host_name = 'localhost'
+host_port = 3306
+username = 'root'
+password = 'funcoding'
+database_name = 'student_mgmt'
+
+db = pymysql.connect(
+    host=host_name,     # MySQL Server Address
+    port=host_port,          # MySQL Server Port
+    user=username,      # MySQL username
+    passwd=password,    # password for MySQL username
+    db=database_name,   # Database name
+    charset='utf8'
+)
+
+# Show TABLE
+SQL = "SHOW TABLES"
+df = pd.read_sql(SQL, db)
+
+# Show DATA
+SQL = "SELECT * FROM students"
+df = pd.read_sql(SQL, db)
+df.to_csv('students.csv', sep=',', index=False, encoding='utf-8')
+df
+```
