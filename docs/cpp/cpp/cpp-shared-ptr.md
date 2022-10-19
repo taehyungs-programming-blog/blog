@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "2. shared_ptr"
+title: "2. std::shared_ptr"
 parent: (C++)
 grand_parent: C++
 nav_order: 1
@@ -13,67 +13,6 @@ nav_order: 1
 {:toc}
 
 ---
-
-* 이렇게만 기억해도 90점은 받는다
-    * 해당 클래스에서 사용하는 포인터 👉 `unique_ptr`
-    * 다른 클래스에서 참조해야할 포인터 👉 `shared_ptr`
-
-```cpp
-// Example
-#include <iostream>
-#include <memory>
-using namespace std;
-
-class cl1
-{
-public:
-    cl1() { cout << "cl1()" << endl; }
-    ~cl1() { cout << "~cl1()" << endl; } 
-    void printCL1() { cout << "Hello This is CL!" << endl; }
-};
-
-class parent1
-{
-public:
-    parent1(int num) { cout << "parent1() : " << num << endl; m_num = num; }
-    ~parent1() { cout << "~parent1() : " << m_num  << endl; }
-    void SetCL1(shared_ptr<cl1> _cl1) { m_cl1 = _cl1; }
-    void PrintCL1() { m_cl1->printCL1(); }
-private:
-    shared_ptr<cl1> m_cl1;
-    int m_num = -1;
-};
-
-int main() {
-    // your code goes here
-    shared_ptr<cl1> m_cl1 = make_shared<cl1>();
-    unique_ptr<parent1> m_pr1 = make_unique<parent1>(1);
-    parent1* m_pr2 = new parent1(2);
-
-    m_pr1->SetCL1(m_cl1);
-    m_pr2->SetCL1(m_cl1);
-
-    m_pr1->PrintCL1();
-    m_pr2->PrintCL1();
-
-    return 0;
-}
-```
-
-```
-cl1()
-parent1() : 1
-parent1() : 2
-Hello This is CL!
-Hello This is CL!
-~parent1() : 1
-```
-
-<br>
-
----
-
-이렇게 끝내긴 아쉬우니...
 
 ##  shared_ptr이란?
 

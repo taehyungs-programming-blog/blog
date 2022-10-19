@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "1. unique_ptr"
+title: "1. std::unique_ptr"
 parent: (C++)
 grand_parent: C++
 nav_order: 1
@@ -14,68 +14,10 @@ nav_order: 1
 
 ---
 
-* 이렇게만 기억해도 90점은 받는다
-    * 해당 클래스에서 사용하는 포인터 👉 `unique_ptr`
-    * 다른 클래스에서 참조해야할 포인터 👉 `shared_ptr`
-
-```cpp
-// Example
-#include <iostream>
-#include <memory>
-using namespace std;
-
-class cl1
-{
-public:
-    cl1() { cout << "cl1()" << endl; }
-    ~cl1() { cout << "~cl1()" << endl; } 
-    void printCL1() { cout << "Hello This is CL!" << endl; }
-};
-
-class parent1
-{
-public:
-    parent1(int num) { cout << "parent1() : " << num << endl; m_num = num; }
-    ~parent1() { cout << "~parent1() : " << m_num  << endl; }
-    void SetCL1(shared_ptr<cl1> _cl1) { m_cl1 = _cl1; }
-    void PrintCL1() { m_cl1->printCL1(); }
-private:
-    shared_ptr<cl1> m_cl1;
-    int m_num = -1;
-};
-
-int main() {
-    // your code goes here
-    shared_ptr<cl1> m_cl1 = make_shared<cl1>();
-    unique_ptr<parent1> m_pr1 = make_unique<parent1>(1);
-    parent1* m_pr2 = new parent1(2);
-    m_pr1->SetCL1(m_cl1);
-    m_pr2->SetCL1(m_cl1);
-    m_pr1->PrintCL1();
-    m_pr2->PrintCL1();
-    return 0;
-}
-```
-
-```
-cl1()
-parent1() : 1
-parent1() : 2
-Hello This is CL!
-Hello This is CL!
-~parent1() : 1
-```
-
-<br>
-
----
-
-이렇게 끝내긴 아쉬우니...
-
 ##  Unique_ptr이란?
 
 * 메모리주소의 참조를 독점할 수 있는 포인터
-* 왜쓰나? 굳이 소멸자를 호출하지 않아도 되는 장점이 있다!(메모리릭 안정성 보장!)
+* 왜쓰나? 굳이 소멸자를 호출하지 않아도 되는 장점이 있다! (**메모리릭 안정성 보장!**)
 
 ```cpp
 // Example
@@ -143,7 +85,7 @@ unique_ptr<int> up2 = move(up1);        // ok.
 shared_ptr<int> sp2 = move(up2);        // ok.
 ```
 
-단, `shared_ptr` -> `unique_ptr`은 안됨
+🎈 단, `shared_ptr` -> `unique_ptr`은 안됨
 
 ```cpp
 shared_ptr<int> sp(new int);
@@ -202,3 +144,16 @@ mp_array = std::make_unique<uint8_t[]>(48000 * 8);
 // (C++11)
 unique_ptr<int[]> up(new int[10]);
 ```
+
+---
+
+## new와 make_unique 차이?
+
+* [참고 사이트 🌎](https://11reviewer.tistory.com/54)
+
+```cpp
+std::shared_ptr<Widget> spw(new Widget);
+```
+
+* **new 할당** - 메모리를 두 번 할당하게 된다. 1번(데이터를 담는 메모리 블럭), 2번(제어를 담당하는 블럭) -> 메모리를 효율적으로 쓴다고 보기 힘들다.
+* **make_unique 할당** - 메모리를 한 번에 할당한다. 데이터와 제어블록을 한 번에 할당함.

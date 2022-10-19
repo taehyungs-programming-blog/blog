@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "3. weak_ptr"
+title: "3. std::weak_ptr"
 parent: (C++)
 grand_parent: C++
 nav_order: 1
@@ -183,6 +183,9 @@ public:
 * [참고 사이트2 🌍](https://runebook.dev/ko/docs/cpp/memory/shared_ptr/owner_before)
 
 🤷‍♂️ 사용중인 `shared_ptr`, `weak_ptr`이 같은 group에 속하는지 확인해야할 때가 있을것이다. 그럴때 사용된다.<br>
+🤷‍♂️ 적고보니 위 말이 더 어려운데 ... 좀 더 설명하자면 우선 **alias constructor**를 알아야한다.<br>
+🤷‍♂️ `std::shared_ptr<int> b (a,p);` - b라는 shared_ptr을 a의 소유의 p포인터의 shared_ptr로 만들어주세요.<br>
+🤷‍♂️ 위 처럼 선언할 경우 a와 b는 하나의 **group에 속한다** 할 수 있다.
 
 ```cpp
 // weak_ptr::owner_before
