@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "01. Spring을 사용하지 않고 Java로만 구현해보기"
-parent: "(입문)"
+parent: "(기초)"
 grand_parent: "Spring 🐍"
 nav_order: 1
 ---
@@ -224,3 +224,281 @@ class MemberServiceTest {
 
 ---
 
+## 주문 도메인
+
+* [Clone Code 🌎](https://github.com/EasyCoding-7/spring_basic/tree/5)
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/spring/basic/basic-1-6.png"/>
+</p>
+
+```java
+package hello.core.discount;
+
+import hello.core.member.Member;
+
+public interface DiscountPolicy {
+    /**
+     * @return 할인 대상 금액
+     */
+    int discount(Member member, int price);
+}
+```
+
+```java
+package hello.core.discount;
+
+import hello.core.member.Grade;
+import hello.core.member.Member;
+
+public class FixDiscountPolicy implements DiscountPolicy {
+    private int discountFixAmount = 1000; //1000원 할인
+
+    @Override
+    public int discount(Member member, int price) {
+        if (member.getGrade() == Grade.VIP) {
+            return discountFixAmount;
+        } else {
+            return 0;
+        }
+    }
+}
+```
+
+```java
+package hello.core.order;
+
+public interface OrderService {
+    Order createOrder(Long memberId, String itemName, int itemPrice);
+}
+```
+
+```java
+package hello.core.order;
+
+import hello.core.discount.DiscountPolicy;
+import hello.core.discount.FixDiscountPolicy;
+import hello.core.member.Member;
+import hello.core.member.MemberRepository;
+import hello.core.member.MemoryMemberRepository;
+
+public class OrderServiceImpl implements OrderService {
+
+    private final MemberRepository memberRepository = new
+            MemoryMemberRepository();
+    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
+    @Override
+    public Order createOrder(Long memberId, String itemName, int itemPrice) {
+
+        Member member = memberRepository.findById(memberId);
+        int discountPrice = discountPolicy.discount(member, itemPrice);
+        return new Order(memberId, itemName, itemPrice, discountPrice);
+    }
+}
+
+```
+
+```java
+package hello.core.order;
+
+public class Order {
+    private Long memberId;
+    private String itemName;
+    private int itemPrice;
+    private int discountPrice;
+
+    public Order(Long memberId, String itemName, int itemPrice, int discountPrice) {
+        this.memberId = memberId;
+        this.itemName = itemName;
+        this.itemPrice = itemPrice;
+        this.discountPrice = discountPrice;
+    }
+
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public int getItemPrice() {
+        return itemPrice;
+    }
+
+    public void setItemPrice(int itemPrice) {
+        this.itemPrice = itemPrice;
+    }
+
+    public int getDiscountPrice() {
+        return discountPrice;
+    }
+
+    public void setDiscountPrice(int discountPrice) {
+        this.discountPrice = discountPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "memberId=" + memberId +
+                ", itemName='" + itemName + '\'' +
+                ", itemPrice=" + itemPrice +
+                ", discountPrice=" + discountPrice +
+                '}';
+    }
+}
+
+```
+
+---
+
+## Unit Test 2
+
+```java
+package hello.core.order;
+
+import hello.core.member.Grade;
+import hello.core.member.Member;
+import hello.core.member.MemberService;
+import hello.core.member.MemberServiceImpl;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class OrderServiceTest {
+    MemberService memberService = new MemberServiceImpl();
+    OrderService orderService = new OrderServiceImpl();
+
+    @Test
+    void createOrder() {
+        long memberId = 1L;
+        Member member = new Member(memberId, "memberA", Grade.VIP);
+        memberService.join(member);
+        Order order = orderService.createOrder(memberId, "itemA", 10000);
+        Assertions.assertThat(order.getDiscountPrice()).isEqualTo(1000);
+    }
+}
+```
+
+---
+
+## DiscountPolicy를 하나 더 추가해보자.
+
+* [Clone Code 🌎](https://github.com/EasyCoding-7/spring_basic/tree/6)
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/spring/basic/basic-1-7.png"/>
+</p>
+
+```java
+package hello.core.discount;
+
+import hello.core.member.Grade;
+import hello.core.member.Member;
+
+public class RateDiscountPolicy implements DiscountPolicy {
+    private int discountPercent = 10; //10% 할인
+    @Override
+    public int discount(Member member, int price) {
+        if (member.getGrade() == Grade.VIP) {
+            return price * discountPercent / 100;
+        } else {
+            return 0;
+        }
+    }
+}
+```
+
+```java
+package hello.core.discount;
+
+import hello.core.member.Grade;
+import hello.core.member.Member;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.*;
+
+class RateDiscountPolicyTest {
+    RateDiscountPolicy discountPolicy = new RateDiscountPolicy();
+    @Test
+    @DisplayName("VIP는 10% 할인이 적용되어야 한다.")
+    void vip_o() {
+        //given
+        Member member = new Member(1L, "memberVIP", Grade.VIP);
+        //when
+        int discount = discountPolicy.discount(member, 10000);
+        //then
+        assertThat(discount).isEqualTo(1000);
+    }
+    @Test
+    @DisplayName("VIP가 아니면 할인이 적용되지 않아야 한다.")
+    void vip_x() {
+        //given
+        Member member = new Member(2L, "memberBASIC", Grade.BASIC);
+        //when
+        int discount = discountPolicy.discount(member, 10000);
+        //then
+        assertThat(discount).isEqualTo(0);
+    }
+}
+```
+
+---
+
+## 기존코드의 문제점 ???
+
+* [Clone Code 🌎](https://github.com/EasyCoding-7/spring_basic/tree/7)
+
+```java
+public class OrderServiceImpl implements OrderService{
+    private final MemberRepository memberRepository = new MemoryMemberRepository();
+
+    // 인스턴스를 하드코딩해야한다.
+    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
+
+    // ...
+```
+
+* 관심사를 분리함으로서 해결해 보자. -> appconfig구현
+
+```java
+package hello.core;
+
+import hello.core.discount.DiscountPolicy;
+import hello.core.discount.FixDiscountPolicy;
+import hello.core.member.MemberRepository;
+import hello.core.member.MemberService;
+import hello.core.member.MemberServiceImpl;
+import hello.core.member.MemoryMemberRepository;
+import hello.core.order.OrderService;
+import hello.core.order.OrderServiceImpl;
+
+public class AppConfig {
+    public MemberService memberService() {
+        return new MemberServiceImpl(memberRepository());
+    }
+    public OrderService orderService() {
+        return new OrderServiceImpl(
+                memberRepository(),
+                discountPolicy());
+    }
+    public MemberRepository memberRepository() {
+        return new MemoryMemberRepository();
+    }
+    public DiscountPolicy discountPolicy() {
+        return new FixDiscountPolicy();
+    }
+}
+
+```
