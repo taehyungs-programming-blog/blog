@@ -21,6 +21,7 @@ nav_order: 1
 * go to define - ctrl + alt + b
 * navigate - ctrl + n
 * Unit Test - ctrl + shift + t
+* for문 자동생성 - 'iter' + tab
 
 * 단축키 검색법
 
