@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "01. 환경설정 + "
+title: "01. 환경설정 + 타임리프 기본기능"
 parent: "(MVC2)"
 grand_parent: "Spring 🐍"
 nav_order: 1
