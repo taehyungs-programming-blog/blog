@@ -3,7 +3,7 @@ layout: default
 title: "(기초)"
 parent: "Spring 🐍"
 has_children: true
-nav_order: 2
+nav_order: 3
 ---
 
 ## Table of contents
