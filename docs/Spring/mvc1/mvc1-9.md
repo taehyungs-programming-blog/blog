@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "09. log"
+title: "09. Spring MVC 기본 기능 - logging"
 parent: "(MVC1)"
 grand_parent: "Spring 🐍"
 nav_order: 1
@@ -14,7 +14,7 @@ nav_order: 1
 
 ---
 
-## War와 Jar
+## (TIPS) War와 Jar
 
 * JSP를 사용하지 않는다면 Jar를 사용하는 것이 좋습니다. 
 * 앞으로 스프링 부트를 사용하면 Jar를 주로 사용하게 됩니다. 
@@ -26,75 +26,72 @@ nav_order: 1
 
 ## log
 
+* 참고) slf4j는 log의 interface고 실제로 사용되는 log는 logback이다.
+
 ```java
-package hello.springmvc.basic;
-
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-// @RestController로 return시 stirng이 그대로 return됨
-// 참고) @Controller는 View가 리턴됨
-@RestController
+//@Slf4j
+@RestController    // 반환을 view로 하는것이 아니라 http body로 반환(일단은 그냥 받아들이자.)
+// Cf) @Controller는 String반환시 View를 찾게된다.
 public class LogTestController {
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @RequestMapping("/log-test")
     public String logTest() {
         String name = "Spring";
 
+        // System.out으로는 이제 로그를 남기지 말자.
+        System.out.println("name = " + name);
+
+        // 그리 좋은 방식은 아니다
+        log.trace(" trace my log="+ name);
+
+        // 이런방식으로 로그를 남기자.
+            // why? - + 연산을 할경우 trace함수에 들어가기전 문자열을 합치는 연산을 java스스로 먼저하게된다.
+            // trace를 호출할지 안할지 모르는데 연산을 먼저해버린다.??? -> 자원의 손실이다.
         log.trace("trace log={}", name);
+
         log.debug("debug log={}", name);
         log.info(" info log={}", name);
         log.warn(" warn log={}", name);
         log.error("error log={}", name);
-        //로그를 사용하지 않아도 a+b 계산 로직이 먼저 실행됨, 이런 방식으로 사용하면 X
-        // 연산이 발생한다는게 핵심(쓸데없는 데이터 낭비)
-        log.debug("String concat log=" + name);
+
         return "ok";
     }
 }
 ```
 
-* 하위 로그레벨 설정
+* application.properties
 
 ```
-# application.properties
-
-#전체 로그 레벨 설정(기본 info)
+# 로그레벨 설정하기
 logging.level.root=info
 
-#hello.springmvc 패키지와 그 하위 로그 레벨 설정
 logging.level.hello.springmvc=debug
 ```
 
+* LEVEL: TRACE > DEBUG > INFO(default) > WARN > ERROR
+
 ```java
-package hello.springmvc.basic;
-
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@Slf4j    // 를 넣으면 Logger 객체를 생성하지 않아도 된다
+@Slf4j
 @RestController
 public class LogTestController {
 
+    // Slf4j에 log가 자동포함되어 아래가 필요없음.
+    // private final Logger log = LoggerFactory.getLogger(getClass());
+
     @RequestMapping("/log-test")
     public String logTest() {
-        String name = "Spring";
+
+        log.trace(" trace my log="+ name);
 
         log.trace("trace log={}", name);
+
         log.debug("debug log={}", name);
         log.info(" info log={}", name);
         log.warn(" warn log={}", name);
         log.error("error log={}", name);
-        //로그를 사용하지 않아도 a+b 계산 로직이 먼저 실행됨, 이런 방식으로 사용하면 X
-        // 연산이 발생한다는게 핵심(쓸데없는 데이터 낭비)
-        log.debug("String concat log=" + name);
+
         return "ok";
     }
 }

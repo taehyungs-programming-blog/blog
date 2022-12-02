@@ -14,124 +14,98 @@ nav_order: 1
 
 ---
 
+## Code
+
+* [Clone Code 🌎](https://github.com/EasyCoding-7/spring-mvc1/tree/14) : V1
+* [Clone Code 🌎](https://github.com/EasyCoding-7/spring-mvc1/tree/15) : V2
+* [Clone Code 🌎](https://github.com/EasyCoding-7/spring-mvc1/tree/16) : V3
+
+---
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/spring/mvc1/mvc1-8-1.png"/>
+</p>
+
+* 대략 Spring MVC의 구조가 저렇다는걸 알고 ...
+* 사용은 아주 쉽다.
+
 ## V1
 
-* [Clone Code 🌎](https://github.com/EasyCoding-7/spring-mvc1/tree/14)
-
 ```java
-package hello.servlet.web.springmvc.v1;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-// spring bean으로 등록, spring mvc 컨트롤러로 인식됨
+// 얘를 컨트롤러로 사용할 예정입니다.
 @Controller
 public class SpringMemberFormControllerV1 {
-    // 요청정보를 매핑
+    // 주소는 이렇게 매핑해주세요
     @RequestMapping("/springmvc/v1/members/new-form")
     public ModelAndView process() {
         return new ModelAndView("new-form");
+        // 뷰는 이걸 써주세요
     }
-}
 
-/*
-// 위와 동일한 표현이다
-@Component //컴포넌트 스캔을 통해 스프링 빈으로 등록
-@RequestMapping
-public class SpringMemberFormControllerV1 {
-    @RequestMapping("/springmvc/v1/members/new-form")
-    public ModelAndView process() {
-        return new ModelAndView("new-form");
-    }
 }
- */
 ```
 
 ```java
-package hello.servlet.web.springmvc.v1;
-
-import hello.servlet.domain.member.Member;
-import hello.servlet.domain.member.MemberRepository;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
-
 @Controller
 public class SpringMemberListControllerV1 {
-    private MemberRepository memberRepository = MemberRepository.getInstance();
+
+    private final MemberRepository memberRepository = MemberRepository.getInstance();
 
     @RequestMapping("/springmvc/v1/members")
     public ModelAndView process() {
+
         List<Member> members = memberRepository.findAll();
+
         ModelAndView mv = new ModelAndView("members");
         mv.addObject("members", members);
         return mv;
     }
+
 }
 ```
 
-```java
-package hello.servlet.web.springmvc.v1;
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="/index.html">메인</a>
+<table>
+    <thead>
+    <th>id</th>
+    <th>username</th>
+    <th>age</th>
+    </thead>
+    <tbody>
+    <c:forEach var="item" items="${members}">
+        <tr>
+            <td>${item.id}</td>
+            <td>${item.username}</td>
+            <td>${item.age}</td>
+        </tr>
+    </c:forEach>
+    </tbody>
+</table>
 
-import hello.servlet.domain.member.Member;
-import hello.servlet.domain.member.MemberRepository;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-@Controller
-public class SpringMemberSaveControllerV1 {
-    private MemberRepository memberRepository = MemberRepository.getInstance();
-
-    @RequestMapping("/springmvc/v1/members/save")
-    public ModelAndView process(HttpServletRequest request, HttpServletResponse response) {
-        String username = request.getParameter("username");
-        int age = Integer.parseInt(request.getParameter("age"));
-
-        Member member = new Member(username, age);
-        System.out.println("member = " + member);
-        memberRepository.save(member);
-
-        ModelAndView mv = new ModelAndView("save-result");
-        mv.addObject("member", member);
-        return mv;
-    }
-}
-
+</body>
+</html>
 ```
 
 ---
 
 ## V2
 
-* [Clone Code 🌎](https://github.com/EasyCoding-7/spring-mvc1/tree/15)
+* 어차피 @RequestMapping으로 매핑할꺼 컨트롤러를 하나로 통합해보자.
 
 ```java
-package hello.servlet.web.springmvc.v2;
-
-import hello.servlet.domain.member.Member;
-import hello.servlet.domain.member.MemberRepository;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-
-/**
- * 클래스 단위 -> 메서드 단위
- * @RequestMapping 클래스 레벨과 메서드 레벨 조합
- */
 @Controller
 @RequestMapping("/springmvc/v2/members")
 public class SpringMemberControllerV2 {
+
     private MemberRepository memberRepository = MemberRepository.getInstance();
 
     @RequestMapping("/new-form")
@@ -147,19 +121,21 @@ public class SpringMemberControllerV2 {
         Member member = new Member(username, age);
         memberRepository.save(member);
 
-        ModelAndView mav = new ModelAndView("save-result");
-        mav.addObject("member", member);
-        return mav;
+        ModelAndView mv = new ModelAndView("save-result");
+        mv.addObject("member", member);
+        return mv;
     }
 
     @RequestMapping
     public ModelAndView members() {
+
         List<Member> members = memberRepository.findAll();
 
-        ModelAndView mav = new ModelAndView("members");
-        mav.addObject("members", members);
-        return mav;
+        ModelAndView mv = new ModelAndView("members");
+        mv.addObject("members", members);
+        return mv;
     }
+
 }
 ```
 
@@ -167,32 +143,13 @@ public class SpringMemberControllerV2 {
 
 ## V3
 
-* [Clone Code 🌎](https://github.com/EasyCoding-7/spring-mvc1/tree/16)
+* 꼭 ModelAndView 클래스를 리턴해야할까?
 
 ```java
-package hello.servlet.web.springmvc.v3;
-
-import hello.servlet.domain.member.Member;
-import hello.servlet.domain.member.MemberRepository;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-
-/**
- * v3
- * Model 도입
- * ViewName 직접 반환
- * @RequestParam 사용
- * @RequestMapping -> @GetMapping, @PostMapping
- */
 @Controller
 @RequestMapping("/springmvc/v3/members")
 public class SpringMemberControllerV3 {
+
     private MemberRepository memberRepository = MemberRepository.getInstance();
 
     @GetMapping("/new-form")
@@ -205,15 +162,19 @@ public class SpringMemberControllerV3 {
             @RequestParam("username") String username,
             @RequestParam("age") int age,
             Model model) {
+
         Member member = new Member(username, age);
         memberRepository.save(member);
+
         model.addAttribute("member", member);
         return "save-result";
     }
 
     @GetMapping
     public String members(Model model) {
+
         List<Member> members = memberRepository.findAll();
+
         model.addAttribute("members", members);
         return "members";
     }

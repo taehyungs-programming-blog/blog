@@ -38,6 +38,39 @@ nav_order: 1
 
 ---
 
+## Servlet이란?
+
+* HTTP 스펙을 편리하게 사용하게 해주는 도구
+
+* urlPatterns(/hello)의 URL이 호출되면 서블릿 코드가 실행 
+* HTTP 요청 정보를 편리하게 사용할 수 있는 HttpServletRequest 
+* HTTP 응답 정보를 편리하게 제공할 수 있는 HttpServletResponse 
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/spring/mvc1/mvc1-1-6.png"/>
+</p>
+
+### 서블릿 주의사항
+
+* 서블릿 객체는 싱글톤으로 관리 
+* 고객의 요청이 올 때 마다 계속 객체를 생성하는 것은 비효율 
+* 최초 로딩 시점에 서블릿 객체를 미리 만들어두고 재활용 
+* 모든 고객 요청은 동일한 서블릿 객체 인스턴스에 접근 
+* 공유 변수 사용 주의 
+* 서블릿 컨테이너 종료시 함께 종료
+
+* **동시 요청을 위한 멀티 쓰레드 처리 지원**
+
+---
+
+## 서블릿 쓰레드 풀
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/spring/mvc1/mvc1-1-7.png"/>
+</p>
+
+---
+
 ## Servlet 등록
 
 * [Clone Code 🌎](https://github.com/EasyCoding-7/spring-mvc1/tree/2)
