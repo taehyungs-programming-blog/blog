@@ -11,7 +11,7 @@ permalink: /
 
 ## 🙋‍♂️ About Me
 
-* 안녕하세요? 9년차 Windows Programming 개발자 김태형입니다.
+* 안녕하세요? 9년차 Software Engineer 김태형입니다.
 * 프로그래밍(특히 C++ 🤗)을 사랑하며 여러 사람들과의 협업을 즐깁니다.
 * 꾸준한 자기개발을 미덕이라 생각하고 행하고 있으며, 제가 공부한 사항을 항상 Blog에 정리하고 있습니다.
 * 저에게 관심이 있으신 분은 언제든 연락주세요!
@@ -38,14 +38,17 @@ permalink: /
 * 보조 언어
     * C#
     * [Python](https://www.python.org/)
-    * [Go](https://go.dev/)
+    * [JAVA](https://www.java.com/ko/)
 
 * 사용 개발 툴 & FrameWork
     * [Visual Studio](https://visualstudio.microsoft.com/ko/), [Code](https://code.visualstudio.com/)
     * [PyCharm](https://www.jetbrains.com/ko-kr/pycharm/download/#section=windows)
+    * [IntelliJ](https://www.jetbrains.com/ko-kr/idea/)
     * Win32, MFC
     * Qt, PyQt
     * Pandas, Numpy
+    * [WebRTC](https://webrtc.org/)
+    * [Spring](https://spring.io/projects/spring-framework)
 
 * 협업 도구
     * SVN, [GIT](https://git-scm.com/)
