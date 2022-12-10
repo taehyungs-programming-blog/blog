@@ -25,8 +25,8 @@ nav_order: 1
 #### depot_tools
 
 ```bat
-$ cd depot_tools
 $ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+$ cd depot_tools
 :: 사용하려는 버전에 맞게 git checkout을 해줘야함.
 :: 일단 최신버전을 사용한다 가정하자.
 $ gclient
@@ -38,6 +38,15 @@ $ gclient
     * set GYP_MSVS_VERSION=2022 -> 버전에 따라 변경
     * set GYP_GENERATORS=ninja,msvs-ninja
     * set GYP_DEFINES=component=shared_library target_arch=x64
+
+```bat
+:: bat을 만드는게 오히려 편할수도?
+set PATH=PATH;
+set DEPOT_TOOLS_WIN_TOOLCHAIN=0
+set GYP_MSVS_VERSION=2022
+set GYP_GENERATORS=ninja,msvs-ninja
+set GYP_DEFINES=component=shared_library target_arch=x64
+```
 
 ### WebRTC Clone
 
