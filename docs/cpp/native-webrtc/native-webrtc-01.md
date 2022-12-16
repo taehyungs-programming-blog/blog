@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "1. Build and Test"
+title: "1. Native WebRTC Build"
 parent: "(native-WebRTC)"
 grand_parent: C++
 nav_order: 1
@@ -78,9 +78,4 @@ $ gn gen --ide=vs out\Default
 $ ninja -C out/Default  
 :: 하여 Command Line상에서 Build 한다.
 ```
-
----
-
-## Test
-
 
