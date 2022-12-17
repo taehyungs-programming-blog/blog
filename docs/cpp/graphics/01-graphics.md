@@ -37,3 +37,38 @@ $ .\vcpkg integrate install
 ```
 
 * 설치된 **imgui 라이브러리**를 프로젝트에 링킹시키면 됨.
+
+---
+
+## Example Project 살펴보기
+
+* [Clone Code 🌎](https://github.com/EasyCoding-7/Dx11ExampleWithImgui/)
+
+* 실행해 보면 아래와 같이 뜬다.
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/graphics/graphics-1-2.png"/>
+</p>
+
+* 아직은 모두 다 살펴볼 필요는 없고 대략
+
+```cpp
+void Update()
+{
+    // 뭔가 Update를 지나며 여기서 색상을 넣어준다 정도로 이해하자. 
+    std::vector<Vec4> pixels(canvasWidth * canvasHeight, Vec4{0.8f, 0.8f, 0.8f, 1.0f});
+        // std::vector<Vec4> pixels(canvasWidth * canvasHeight, Vec4{1.0f, 0.0f, 0.0f, 1.0f});
+        // 이렇게 할 경우 배경이 빨강이 된다.
+    pixels[0 + canvasWidth * 0] = Vec4{ 1.0f, 0.0f, 0.0f, 1.0f };
+    pixels[1 + canvasWidth * 0] = Vec4{ 1.0f, 1.0f, 0.0f, 1.0f };
+
+    // Update texture buffer
+    D3D11_MAPPED_SUBRESOURCE ms;
+    deviceContext->Map(canvasTexture, NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
+    memcpy(ms.pData, pixels.data(), pixels.size() * sizeof(Vec4));
+    deviceContext->Unmap(canvasTexture, NULL);
+}
+```
+
+* 말하고자 하는것은 DirectX(3D) 영역도 결국 Pixel의 색상을 변경함으로서 그려진다는 것이다.!
+* 너무 어렵게만 생각하지말자.

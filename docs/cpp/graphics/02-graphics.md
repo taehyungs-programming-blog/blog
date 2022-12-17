@@ -19,6 +19,7 @@ nav_order: 1
 ## imgui 사용하기
 
 ```cpp
+// include 확인
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
@@ -66,6 +67,9 @@ ImGui::DestroyContext();
 ## Dx11 Init 절차 보기
 
 ```cpp
+#include <d3d11.h>          // d3d11기능을 사용하겠다.
+#include <d3dcompiler.h>    // PS, VS.hlsl을 컴파일 할때 사용된다.
+
 // Init
 
 /* ************************
@@ -115,6 +119,8 @@ if (FAILED(D3D11CreateDeviceAndSwapChain(NULL,
 
 /* ************************
 * RenderTarget 생성 *
+    * 결국 그림은 BackBuffer(RenderTarget)에 그려지고
+    * D3D에게 BackBuffer를 그려달라고 명령하는 형태로 진행된다.
 ************************** */
 ID3D11Texture2D* pBackBuffer;
 swapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
@@ -128,6 +134,15 @@ else
     std::cout << "CreateRenderTargetView() error" << std::endl;
     exit(-1);
 }
+
+/*
+void Render()
+{
+    float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    deviceContext->RSSetViewports(1, &viewport);
+    deviceContext->OMSetRenderTargets(1, &renderTargetView, nullptr);
+    deviceContext->ClearRenderTargetView(renderTargetView, clearColor);
+*/
 ```
 
 🎈 **(간단 설명)** SwapChain으로 부터 `pBackBuffer`를 가져와 `renderTargetView`을 만드는게 이상하게 느껴질 수 있는데<br>
@@ -137,6 +152,7 @@ else
 ```cpp
 /* ************************
 * ViewPort를 지정 *
+    * 윈도우(HWND)에 어느영역에 그림을 그리나를 의미
 ************************** */
 ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 viewport.TopLeftX = 0;
@@ -203,6 +219,7 @@ void InitShaders()
     ID3DBlob* pixelBlob = nullptr;
     ID3DBlob* errorBlob = nullptr;
 
+    // .hlsl라는 쉐이더 파일을 읽어서 Vertex, Pixel 쉐이더를 컴파일한다.
     if (FAILED(D3DCompileFromFile(L"VS.hlsl", 0, 0, "main", "vs_5_0", 0, 0, &vertexBlob, &errorBlob)))
     {
         if (errorBlob) {
@@ -237,6 +254,10 @@ void InitShaders()
 ```cpp
 // 여기도 크게 중요하지 않아 일단 이런게 있다고 생각만 하자
 
+/* **********************
+* 텍스쳐(Texture)
+    * GPU에 이미지를 저장해 두고 이리저리 붙이는것을 의미
+************************* */
 // Create texture and rendertarget
 D3D11_SAMPLER_DESC sampDesc;
 ZeroMemory(&sampDesc, sizeof(sampDesc));
