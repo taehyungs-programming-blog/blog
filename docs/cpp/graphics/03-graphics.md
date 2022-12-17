@@ -130,8 +130,183 @@ public:
 
 ---
 
-## Guassian Filter 넣기
+## Convolution Kernel
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/graphics/graphics-3-1.png"/>
+</p>
+
+* 대략 이미지에 Convolution Kernel을 곱해서 새로운 이미지를 뽑아낸다고 생각하면된다.
+* 그럼 Convolution Kernel만 알면 Filtter를 적용할 수 있겠네? -> Okay!
+
+* Q? - 경계에 있는 부분은 어떻게 처리할까?
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/graphics/graphics-3-2.gif"/>
+</p>
+
+* A - 가까이있는 pixel을 가져온다.
+
+---
+
+## Box Blur
+
+* [Clone Code 🌎](https://github.com/EasyCoding-7/Dx11ExampleWithImgui/tree/3/03)
+
+* Convolution Kernel
+
+```
+1 1 1
+1 1 1  x 1/9
+1 1 1
+```
 
 ```cpp
+void Image::BoxBlur5()
+{
+	std::vector<Vec4> pixelsBuffer(this->pixels.size()); // 사본 복사
 
+	/*
+	* Separable convolution
+	* 한 번에 2차원 Kernel을 적용하는 대신에 1차원 Kernel을 두 번 적용
+	* 이해하기 쉽고 효율적이다.
+	*/
+
+	// 가로 방향 (x 방향)
+#pragma omp parallel for
+	for (int j = 0; j < this->height; j++)
+	{
+		for (int i = 0; i < this->width; i++)
+		{
+			// 주변 픽셀들의 색을 평균내어서 (i, j)에 있는 픽셀의 색을 변경
+			// this->pixels로부터 읽어온 값들을 평균내어서 pixelsBuffer의 값들을 바꾸기
+			Vec4 neightborColorSum{ 0.0f, 0.0f, 0.0f, 1.0f };
+			for (int si = 0; si <= 5; si++)
+			{
+				Vec4 neightborColor = this->GetPixel(i + si - 2, j);
+				neightborColorSum.v[0] += neightborColor.v[0];
+				neightborColorSum.v[1] += neightborColor.v[1];
+				neightborColorSum.v[2] += neightborColor.v[2];
+			}
+
+			pixelsBuffer[i + this->width * j].v[0] = neightborColorSum.v[0] * 0.2f /* 1/5 = 0.2 (5pixel의 평균) */;
+			pixelsBuffer[i + this->width * j].v[1] = neightborColorSum.v[1] * 0.2f;
+			pixelsBuffer[i + this->width * j].v[2] = neightborColorSum.v[2] * 0.2f;
+		}
+	}
+
+	// Swap
+	std::swap(this->pixels, pixelsBuffer);
+
+	//return; // 여기까지 구현하고 테스트
+
+	// 세로 방향 (y 방향)
+#pragma omp parallel for
+	for (int j = 0; j < this->height; j++)
+	{
+		for (int i = 0; i < this->width; i++)
+		{
+			// 주변 픽셀들의 색을 평균내어서 (i, j)에 있는 픽셀의 색을 변경
+			// this->pixels로부터 읽어온 값들을 평균내어서 pixelsBuffer의 값들을 바꾸기
+
+			Vec4 neightborColorSum{ 0.0f, 0.0f, 0.0f, 1.0f };
+			for (int si = 0; si <= 5; si++)
+			{
+				Vec4 neightborColor = this->GetPixel(i, j + si - 2);
+				neightborColorSum.v[0] += neightborColor.v[0];
+				neightborColorSum.v[1] += neightborColor.v[1];
+				neightborColorSum.v[2] += neightborColor.v[2];
+			}
+
+			pixelsBuffer[i + this->width * j].v[0] = neightborColorSum.v[0] * 0.2f /* 1/5 = 0.2 (5pixel의 평균) */;
+			pixelsBuffer[i + this->width * j].v[1] = neightborColorSum.v[1] * 0.2f;
+			pixelsBuffer[i + this->width * j].v[2] = neightborColorSum.v[2] * 0.2f;
+		}
+	}
+
+	// Swap
+	std::swap(this->pixels, pixelsBuffer);
+}
+```
+
+---
+
+## Guassian Blur
+
+* [Clone Code 🌎](https://github.com/EasyCoding-7/Dx11ExampleWithImgui/tree/4/03)
+
+* Convolution Kernel
+
+```
+1 2 1
+2 4 2  x 1/16
+1 2 1
+```
+
+```cpp
+void Image::GaussianBlur5()
+{
+	std::vector<Vec4> pixelsBuffer(this->pixels.size());
+
+	/*
+	* 참고자료
+	* https://en.wikipedia.org/wiki/Gaussian_filter
+	* https://followtutorials.com/2013/03/gaussian-blurring-using-separable-kernel-in-c.html
+	*/
+	const float weights[5] = { 0.0545f, 0.2442f, 0.4026f, 0.2442f, 0.0545f };
+
+	// 가로 방향 (x 방향)
+#pragma omp parallel for
+	for (int j = 0; j < this->height; j++)
+	{
+		for (int i = 0; i < this->width; i++)
+		{
+			// 주변 픽셀들의 색을 평균내어서 (i, j)에 있는 픽셀의 색을 변경
+			// this->pixels로부터 읽어온 값들을 평균내어서 pixelsBuffer의 값들을 바꾸기
+
+			Vec4 neightborColorSum{ 0.0f, 0.0f, 0.0f, 1.0f };
+			for (int si = 0; si < 5; si++)
+			{
+				Vec4 neightborColor = this->GetPixel(i + si - 2, j);
+				neightborColorSum.v[0] += neightborColor.v[0] * weights[si];
+				neightborColorSum.v[1] += neightborColor.v[1] * weights[si];
+				neightborColorSum.v[2] += neightborColor.v[2] * weights[si];
+			}
+
+			pixelsBuffer[i + this->width * j].v[0] = neightborColorSum.v[0];
+			pixelsBuffer[i + this->width * j].v[1] = neightborColorSum.v[1];
+			pixelsBuffer[i + this->width * j].v[2] = neightborColorSum.v[2];
+		}
+	}
+
+	// Swap
+	std::swap(this->pixels, pixelsBuffer);
+
+	// 세로 방향 (y 방향)
+#pragma omp parallel for
+	for (int j = 0; j < this->height; j++)
+	{
+		for (int i = 0; i < this->width; i++)
+		{
+			// 주변 픽셀들의 색을 평균내어서 (i, j)에 있는 픽셀의 색을 변경
+			// this->pixels로부터 읽어온 값들을 평균내어서 pixelsBuffer의 값들을 바꾸기
+			Vec4 neightborColorSum{ 0.0f, 0.0f, 0.0f, 1.0f };
+			for (int si = 0; si < 5; si++)
+			{
+				Vec4 neightborColor = this->GetPixel(i, j + si - 2);
+				neightborColorSum.v[0] += neightborColor.v[0] * weights[si];
+				neightborColorSum.v[1] += neightborColor.v[1] * weights[si];
+				neightborColorSum.v[2] += neightborColor.v[2] * weights[si];
+			}
+
+			pixelsBuffer[i + this->width * j].v[0] = neightborColorSum.v[0];
+			pixelsBuffer[i + this->width * j].v[1] = neightborColorSum.v[1];
+			pixelsBuffer[i + this->width * j].v[2] = neightborColorSum.v[2];
+
+		}
+	}
+
+	// Swap
+	std::swap(this->pixels, pixelsBuffer);
+}
 ```
