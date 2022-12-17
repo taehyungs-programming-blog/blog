@@ -21,14 +21,19 @@ nav_order: 1
 
 ---
 
-## imgui 설치
+## vcpkg를 이용한 imgui 설치
 
 ```bash
 $ git clone https://github.com/microsoft/vcpkg
 $ cd .\vcpkg
 $ .\bootstrap-vcpkg.bat
+# pc에 vcpkg설치
 $ .\vcpkg search imgui
+# 설치가능(다운가능)한 imgui관련 패키지를 보여달라
 $ .\vcpkg install imgui[win32-binding,dx11-binding]:x64-windows
+# imgui를 win32, dx11용으로 다운받아달라
+$ .\vcpkg integrate install 
+# vs에서 imgui를 사용하게 준비해 달라
 ```
 
 * 설치된 **imgui 라이브러리**를 프로젝트에 링킹시키면 됨.
