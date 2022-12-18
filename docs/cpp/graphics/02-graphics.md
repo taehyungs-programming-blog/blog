@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "2. Dx11 Init & imgui 써보기"
+title: "02. Dx11 Init & imgui 써보기"
 parent: "(Graphics🖼)"
 grand_parent: C++
 nav_order: 1

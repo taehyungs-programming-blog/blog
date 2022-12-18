@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "3. Gussian Filter"
+title: "03. Gussian Filter"
 parent: "(Graphics🖼)"
 grand_parent: C++
 nav_order: 1
@@ -308,5 +308,62 @@ void Image::GaussianBlur5()
 
 	// Swap
 	std::swap(this->pixels, pixelsBuffer);
+}
+```
+
+---
+
+## Bloom Effect
+
+* [Clone Code 🌎](https://github.com/EasyCoding-7/Dx11ExampleWithImgui/tree/5/03)
+
+* Gaussian Blur를 이용한다
+
+1. 밝은 Pixel은 그대로 두고 어두운 Pixel을 완전히 검은색으로 변경한다.
+2. 밝은 Pixel만 남은 이미지에 Gaussian Blur를 적용한다.
+3. 원본이미지에 2번 이미지를 더해준다.
+
+```cpp
+void Image::Bloom(const float& th, const int& numRepeat, const float& weight)
+{
+	//https://learnopengl.com/Advanced-Lighting/Bloom
+
+	const std::vector<Vec4> pixelsBackup = this->pixels;// 메모리 내용물까지 모두 복사
+
+	/* Brightness가 th 보다 작은 픽셀들을 모두 검은색으로 바꾸기
+	* https://en.wikipedia.org/wiki/Relative_luminance
+	* Relative Luminance Y = 0.2126*R + 0.7152*G + 0.0722*B
+	*/
+	for (int j = 0; j < height; j ++)
+		for (int i = 0; i < width; i++)
+		{
+			auto& c = this->GetPixel(i, j);
+			const float relativeLuminance = c.v[0] * 0.2126f + c.v[1] * 0.7152f + c.v[3] * 0.0722f;
+
+			if (relativeLuminance < th)
+			{
+				c.v[0] = 0.0f;
+				c.v[1] = 0.0f;
+				c.v[2] = 0.0f;
+			}
+		}
+
+	// 여기서 Blur하지 않고 결과 확인
+
+	// 밝은 부분만 Blur 
+	for (int i = 0; i < numRepeat; i++)
+	{
+		this->GaussianBlur5();
+	}
+
+	// 여기서 또 한 번 결과 확인
+
+	// 밝은 부분만 Blur한 것과 원본 이미지를 더하기 (밝은 부분 Blur에 weight 곱해서 강도 조절)
+	for (int i = 0; i < pixelsBackup.size(); i++)
+	{
+		this->pixels[i].v[0] = std::clamp(pixels[i].v[0] * weight + pixelsBackup[i].v[0], 0.0f, 1.0f);
+		this->pixels[i].v[1] = std::clamp(pixels[i].v[1] * weight + pixelsBackup[i].v[1], 0.0f, 1.0f);
+		this->pixels[i].v[2] = std::clamp(pixels[i].v[2] * weight + pixelsBackup[i].v[2], 0.0f, 1.0f);
+	}
 }
 ```

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "1. 환경설정"
+title: "01. 환경설정"
 parent: "(Graphics🖼)"
 grand_parent: C++
 nav_order: 1
