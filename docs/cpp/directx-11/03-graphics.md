@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "03. Gussian Filter"
+title: "03. GLM"
 parent: "(DirectX 11 🎡)"
 grand_parent: C++
 nav_order: 1
@@ -14,356 +14,149 @@ nav_order: 1
 
 ---
 
-* [Clone Code 🌎](https://github.com/EasyCoding-7/Dx11ExampleWithImgui/tree/master/03)
+## Vector 복습
 
-```s
-# 이미지 처리용 라이브러리라 생각하자
-$ vcpkg install stb:x64-windows
-```
-
----
-
-## 이미지를 읽어오는 코드
-
-```cpp
-void Image::ReadFromFile(const char* filename)
-{
-	// stb를 이용해 이미지 read
-	unsigned char* img = stbi_load(filename, &width, &height, &channels, 0);
-
-	if (width) {
-		std::cout << width << " " << height << " " << channels << std::endl;
-	}
-	else {
-		std::cout << "Error: reading " << filename << " failed." << std::endl;
-	}
-
-	// channels가 3(RGB) 또는 4(RGBA)인 경우만 가정
-	// unsigned char(0에서 255)을 4채널 float(0.0f에서 1.0f)로 변환
-	pixels.resize(width * height);
-	for (int i = 0; i < width * height; i ++)
-	{
-		pixels[i].v[0] = img[i * channels] / 255.0f;
-		pixels[i].v[1] = img[i * channels +1] / 255.0f;
-		pixels[i].v[2] = img[i * channels +2] / 255.0f;
-		pixels[i].v[3] = 1.0f;
-	}
-
-	delete [] img;
-}
-```
-
-```cpp
-void Update()
-{
-	// 이미지의 내용을 GPU 메모리로 복사
-	D3D11_MAPPED_SUBRESOURCE ms;
-	deviceContext->Map(canvasTexture, NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
-	//memcpy(ms.pData, pixels.data(), pixels.size() * sizeof(Vec4));
-	memcpy(ms.pData, image.pixels.data(), image.pixels.size() * sizeof(Vec4));
-	deviceContext->Unmap(canvasTexture, NULL);
-}
-```
-
-* 조금 더 설명하자면 ...
-
-```cpp
-device->CreateTexture2D(&textureDesc, nullptr, &canvasTexture);
-// ID3D11Texture2D* canvasTexture = nullptr;
-	// Device의 CreateTexture2D를 통해 Texture를 생성
-	// Texture는 DirectX에서 Image를 그리기 위해 사용되는 Buffer라 이해하자
-
-if (canvasTexture)
-{
-	device->CreateShaderResourceView(canvasTexture, nullptr, &canvasTextureView);
-	// ID3D11ShaderResourceView* canvasTextureView = nullptr;
-		// Texture에 접근하기 위한 Handle 생성
-
-	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
-	renderTargetViewDesc.Format = textureDesc.Format;
-	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-	renderTargetViewDesc.Texture2D.MipSlice = 0;
-
-	device->CreateRenderTargetView(canvasTexture, &renderTargetViewDesc, &canvasRenderTargetView);
-	// ID3D11RenderTargetView* canvasRenderTargetView = nullptr;
-		// Texture에 그려지는 RenderTargetView 생성
-}
-else
-{
-	std::cout << "CreateRenderTargetView() error" << std::endl;
-}
-```
+* 내적(Dot Product) : 
+    * 수직이 되는 거리를 구한다
+    * (1, 2) * (3, 4) = 1 * 3 + 2 * 4 = 11
+* 외적(Cross Product) : 
+    * 3차원에서 두 백터의 수직이 되는 백터를 구한다.(왼손 법칙)
+    * 두 백터의 평면에 수직인 백터를 구한다 생각하자
 
 ---
 
-## 이미지 밝게 해보기
+## Vector와 GLM
+
+* [Clone Code 🌎](https://github.com/EasyCoding-7/Dx11ExampleWithImgui/tree/6/04)
+
+* OpenGL Mathmatics
+* DirectX에도 계산용 api가 있지만 사용법이 복잡하여 비교적 간단한 GLM을 사용한다.
+
+```bash
+$ vcpkg install glm:x64-windows
+$ vcpkg integrate install 
+```
+
+* 사용해보기
 
 ```cpp
-/* *******************
-* 읽어들인 이미지를 밝게 만들어 보기
-******************* */
+#include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp> // cout 출력을 위한 string_cast()
 
-class Example
+#include <DirectXMath.h> // DirectXMath와 glm 비교용
+
+// CPP 파일에서 using namespace std를 사용하는 것은 괜찮습니다.
+using namespace std; // cout, endl;
+using namespace glm;
+using namespace DirectX;
+
+int main()
 {
-public:
-	Example(HWND window, int width, int height)
-	{
-		// 이미지 읽어들이기
-		image.ReadFromFile("image_1.jpg"); // 컴퓨터 속도가 느리다면 "image_1_360.jpg" 사용
+    /*
+    * glm 설치
+    * vcpkg install glm:x64-windows
+    */
 
-		// 시간 측정
-		const auto start_time = std::chrono::high_resolution_clock::now();
+    /*
+    * glm의 기본적인 사용 방법
+    */
 
-	    // 이미지를 밝게 해보자.
-		for (int j = 0; j < image.height; j++)
-		{
-			for (int i = 0; i < image.width; i++)
-			{
-				const int idx = i + image.width * j;
+    // 벡터 정의하는 방법 (vec3, vec4 등도 있어요)
+    glm::vec3 a(1.0f, 2.0f, 3.0f);
+    glm::vec3 b(7.0f, 8.0f, 9.0f);
 
-				image.pixels[idx].v[0] = std::clamp(image.pixels[idx].v[0] * 1.5f, 0.0f, 1.0f);
-				image.pixels[idx].v[1] = std::clamp(image.pixels[idx].v[1] * 1.5f, 0.0f, 1.0f);
-				image.pixels[idx].v[2] = std::clamp(image.pixels[idx].v[2] * 1.5f, 0.0f, 1.0f);
-			}
-		}
-```
+    // 벡터를 cout으로 문자열로 바꿔서 출력하는 방법
+    cout << glm::to_string(b - a) << endl;
 
----
+    // 벡터끼리 더하기 빼기 가능
+    auto c = b - a; // b + a
 
-## Convolution Kernel
+    cout << "a = " << glm::to_string(a) << endl;
+    cout << "b = " << glm::to_string(b) << endl;
+    cout << "b - a = " << glm::to_string(c) << endl;
 
-<p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/graphics/graphics-3-1.png"/>
-</p>
+    // 벡터에 스칼라(숫자 하나)를 곱하면 벡터의 모든 원소에 곱하기
+    c = a * 10.0f; 
 
-* 대략 이미지에 Convolution Kernel을 곱해서 새로운 이미지를 뽑아낸다고 생각하면된다.
-* 그럼 Convolution Kernel만 알면 Filtter를 적용할 수 있겠네? -> Okay!
+    cout << "c = a * 10.0f; "<< glm::to_string(c) << endl;
 
-* Q? - 경계에 있는 부분은 어떻게 처리할까?
+    // 벡터의 길이 구하기
+    float l = glm::length(c);
 
-<p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/graphics/graphics-3-2.gif"/>
-</p>
+    cout << (b - a).length() << endl; // float라서 to_string 할 필요가 없음
 
-* A - 가까이있는 pixel을 가져온다.
+    // 벡터를 길이가 1.0인 유닛(unit) 벡터로 만들기
+    auto u = glm::normalize(b - a);
+    // auto u = (b-a) / glm::length(b-a)
+    cout << glm::length(u) << endl;
 
----
+    /* 주의: 길이가 0.0인 벡터를 유닛 벡터로 만들려고 시도하면 오류 발생
+    
+    if (glm::length(u) < 1e-4f) {
+        // 다른 방법으로 처리
+    }
 
-## Box Blur
+    if (glm::dot(u, u) < 1e-16f) { // sqrt()를 피하기 위해 dot 사용
+        // 다른 방법으로 처리
+    }
 
-* [Clone Code 🌎](https://github.com/EasyCoding-7/Dx11ExampleWithImgui/tree/3/03)
+    */
 
-* Convolution Kernel
+    // 내적(inner product, dot product)
+    auto aDotB = glm::dot(a, b);
 
-```
-1 1 1
-1 1 1  x 1/9
-1 1 1
-```
+    cout << aDotB << endl; // 내적의 결과는 float라서 to_string 할 필요가 없음
 
-```cpp
-void Image::BoxBlur5()
-{
-	std::vector<Vec4> pixelsBuffer(this->pixels.size()); // 사본 복사
+    cout << dot(vec3(1, 0, 0), vec3(0, 1, 0)) << endl; // 0
+    cout << dot(vec3(1, 2, 3), vec3(1, 2, 3)) << endl; // 1*1 + 2*2 + 3*3 = 14
 
-	/*
-	* Separable convolution
-	* 한 번에 2차원 Kernel을 적용하는 대신에 1차원 Kernel을 두 번 적용
-	* 이해하기 쉽고 효율적이다.
-	*/
+    // 외적(outer product, cross product)
+    // 외적으로 normal을 구할 때는 a와 b가 unit vector 여야 함
+    auto aCrossB = glm::cross(a, b); 
+    
+    cout << to_string(aCrossB) << endl; // 외적의 결과는 벡터
+    cout << to_string(cross(vec3(1, 0, 0), vec3(0, 1, 0))) << endl; // vec3(0.0, 0.0, 1.0)
+    cout << length(cross(vec3(1.5, 0, 0), vec3(0, 2, 0))) << endl; // 3
 
-	// 가로 방향 (x 방향)
-#pragma omp parallel for
-	for (int j = 0; j < this->height; j++)
-	{
-		for (int i = 0; i < this->width; i++)
-		{
-			// 주변 픽셀들의 색을 평균내어서 (i, j)에 있는 픽셀의 색을 변경
-			// this->pixels로부터 읽어온 값들을 평균내어서 pixelsBuffer의 값들을 바꾸기
-			Vec4 neightborColorSum{ 0.0f, 0.0f, 0.0f, 1.0f };
-			for (int si = 0; si <= 5; si++)
-			{
-				Vec4 neightborColor = this->GetPixel(i + si - 2, j);
-				neightborColorSum.v[0] += neightborColor.v[0];
-				neightborColorSum.v[1] += neightborColor.v[1];
-				neightborColorSum.v[2] += neightborColor.v[2];
-			}
+    /* 기타 사용 방법들 */
+    glm::vec4 v4(glm::vec3(2.0f), 1.0f);
 
-			pixelsBuffer[i + this->width * j].v[0] = neightborColorSum.v[0] * 0.2f /* 1/5 = 0.2 (5pixel의 평균) */;
-			pixelsBuffer[i + this->width * j].v[1] = neightborColorSum.v[1] * 0.2f;
-			pixelsBuffer[i + this->width * j].v[2] = neightborColorSum.v[2] * 0.2f;
-		}
-	}
+    glm::vec3 v3 = { 2.0f, 4.0f, 6.0f}; // List initialization
+    // glm::vec3 v3 = vec3{ 2.0f, 2.0f, 2.0f};
+    // glm::vec3 v3 = vec3( 2.0f, 2.0f, 2.0f);
+    // glm::vec3 v3 = vec3(2.0f); // 모두 같은 값으로 초기화할 경우
 
-	// Swap
-	std::swap(this->pixels, pixelsBuffer);
+    std::cout << v3.x << " " << v3.y << " " << v3.z << std::endl; // 2 4 6
+    std::cout << v3.r << " " << v3.g << " " << v3.b << std::endl; // 2 4 6
+    std::cout << v3[0] << " " << v3[1] << " " << v3[2] << std::endl; // 2 4 6
 
-	//return; // 여기까지 구현하고 테스트
+    /*
+    * Double (광추적은 정밀도가 높아야 해서 double을 사용하는 경우도 많음)
+    */
+    auto doubleVector = glm::dvec3(1.0, 2.0, 3.0);
 
-	// 세로 방향 (y 방향)
-#pragma omp parallel for
-	for (int j = 0; j < this->height; j++)
-	{
-		for (int i = 0; i < this->width; i++)
-		{
-			// 주변 픽셀들의 색을 평균내어서 (i, j)에 있는 픽셀의 색을 변경
-			// this->pixels로부터 읽어온 값들을 평균내어서 pixelsBuffer의 값들을 바꾸기
+    /*
+    * DirectXMath 보다 GLM이 더 직관적이에요.
+    */
 
-			Vec4 neightborColorSum{ 0.0f, 0.0f, 0.0f, 1.0f };
-			for (int si = 0; si <= 5; si++)
-			{
-				Vec4 neightborColor = this->GetPixel(i, j + si - 2);
-				neightborColorSum.v[0] += neightborColor.v[0];
-				neightborColorSum.v[1] += neightborColor.v[1];
-				neightborColorSum.v[2] += neightborColor.v[2];
-			}
+    // DirectXMath를 이용해서 벡터의 길이를 구하는 경우
+    XMFLOAT4 xfloat4 = { 1.0f, 2.0f, 3.0f, 1.0f };
+    auto xvector = XMLoadFloat4(&xfloat4);
+    xvector = XMVector3Length(xvector); // sqrt(1*1 + 2*2 + 3*3), 함수 이름이 XMVector 숫자3 Length() 입니다.
 
-			pixelsBuffer[i + this->width * j].v[0] = neightborColorSum.v[0] * 0.2f /* 1/5 = 0.2 (5pixel의 평균) */;
-			pixelsBuffer[i + this->width * j].v[1] = neightborColorSum.v[1] * 0.2f;
-			pixelsBuffer[i + this->width * j].v[2] = neightborColorSum.v[2] * 0.2f;
-		}
-	}
+    float length;
+    XMStoreFloat(&length, xvector);
 
-	// Swap
-	std::swap(this->pixels, pixelsBuffer);
+    cout << "DirectXMath Length = " << length << endl;
+    cout << sqrt(1.0 * 1.0 + 2.0 * 2.0 + 3.0 * 3.0) << endl;
+
+    // GLM을 이용해서 벡터의 길이를 구하는 경우
+    {
+        glm::vec3 v = { 1.0f, 2.0f, 3.0f };
+        const float length = glm::length(v); // sqrt(1*1 + 2*2 + 3*3)
+        cout << "GLM length = " << length << endl;
+    }
 }
-```
 
----
-
-## Guassian Blur
-
-* [Clone Code 🌎](https://github.com/EasyCoding-7/Dx11ExampleWithImgui/tree/4/03)
-
-* Convolution Kernel
-
-```
-1 2 1
-2 4 2  x 1/16
-1 2 1
-```
-
-```cpp
-void Image::GaussianBlur5()
-{
-	std::vector<Vec4> pixelsBuffer(this->pixels.size());
-
-	/*
-	* 참고자료
-	* https://en.wikipedia.org/wiki/Gaussian_filter
-	* https://followtutorials.com/2013/03/gaussian-blurring-using-separable-kernel-in-c.html
-	*/
-	const float weights[5] = { 0.0545f, 0.2442f, 0.4026f, 0.2442f, 0.0545f };
-
-	// 가로 방향 (x 방향)
-#pragma omp parallel for
-	for (int j = 0; j < this->height; j++)
-	{
-		for (int i = 0; i < this->width; i++)
-		{
-			// 주변 픽셀들의 색을 평균내어서 (i, j)에 있는 픽셀의 색을 변경
-			// this->pixels로부터 읽어온 값들을 평균내어서 pixelsBuffer의 값들을 바꾸기
-
-			Vec4 neightborColorSum{ 0.0f, 0.0f, 0.0f, 1.0f };
-			for (int si = 0; si < 5; si++)
-			{
-				Vec4 neightborColor = this->GetPixel(i + si - 2, j);
-				neightborColorSum.v[0] += neightborColor.v[0] * weights[si];
-				neightborColorSum.v[1] += neightborColor.v[1] * weights[si];
-				neightborColorSum.v[2] += neightborColor.v[2] * weights[si];
-			}
-
-			pixelsBuffer[i + this->width * j].v[0] = neightborColorSum.v[0];
-			pixelsBuffer[i + this->width * j].v[1] = neightborColorSum.v[1];
-			pixelsBuffer[i + this->width * j].v[2] = neightborColorSum.v[2];
-		}
-	}
-
-	// Swap
-	std::swap(this->pixels, pixelsBuffer);
-
-	// 세로 방향 (y 방향)
-#pragma omp parallel for
-	for (int j = 0; j < this->height; j++)
-	{
-		for (int i = 0; i < this->width; i++)
-		{
-			// 주변 픽셀들의 색을 평균내어서 (i, j)에 있는 픽셀의 색을 변경
-			// this->pixels로부터 읽어온 값들을 평균내어서 pixelsBuffer의 값들을 바꾸기
-			Vec4 neightborColorSum{ 0.0f, 0.0f, 0.0f, 1.0f };
-			for (int si = 0; si < 5; si++)
-			{
-				Vec4 neightborColor = this->GetPixel(i, j + si - 2);
-				neightborColorSum.v[0] += neightborColor.v[0] * weights[si];
-				neightborColorSum.v[1] += neightborColor.v[1] * weights[si];
-				neightborColorSum.v[2] += neightborColor.v[2] * weights[si];
-			}
-
-			pixelsBuffer[i + this->width * j].v[0] = neightborColorSum.v[0];
-			pixelsBuffer[i + this->width * j].v[1] = neightborColorSum.v[1];
-			pixelsBuffer[i + this->width * j].v[2] = neightborColorSum.v[2];
-
-		}
-	}
-
-	// Swap
-	std::swap(this->pixels, pixelsBuffer);
-}
-```
-
----
-
-## Bloom Effect
-
-* [Clone Code 🌎](https://github.com/EasyCoding-7/Dx11ExampleWithImgui/tree/5/03)
-
-* Gaussian Blur를 이용한다
-
-1. 밝은 Pixel은 그대로 두고 어두운 Pixel을 완전히 검은색으로 변경한다.
-2. 밝은 Pixel만 남은 이미지에 Gaussian Blur를 적용한다.
-3. 원본이미지에 2번 이미지를 더해준다.
-
-```cpp
-void Image::Bloom(const float& th, const int& numRepeat, const float& weight)
-{
-	//https://learnopengl.com/Advanced-Lighting/Bloom
-
-	const std::vector<Vec4> pixelsBackup = this->pixels;// 메모리 내용물까지 모두 복사
-
-	/* Brightness가 th 보다 작은 픽셀들을 모두 검은색으로 바꾸기
-	* https://en.wikipedia.org/wiki/Relative_luminance
-	* Relative Luminance Y = 0.2126*R + 0.7152*G + 0.0722*B
-	*/
-	for (int j = 0; j < height; j ++)
-		for (int i = 0; i < width; i++)
-		{
-			auto& c = this->GetPixel(i, j);
-			const float relativeLuminance = c.v[0] * 0.2126f + c.v[1] * 0.7152f + c.v[3] * 0.0722f;
-
-			if (relativeLuminance < th)
-			{
-				c.v[0] = 0.0f;
-				c.v[1] = 0.0f;
-				c.v[2] = 0.0f;
-			}
-		}
-
-	// 여기서 Blur하지 않고 결과 확인
-
-	// 밝은 부분만 Blur 
-	for (int i = 0; i < numRepeat; i++)
-	{
-		this->GaussianBlur5();
-	}
-
-	// 여기서 또 한 번 결과 확인
-
-	// 밝은 부분만 Blur한 것과 원본 이미지를 더하기 (밝은 부분 Blur에 weight 곱해서 강도 조절)
-	for (int i = 0; i < pixelsBackup.size(); i++)
-	{
-		this->pixels[i].v[0] = std::clamp(pixels[i].v[0] * weight + pixelsBackup[i].v[0], 0.0f, 1.0f);
-		this->pixels[i].v[1] = std::clamp(pixels[i].v[1] * weight + pixelsBackup[i].v[1], 0.0f, 1.0f);
-		this->pixels[i].v[2] = std::clamp(pixels[i].v[2] * weight + pixelsBackup[i].v[2], 0.0f, 1.0f);
-	}
-}
 ```
