@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "03. GLM"
+title: "03. GLM(OpenGL Mathematics)"
 parent: "(DirectX 11 🎡)"
 grand_parent: C++
 nav_order: 1
@@ -19,9 +19,18 @@ nav_order: 1
 * 내적(Dot Product) : 
     * 수직이 되는 거리를 구한다
     * (1, 2) * (3, 4) = 1 * 3 + 2 * 4 = 11
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/graphics/graphics-3-2.png"/>
+</p>
+
 * 외적(Cross Product) : 
     * 3차원에서 두 백터의 수직이 되는 백터를 구한다.(왼손 법칙)
     * 두 백터의 평면에 수직인 백터를 구한다 생각하자
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/graphics/graphics-3-3.png"/>
+</p>
 
 ---
 

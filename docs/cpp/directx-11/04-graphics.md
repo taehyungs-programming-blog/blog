@@ -49,9 +49,10 @@ bool IsInside(const glm::vec2 &x)
 ```cpp
 bool IsInside(const glm::vec2 &x)
 {
-    // 최적화
+    // 최적화 - sqrt가 느리기에 dot을 활용해 보자
+        // 자기 자신의 dot product = 거리의 제곱
     const float distanceSquared = glm::dot(x - center, x - center);
-    if (distanceSquared <= this->radiusSquared)
+    if (distanceSquared <= this->radiusSquared /* radius의 제곱 */)
     {
         return true;
     }
@@ -75,3 +76,9 @@ glm::vec2 TransformScreenToWorld(glm::vec2 positionScreen)
     return glm::vec2(positionScreen.x * xScale - aspect, -(positionScreen.y * yScale - 1.0f));
 }
 ```
+
+---
+
+## TIPs - 폴더 비교하기
+
+* Visual Studio Code -> Diff Folders -> Ctrl + Shift + p -> new diff panel

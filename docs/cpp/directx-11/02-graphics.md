@@ -65,37 +65,6 @@ void Update()
 }
 ```
 
-* 조금 더 설명하자면 ...
-
-```cpp
-device->CreateTexture2D(&textureDesc, nullptr, &canvasTexture);
-// ID3D11Texture2D* canvasTexture = nullptr;
-	// Device의 CreateTexture2D를 통해 Texture를 생성
-	// Texture는 DirectX에서 Image를 그리기 위해 사용되는 Buffer라 이해하자
-
-if (canvasTexture)
-{
-	device->CreateShaderResourceView(canvasTexture, nullptr, &canvasTextureView);
-	// ID3D11ShaderResourceView* canvasTextureView = nullptr;
-		// Texture에 접근하기 위한 Handle 생성
-
-	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
-	renderTargetViewDesc.Format = textureDesc.Format;
-	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-	renderTargetViewDesc.Texture2D.MipSlice = 0;
-
-	device->CreateRenderTargetView(canvasTexture, &renderTargetViewDesc, &canvasRenderTargetView);
-	// ID3D11RenderTargetView* canvasRenderTargetView = nullptr;
-		// Texture에 그려지는 RenderTargetView 생성
-}
-else
-{
-	std::cout << "CreateRenderTargetView() error" << std::endl;
-}
-```
-
----
-
 ## 이미지 밝게 해보기
 
 ```cpp
@@ -154,6 +123,7 @@ public:
 * [Clone Code 🌎](https://github.com/EasyCoding-7/Dx11ExampleWithImgui/tree/3/03)
 
 * Convolution Kernel
+	* 그냥 평균낸다고 생각하면 편하다
 
 ```
 1 1 1
@@ -183,13 +153,18 @@ void Image::BoxBlur5()
 			Vec4 neightborColorSum{ 0.0f, 0.0f, 0.0f, 1.0f };
 			for (int si = 0; si <= 5; si++)
 			{
+                                // 5픽셀의 값을 더한다.
+
 				Vec4 neightborColor = this->GetPixel(i + si - 2, j);
+                                // i == 0, si == 0 이면 -2 아닌가?
+                                // Image내에 -(마이너스) 처리 다 돼있음(옆에값 복사)
 				neightborColorSum.v[0] += neightborColor.v[0];
 				neightborColorSum.v[1] += neightborColor.v[1];
 				neightborColorSum.v[2] += neightborColor.v[2];
 			}
 
-			pixelsBuffer[i + this->width * j].v[0] = neightborColorSum.v[0] * 0.2f /* 1/5 = 0.2 (5pixel의 평균) */;
+			pixelsBuffer[i + this->width * j].v[0] = neightborColorSum.v[0] * 0.2f;
+                        /* (참고) -> 1/5 = 0.2 (5pixel의 평균) */;
 			pixelsBuffer[i + this->width * j].v[1] = neightborColorSum.v[1] * 0.2f;
 			pixelsBuffer[i + this->width * j].v[2] = neightborColorSum.v[2] * 0.2f;
 		}
@@ -326,6 +301,10 @@ void Image::GaussianBlur5()
 ```cpp
 void Image::Bloom(const float& th, const int& numRepeat, const float& weight)
 {
+	// th - Bloom Thresh hold (0 ~ 1)
+	// numRepeat - Bloom Effect 반복 횟수
+	// weight - 기존 pixel에 weight을 얼마나 줄지
+
 	//https://learnopengl.com/Advanced-Lighting/Bloom
 
 	const std::vector<Vec4> pixelsBackup = this->pixels;// 메모리 내용물까지 모두 복사
