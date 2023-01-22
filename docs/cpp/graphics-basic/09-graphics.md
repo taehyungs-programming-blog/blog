@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "09. 그림자"
-parent: "(DirectX 11 🎡)"
+parent: "(Graphics Basic 🎡)"
 grand_parent: C++
 nav_order: 1
 ---

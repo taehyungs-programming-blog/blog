@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "05. 3D 원 그리기"
-parent: "(DirectX 11 🎡)"
+parent: "(Graphics Basic 🎡)"
 grand_parent: C++
 nav_order: 1
 ---

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "08. 삼각형그리기 + 광선의 충돌"
-parent: "(DirectX 11 🎡)"
+parent: "(Graphics Basic 🎡)"
 grand_parent: C++
 nav_order: 1
 ---

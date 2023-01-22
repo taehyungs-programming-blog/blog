@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "07. 원근법 적용"
-parent: "(DirectX 11 🎡)"
+parent: "(Graphics Basic 🎡)"
 grand_parent: C++
 nav_order: 1
 ---

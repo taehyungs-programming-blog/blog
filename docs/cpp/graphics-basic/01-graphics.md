@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "01. 환경설정 + Example 구조분석"
-parent: "(DirectX 11 🎡)"
+parent: "(Graphics Basic 🎡)"
 grand_parent: C++
 nav_order: 1
 ---
