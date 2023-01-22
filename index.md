@@ -38,17 +38,16 @@ permalink: /
 * 보조 언어
     * C#
     * [Python](https://www.python.org/)
-    * [JAVA](https://www.java.com/ko/)
 
 * 사용 개발 툴 & FrameWork
     * [Visual Studio](https://visualstudio.microsoft.com/ko/), [Code](https://code.visualstudio.com/)
     * [PyCharm](https://www.jetbrains.com/ko-kr/pycharm/download/#section=windows)
     * [IntelliJ](https://www.jetbrains.com/ko-kr/idea/)
     * Win32, MFC
+    * DirectX
     * Qt, PyQt
     * Pandas, Numpy
     * [WebRTC](https://webrtc.org/)
-    * [Spring](https://spring.io/projects/spring-framework)
 
 * 협업 도구
     * SVN, [GIT](https://git-scm.com/)
