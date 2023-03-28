@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "02. 마우스로 물체 선택하기(Picking)"
+title: "02. Picking - CPU에서 Picking처리하기"
 parent: "(Rendering Techniques)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1
@@ -14,7 +14,7 @@ nav_order: 1
 
 ---
 
-* [Get Code 🌎]()
+* [Get Code 🌎](https://github.com/Arthur880708/Graphics_Part3_Examples/tree/2/2.picking)
 
 * (목표) 물제체 마우스 오버, 클릭을 처리해 보자.
     * 대충 생각나는 방법으론
