@@ -14,7 +14,7 @@ nav_order: 1
 
 ---
 
-* [Get Code 🌎]()
+* [Get Code 🌎](https://github.com/Arthur880708/Graphics_Part3_Examples/tree/7/7.GeometryShader)
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/part3/p3-7-1.jpg"/>
