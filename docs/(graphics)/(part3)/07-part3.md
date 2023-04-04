@@ -14,6 +14,8 @@ nav_order: 1
 
 ---
 
+{% raw %}
+
 * [Get Code 🌎](https://github.com/Arthur880708/Graphics_Part3_Examples/tree/7/7.GeometryShader)
 
 ## Geometry Shader의 필요성
@@ -288,3 +290,5 @@ void main(point GeometryShaderInput input[1], uint primID : SV_PrimitiveID,
     outputStream.Append(output);
 }
 ```
+
+{% endraw %}

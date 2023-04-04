@@ -14,6 +14,8 @@ nav_order: 1
 
 ---
 
+{% raw %}
+
 * [Get Code 🌎](https://github.com/Arthur880708/Graphics_Part3_Examples/tree/8/8.billboards)
 
 <p align="center">
@@ -285,3 +287,4 @@ void main(point GeometryShaderInput input[1], uint primID : SV_PrimitiveID,
 }
 ```
 
+{% endraw %}
