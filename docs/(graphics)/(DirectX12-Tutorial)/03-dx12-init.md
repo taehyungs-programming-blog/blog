@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "03. 삼각형을 그려보자"
-parent: "(DirectX12 초기화)"
+parent: "(DirectX12 Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1
 ---

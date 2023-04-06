@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "01. 프로젝트 설정"
-parent: "(DirectX12 초기화)"
+parent: "(DirectX12 Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1
 ---
