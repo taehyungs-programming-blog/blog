@@ -45,7 +45,7 @@ public class App : System.Windows.Application
 ```
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/wpf/basic/b3-1.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/wpf/basic/b3-1.png"/>
 </p>
 
 ### 버튼생성
@@ -63,7 +63,7 @@ public class MainWindow : System.Windows.Window
 ```
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/wpf/basic/b3-2.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/wpf/basic/b3-2.png"/>
 </p>
 
 ### 이미지 읽어오기
@@ -143,7 +143,7 @@ public class MainWindow : System.Windows.Window
 ### 내부 Content Event등록하기
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/wpf/basic/b3-3.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/wpf/basic/b3-3.png"/>
 </p>
 
 ```csharp
