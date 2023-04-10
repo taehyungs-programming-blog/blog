@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "16. 채팅 테스트 - 1"
-parent: "(basic)"
+parent: "(기초)"
 grand_parent: "(GameServer C# 🎯)"
 nav_order: 2
 ---

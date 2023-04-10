@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "05. Event Lock, Mutex Lock, ReadWrite Lock 구현해보기"
-parent: "(basic)"
+parent: "(기초)"
 grand_parent: "(GameServer C# 🎯)"
 nav_order: 1
 ---

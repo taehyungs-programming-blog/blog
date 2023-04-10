@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "04. SpinLock 구현해보기, CompareExchange"
-parent: "(basic)"
+parent: "(기초)"
 grand_parent: "(GameServer C# 🎯)"
 nav_order: 1
 ---

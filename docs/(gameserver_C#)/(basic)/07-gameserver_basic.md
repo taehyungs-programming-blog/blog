@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "07. TLS(Thread Local Storage)"
-parent: "(basic)"
+parent: "(기초)"
 grand_parent: "(GameServer C# 🎯)"
 nav_order: 1
 ---

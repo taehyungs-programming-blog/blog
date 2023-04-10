@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "02. Multi Threading이 어려운 이유?"
-parent: "(basic)"
+parent: "(기초)"
 grand_parent: "(GameServer C# 🎯)"
 nav_order: 1
 ---

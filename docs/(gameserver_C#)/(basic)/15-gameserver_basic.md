@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "15. Packet Generator"
-parent: "(basic)"
+parent: "(기초)"
 grand_parent: "(GameServer C# 🎯)"
 nav_order: 2
 ---

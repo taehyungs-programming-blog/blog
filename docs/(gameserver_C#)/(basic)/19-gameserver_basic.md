@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "19. Packet 모아 보내기"
-parent: "(basic)"
+parent: "(기초)"
 grand_parent: "(GameServer C# 🎯)"
 nav_order: 2
 ---

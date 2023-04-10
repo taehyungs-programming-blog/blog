@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "01. 프로젝트 설정"
-parent: "(basic)"
+parent: "(기초)"
 grand_parent: "(GameServer C# 🎯)"
 nav_order: 1
 ---

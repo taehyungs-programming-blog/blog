@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "14. Serialization"
-parent: "(basic)"
+parent: "(기초)"
 grand_parent: "(GameServer C# 🎯)"
 nav_order: 2
 ---
