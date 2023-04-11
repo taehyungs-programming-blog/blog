@@ -1,7 +1,7 @@
 ---
 layout: default
-title: "(컨텐츠 제작 2 - DB 연결)"
+title: "(DB 연결 기초)"
 parent: "(GameServer C# 🎯)"
 has_children: true
-nav_order: 4
+nav_order: 3
 ---
