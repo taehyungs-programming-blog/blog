@@ -1,0 +1,49 @@
+---
+layout: default
+title: "15. [문법] INDEX"
+parent: "(DB 연결 기초)"
+grand_parent: "(GameServer C# 🎯)"
+nav_order: 2
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+* 예를들어 게임유저의 id를 데이터베이스에서 검색할때 어떻게 해야할까?
+* 모든 유저의 데이터를 **순차적**으로 돌아야하나?
+* 해결책) index를 두어 미리 정렬해 둔다 👉 오우 좋은 방법인데?? 그럼 모든 coulum에 index를 걸어서 관리하면 어떨까?
+* 오히려 비 효율적이다(생각해 보면 알것...) 자주 사용될 만한 index를 non-clustered로 index를 걸어둔다.
+* 예를들어 사전이 좋은게 알파벳으로 정렬되어 찾기가 좋다. 그렇다고 뒤에 나온뜻 까지 알파벳으로 정렬을 해버린다 든지 하면 오히려 찾기가 불편해 지는것과 유사하다.
+
+* index는 두 가지 종류가 있다.
+    * **clustered index** : 대부분의 primary key, 테이블당 1개만 존재하며 빠르고 좋음
+        * 사전에서 알파벳순서대로 정렬이 되어있는 개념이라 생각하면 된다.
+        * db는 clustered index를 기준으로 데이터를 **정렬**해 둔다
+    * **non-clustered index** 
+        * clustered index를 제외한 나머지 index, 별 다른 제한 없음
+        * 일종의 **색인**이다.
+
+---
+
+## 정리하자면
+
+* index : 데이터를 빨리 찾을 수 있게 보조해주는 고마운 친구
+    * **primary key(clustered index)** : 물리적인 데이터 저장순서를 정리(사전을 정리한 개념)
+    * **일반 index(non-clustered index)** : 따로 관리하는 일종의 lookup 테이블(책에서 나오는 색인)
+
+### 어떻게 만드나?
+
+```sql
+CREATE INDEX i1 ON accounts(accountName)
+
+CREATE UNIQUE INDEX i2 ON accounts(accountName)
+
+DROP INDEX accounts.i1
+```
+
+* 이후에 좀 더 자세히 설명한다

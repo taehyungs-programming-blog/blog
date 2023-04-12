@@ -1,0 +1,126 @@
+---
+layout: default
+title: "31. [부록] Redis"
+parent: "(DB 연결 기초)"
+grand_parent: "(GameServer C# 🎯)"
+nav_order: 4
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+* **No-SQL의 필요성 + RDBMS(관계형 데이터 베이스의 단점?)** 👉 엄청난 빅데이터로 넘어갈 경우 RDBMS의 태생적 한계로 **속도가 매우 느려**진다.
+* (참고) **RDBMS**의 경우 특정 데이터에 key를 걸고 key값이 b-이진트리로 구성이 되게 된다.
+* Redis(No-SQL)의 경우 마치 C#의 Dictionary처럼 **Key-Value형태**를 하고있다.
+
+* 좀 정리하자면 ... RDBMS의 경우 데이터의 구조가 명확하며 index를 통해 unique한 데이터에 활용된다.
+* 반면 No-SQL의 경우 데이터의 구조가 명확하지 않으며(열이 추가될 수 있음) 꼭 unique하지 않은 데이터에 활용이 가능하다.
+* 둘 중 뭐가 낫다라고 할 순 없으나 새로운 항목이 많이 추가되는 경우 No-SQL을 사용하는게 낫지 않을까?(+ 사용법도 오히려 더 쉽다 ㅎ..)
+
+---
+
+## 환경설정
+
+* [Redis 다운로드 🌍](https://github.com/tporadowski/redis/releases)
+
+* `redis-cli.exe`, `redis-server.exe`가 보인다면 성공!
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-31-1.png"/>
+</p>
+
+* `redis-server.exe`를 먼저 실행(만약 .msi로 설치했다면 서비스에서 실행중임)
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-31-2.png"/>
+</p>
+
+* `redis-cli.exe` 실행
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-31-3.png"/>
+</p>
+
+* 메모리 형태로 key-value 데이터를 서버가 갖고 있다를 기억하자.
+
+---
+
+* `set`, `get` 문자열 넣어보기
+
+```
+127.0.0.1:6379> set user:name "taehyung"
+OK
+127.0.0.1:6379> get user:name
+"taehyung"
+127.0.0.1:6379>
+```
+
+* `append` 문자열 추가도 가능
+
+```
+127.0.0.1:6379> append user:name " is good"
+(integer) 16
+127.0.0.1:6379> get user:name
+"taehyung is good"
+```
+
+* `incr`, `decr` 써보기
+
+```
+127.0.0.1:6379> set test1 11
+OK
+127.0.0.1:6379> incr test1
+(integer) 12
+127.0.0.1:6379> get test1
+"12"
+```
+
+* `mset`, `mget` (multi-set/get) 써보기
+
+```
+127.0.0.1:6379> mset user:1 1 user:2 2 user:3 3
+OK
+```
+
+* `ttl`, `expire` 수명기간 설정
+* sessionToken에 활용되곤 한다.
+
+```
+127.0.0.1:6379> ttl user:1
+(integer) -1
+127.0.0.1:6379> expire user:1 10
+(integer) 1
+```
+
+---
+
+* **set** - `sadd`(추가), `sinter`(count), `srem`(제거)
+
+```
+# viewer라는 set에 user1, user2, user3 을 추가
+127.0.0.1:6379> sadd viewer user1
+(integer) 1     # 1은 TRUE를 의미함(0이 FALSE)
+127.0.0.1:6379> sadd viewer user2
+(integer) 1
+127.0.0.1:6379> sadd viewer user3
+(integer) 1
+
+# viewer가 몇 명인지 확인
+127.0.0.1:6379> sinter viewer
+1) "user3"
+2) "user2"
+3) "user1"
+
+# user1 제거
+127.0.0.1:6379> srem viewer user2
+(integer) 1
+```
+
+* **ordered-set** - 정렬된 set - `zadd`
+* **list** - `lpush`, `rpush`, `lpop`, `rpop`
+* 스택, 큐, 해시 도 모두 존재함(필요하다면 찾아 보자.)

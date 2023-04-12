@@ -1,0 +1,86 @@
+---
+layout: default
+title: "29. [튜닝] Hash 조인"
+parent: "(DB 연결 기초)"
+grand_parent: "(GameServer C# 🎯)"
+nav_order: 3
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+```sql
+-- 테스트 데이터를 준비하자.
+USE Northwind;
+
+SELECT * INTO TestOrders FROM Orders;
+SELECT * INTO TestCustomers FROM Customers;
+
+SELECT * FROM TestOrders;
+SELECT * FROM TestCustomers;
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-29-1.png"/>
+</p>
+
+```sql
+-- Index가 없는상태에서 Join을 실행한다.
+
+SELECT *
+FROM TestOrders AS o
+    INNER JOIN TestCustomers AS c
+    ON o.CustomerID = c.CustomerID;
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-29-2.png"/>
+</p>
+
+* 궁금한게 만약 **다른 조인(NL, Merge)**을 썼다면 어떻게 됐을까??
+
+```sql
+-- NL(Nested Loop)을 사용한 경우
+    -- 일종의 이 중 For문으로 INNER 테이블에 인덱스가 없는 경우 느리다.(아래의 경우)
+SELECT *
+FROM TestOrders AS o
+    INNER JOIN TestCustomers AS c
+    ON o.CustomerID = c.CustomerID
+    OPTION (FORCE ORDER, LOOP JOIN);
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-29-3.png"/>
+</p>
+
+```sql
+-- Merge을 사용한 경우
+    -- (Sort) Merge - Sort를 해야하며, many to many(unique가 보장안됨)의 경우는 느리다.
+SELECT *
+FROM TestOrders AS o
+    INNER JOIN TestCustomers AS c
+    ON o.CustomerID = c.CustomerID
+    OPTION (FORCE ORDER, MERGE JOIN);
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-29-4.png"/>
+</p>
+
+---
+
+* 그럼 **Hash 조인**은 어떻게 동작할까?
+* **임시적 INNER Table을 기반으로한 Hash 테이블**을 생성해 준다.
+* OUTTER Table을 순회하며 Hash 테이블 데이터와 비교 후 Join한다.
+
+* ???? **Nested Loop**와 뭔 차이인가 ????
+* 큰 차이는 임의로 Hash Table을 만드는데 있고, **공간을 내주고 속도**를 얻는 개념이다.
+* **(결론)** - Hash Join은 별도의 Sort가 필요하지 않다.(데이터가 많을 경우 부담이 적다.) 👉 **Merge 보다 유리**
+* 인덱스가 필요없기에 👉 **NL보다도 유리**하다
+* 단, Hash Table을 만드는 자체의 부담은 존재한다.
+* (참고) Hash Table에 올라가는 쪽은 데이터가 적은 Table이 된다.

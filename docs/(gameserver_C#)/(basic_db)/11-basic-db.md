@@ -1,0 +1,65 @@
+---
+layout: default
+title: "11. [문법] INSERT, DELETE, UPDATE"
+parent: "(DB 연결 기초)"
+grand_parent: "(GameServer C# 🎯)"
+nav_order: 2
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## INSERT
+
+```sql
+USE BaseballData
+
+SELECT *
+FROM salaries
+ORDER BY yearID DESC
+
+-- INSERT INTO [테이블] VALUES [값 ...]
+INSERT INTO salaries
+VALUE (2020, 'KOR', 'NL', 'name', 900000)
+
+-- 테이터를 빼먹는다면?
+INSERT INTO salaries
+VALUE (2020, 'KOR', 'NL', 'name')   -- Error 리턴
+
+-- INSERT INTO [테이블](열 ...) VALUES [값 ...]
+INSERT INTO salaries(yearID, teamID, playerID, lgId, salary)
+VALUE (2020, 'KOR', 'NL', 'name', 900000)
+
+INSERT INTO salaries(yearID, teamID, playerID, lgId)
+VALUE (2020, 'KOR', 'NL', 'name')       -- okay
+```
+
+---
+
+## DELETE
+
+```sql
+-- DELETE FROM [테이블] WHERE [조건]
+DELETE FROM salaries
+WHERE playerID = 'name'
+```
+
+---
+
+## UPDATE
+
+```sql
+-- UPDATE [테이블명] SET [열=값] WHERE [조건]
+UPDATE salaries
+SET salary = salary * 2
+WHERE teamID = 'KOR'
+
+UPDATE salaries
+SET salary = salary * 2, yearID = yearID + 1
+WHERE teamID = 'KOR'
+```

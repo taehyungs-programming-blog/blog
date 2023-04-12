@@ -1,0 +1,102 @@
+---
+layout: default
+title: "13. [문법] 데이터베이스 작성"
+parent: "(DB 연결 기초)"
+grand_parent: "(GameServer C# 🎯)"
+nav_order: 2
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## 데이터 베이스, 테이블 생성
+
+```sql
+-- 데이터 베이스(Schema) 만들기
+CREATE DATABASE GameDB
+
+
+-- 테이블 생성/삭제/변경
+USE GameDB
+-- CREATE TABLE [테이블명](열이름 자료형 [default 값] [not | not null])
+CREATE TABLE accounts(
+    accountId INTEGER NOT NULL,
+    accountName VARCHAR(10) NOT NULL,
+    coins INTEGER DEFAULT 0,
+    createTime DATETIME
+)
+SELECT *
+FROM accounts
+```
+
+```sql
+-- DROP TABLE
+DROP TABLE accounts
+```
+
+```sql
+-- 테이블 변경(열 추가/삭제/변경)
+    -- 열 추가
+ALTER TABLE accounts
+ADD lastEnterTime DATETIME
+
+    -- 열 삭제
+ALTER TABLE accounts
+DROP COLUMN lastEnterTime
+
+    -- 열 수정
+ALTER TABLE accounts
+ALTER COLUMN accountName VARCHAR(20) NOT NULL
+```
+
+```sql
+-- (추가) 제약(CONSTRAINT) 추가/삭제 (NOT NULL, UNIQUE, PRIMARY KEY)
+ALTER TABLE accounts
+ADD PRIMARY KEY (accountId)
+
+-- 제약의 이름을 지정하지 않으면 나중에 제약을 삭제할때 곤란
+ALTER TABLE accounts
+DROP CONSTRAINT ()
+
+-- 제약의 이름을 지정해보자
+ALTER TABLE accounts
+ADD CONSTRAINT PK_Account PRIMARY KEY (accountId)
+
+ALTER TABLE accounts
+DROP CONSTRAINT PK_Account
+```
+
+```sql
+-- 보통은 이렇게 쓰인다.
+
+IF NOT EXISTS (
+    SELECT *
+    FROM sys.databases
+    WHERE name = 'GameDB'
+)
+BEGIN
+    CREATE DATABASE GameDB
+END
+GO
+
+USE GameDB
+GO
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.tables
+    WHERE name = 'TableName'
+        AND type = 'U'
+)
+BEGIN
+    CREATE TABLE TableName (
+        Id INT PRIMARY KEY IDENTITIY(1, 1)
+        , Name VARCHAR(100)
+    )
+END
+```

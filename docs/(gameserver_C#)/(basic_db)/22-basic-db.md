@@ -1,0 +1,214 @@
+---
+layout: default
+title: "22. [튜닝] 복합 인덱스"
+parent: "(DB 연결 기초)"
+grand_parent: "(GameServer C# 🎯)"
+nav_order: 3
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+```sql
+USE Northwind;
+
+-- 주문 상세 정보를 살펴보자
+SELECT *
+FROM [Order Details]  -- 실제 테이블 이름이 Order Details임(띄어쓰기됨)
+ORDER BY OrderID;
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-22-1.png"/>
+</p>
+
+* OrderID에 Index를 걸고자 하는데 보다 싶이 OrderID는 **겹치는 데이터**가 존재한다.
+
+```sql
+-- TestOrderDetails라는 Table을 만들어서 [Order Details]데이터를 복사해 주세요
+SELECT *
+INTO TestOrderDetails
+FROM [Order Details];
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-22-2.png"/>
+</p>
+
+```sql
+-- 복합 인덱스를 걸어보자
+CREATE INDEX Index_TestOrderDetails
+ON TestOrderDetails(OrderId, ProductID);
+```
+
+```sql
+-- 인덱스가 잘 걸렸는지 확인
+EXEC sp_helpindex 'TestOrderDetails';
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-22-3.png"/>
+</p>
+
+```sql
+-- 인덱스를 잘 활용하는지 보자
+SELECT *
+FROM TestOrderDetails
+WHERE OrderID = 10248 AND ProductID = 11;
+```
+
+* F5 -> Ctrl + L
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-22-4.png"/>
+</p>
+
+* 뭔지는 잘 모르겠으나 **Index Seek**가 보일 것이다.
+* 일단은 다 알필요는 없이 Index Seek가 뜨면 좋은것. **Index Scan(Index Full Scan)**이 뜨면 개선해야할 것이 있는것 정도로 받아들이자.
+
+---
+
+```sql
+-- 안좋은 케이스를 살펴보자
+SELECT *
+FROM TestOrderDetails
+WHERE ProductID = 11;
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-22-5.png"/>
+</p>
+
+* 나쁜케이스로 **모든 Table을 다 서칭**함을 알 수 있다.
+* 그럼 왜 모든 Table을 서칭하는지가 중요한데 
+    * 👉 간단히 말하면 Index의 순서를 OrderID, ProductID 순으로 걸었고 sql은 OrderID를 먼저체크 후 중복되는 데이터가 있으면 ProductID를 검색하는데 ProductID만으로는 데이터 검색이 안된다.
+* 정리하자면 OrderID로 1차 정렬, ProductID로 2차 정렬을 해 두었는데 ProductID로만 검색을 할 경우 모든 Table을 다 검색해야한다.
+
+```sql
+-- 인덱스 정보를 살펴보자.
+DBCC IND('Northwind', 'TestOrderDetails', 2);
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-22-6.png"/>
+</p>
+
+```sql
+/*
+* 대략 이런구조를 갖는다
+            920
+             |
+856, 888, 889, 890, 891, 892
+*/
+```
+
+```sql
+DBCC PAGE('Northwind', 1, 856, 3);
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-22-7.png"/>
+</p>
+
+* 각 페이지의 데이터를 보면 알겠지만 OrderID로 우선 정렬되어 있고 그 이후 ProductID로 정렬되어 있다.
+* 따라서 ProductID로 검색시 속도가 느리게 된다.
+* 결국!! 인덱스를 A, B 여러개를 걸 경우 A로 검색은 Ok, B로 검색할 경우 B인덱스는 별도로 걸어줘야한다.
+
+---
+
+* **질문?** 데이터는 PAGE로 관리되고 INDEX로 정렬된다
+* 만약 데이터가 추가되어 PAGE에서 보관할 수 있는 데이터의 양을 넘어간다면, PAGE는 데이터를 어떻게 관리하게 될까? 모든 PAGE 데이터를 하나씩 다 뒤로미는가?(비효율적일꺼 같은데??)
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-22-8.png"/>
+</p>
+
+* 테스트 전 현제 PAGE의 데이터는 368개가 존재하며 시작데이터(10248/11) / 끝데이터(10387/24)임을 기억하자
+
+```sql
+-- 데이터를 넣어보자
+DECLARE @i INT = 0;
+WHILE @i < 50
+BEGIN
+    INSERT INTO TestOrderDetails
+    VALUES (10248, 100 + @i, 10, 1, 0);
+    SET @i = @i + 1;
+END
+```
+
+```sql
+DBCC IND('Northwind', 'TestOrderDetails', 2);
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-22-9.png"/>
+</p>
+
+* 우선 기존에 없던 PAGE가 하나 추가되었다.
+
+```sql
+/*
+               920
+                |
+856, [921], 888, 889, 890, 891, 892
+*/
+```
+
+* 데이터가 추가될 경우 기존의 PAGE를 잘라서 새로운 PAGE를 추가 후 데이터를 넣게된다
+* PAGE데이터를 한 개씩 다 미는가의 문제는 어차피 포인터로 관리되기에 NextPagePID만 알고있으면 되는문제라 성능에 큰 이슈는 없다.
+* **결론** : PAGE에 여유공간이 없을 경우 **PAGE SPLIT(분할)**이 일어난다.
+
+---
+
+```sql
+SELECT LastName
+INTO TestEmployess
+FROM Employees;
+```
+
+```sql
+SELECT *
+FROM TestEmployess
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-22-10.png"/>
+</p>
+
+* 문자열에 INDEX를 추가해 보자.
+
+```sql
+CREATE INDEX Index_TestEmployess
+ON TestEmployess(LastName);
+```
+
+```sql
+SELECT *
+FROM TestEmployess
+WHERE SUBSTRING(LastName, 1, 2) = 'Bu';
+-- F5 -> Ctrl + L
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-22-11.png"/>
+</p>
+
+* SubString을 파싱하여 검색하고자 하는데 성능이 좋지 못하다(인덱스 스캔)
+* **Key를 가공해서 쓸 경우 Index를 못쓰는 경우**가 생긴다.
+* sql기준으로 `SUBSTRING`이 뭘 하는애인지 알 수 없으니 최적화가 어려움.
+
+```sql
+SELECT *
+FROM TestEmployess
+WHERE LastName LIKE 'Bu%';
+-- 이건 sql이 알고있기에 성능최적화가 된다.
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-22-12.png"/>
+</p>
