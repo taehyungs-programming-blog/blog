@@ -42,11 +42,11 @@ nav_order: 1
 * 툴 -> C++ 클래스 추가 -> GameInstance 추가
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/unreal/basic_cpp/basic_cpp_1-1.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/basic_cpp/basic_cpp_1-1.png"/>
 </p>
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/unreal/basic_cpp/basic_cpp_1-2.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/basic_cpp/basic_cpp_1-2.png"/>
 </p>
 
 * 기본으로 로딩되는 Map이 무겁기에 간단한 Map을 만들어서 로딩시간을 줄이자.
@@ -55,7 +55,7 @@ nav_order: 1
     * UE5 에디터를 재시작해야한다.
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/unreal/basic_cpp/basic_cpp_1-7.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/basic_cpp/basic_cpp_1-7.png"/>
 </p>
 
 ### Unreal Compile 주의사항!
@@ -71,7 +71,7 @@ nav_order: 1
 * 아래와 같이 Build Fail
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/unreal/basic_cpp/basic_cpp_1-3.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/basic_cpp/basic_cpp_1-3.png"/>
 </p>
 
 ### UE5 에디터를 끄고 비쥬얼스튜디오 빌드 진행
@@ -79,7 +79,7 @@ nav_order: 1
 * 빌드가 정상적으로 된다.
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/unreal/basic_cpp/basic_cpp_1-4.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/basic_cpp/basic_cpp_1-4.png"/>
 </p>
 
 ### 그럼! 헤더파일을 변경해 보자.
@@ -109,11 +109,11 @@ void UMyGameInstance::Init()
 * 기본로그가 많기에 검색해야 함!
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/unreal/basic_cpp/basic_cpp_1-5.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/basic_cpp/basic_cpp_1-5.png"/>
 </p>
 
 * UE5 에디터 -> 편집 -> 프로젝트 세팅 -> 맵 & 모드 -> 게임 인스턴스 클래스를 내가 만든 게임 인스턴스클래스로 변경
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/unreal/basic_cpp/basic_cpp_1-6.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/basic_cpp/basic_cpp_1-6.png"/>
 </p>

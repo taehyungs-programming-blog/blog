@@ -38,7 +38,7 @@ public:
 * 새 C++ 클래스를 추가하면 모두 Object를 부모로 두기 때문이다.
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/unreal/basic_cpp/basic_cpp_2-1.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/basic_cpp/basic_cpp_2-1.png"/>
 </p>
 
 ---
