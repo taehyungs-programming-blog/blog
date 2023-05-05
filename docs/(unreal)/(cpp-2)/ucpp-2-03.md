@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "02. Pawn"
+title: "03. Pawn"
 parent: "(Unreal C++ Part2 - 게임만들어 보기)"
 grand_parent: "(Unreal 🚀)"
 nav_order: 1
