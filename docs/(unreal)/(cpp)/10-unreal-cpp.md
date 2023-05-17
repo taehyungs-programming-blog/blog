@@ -16,6 +16,12 @@ nav_order: 2
 
 * [Get Code 🌎](https://github.com/Arthur880708/Unreal_Cpp_basic/tree/main/9.Memory)
 
+* Unreal은 GC가 자동으로 돌아간다
+* 따라서 내가 삭제하지 않더라도 자동으로 메모리가 정리돼어 버리는데 그걸 막기 위해 `UPROPERTY()`가 필요하다
+* 추가적으로 궁금한 점은 그럼 삭제는 어떻게 하냐이다.
+	* 참조가 다 끊어지거나
+	* `Destroy()` 혹은 `MarkPendingKill()`과 같은 함수가 호출되었을 때 이다.
+
 ```cpp
 UCLASS()
 class UNREALMEMORY_API UMyGameInstance : public UGameInstance
