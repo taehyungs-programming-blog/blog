@@ -16,7 +16,21 @@ nav_order: 2
 
 * [Get Code 🌎](https://github.com/Arthur880708/Unreal_Cpp_basic/tree/main/10.Serialization)
 
-## C++ struct의 직렬화
+## 우선 직렬화 란?
+
+* 오브젝트를 바이트 스트림으로 변환하는 과정
+    * Serialization - 오브젝트에서 바이트 스트림으로
+    * DeSerialization - 바이트 스트림에서 오브젝트로
+* 언제쓰나?
+    * 현재 프로그램의 정보를 저장해야 할 때
+    * 네트워크로 전송해야할 때
+
+* 직렬화는 생각보다 고려해야할 부분이 많기에 구현이 쉽지 않음
+* 그래서 Unreal에서 준비했다 -> `FArchive`
+
+---
+
+## FArchive를 이용한, C++ struct의 직렬화
 
 ```cpp
 // 아래와 같은 struct가 있다고 가정하자
@@ -83,7 +97,7 @@ void UMyGameInstance::Init()
 
 ---
 
-## Unreal Object 직렬화
+## FArchive를 이용한, Unreal Object 직렬화
 
 ```cpp
 // UPROPERTY() TObjectPtr<class UStudent> StudentSrc;

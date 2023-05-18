@@ -21,7 +21,7 @@ nav_order: 2
 * 단일 언리얼 오브젝트가 가진 정보는 저장할 수 있지만, 오브젝트의 조합이라면 ?
     * 저장된 언리얼 오브젝트 데이터를 효과적으로 찾고 관리하는 방법은?
     * 복합한 계층 구조를 가진 언리얼 오브젝트를 효과적으로 저장/로드 방법이 필요하다
-* Unreal Object Package의 등장!
+* Unreal Object Package(`UPackage`)의 등장!
 
 ---
 
@@ -50,14 +50,16 @@ void UMyGameInstance::SaveStudentPackage() const
 	StudentPackage = CreatePackage(*PackageName);
 	EObjectFlags ObjectFlag = RF_Public | RF_Standalone;
 
-	UStudent* TopStudent = NewObject<UStudent>(StudentPackage,  // Package
+	// 기존의 Object생성과 조금 다르다
+	UStudent* TopStudent = NewObject<UStudent>(StudentPackage,  // 이 Package에 저장해 달라
                                     UStudent::StaticClass(),    // Class 정보
-                                    *AssetName,                 // Asset 이름
+                                    *AssetName,                 // Asset 이름 (고유 이름 정보)
                                     ObjectFlag                  // Flag 정보
                                     );
 	TopStudent->SetName(TEXT("이득우"));
 	TopStudent->SetOrder(36);
 
+	// Sub Object를 10개 생성해 보자
 	const int32 NumofSubs = 10;
 	for (int32 ix = 1; ix <= NumofSubs; ++ix)
 	{
@@ -73,6 +75,7 @@ void UMyGameInstance::SaveStudentPackage() const
 		SubStudent->SetOrder(ix);
 	}
 
+	// 패키지 저장
 	const FString PackageFileName = FPackageName::LongPackageNameToFilename(PackageName, FPackageName::GetAssetPackageExtension());
 	FSavePackageArgs SaveArgs;
 	SaveArgs.TopLevelFlags = ObjectFlag;
@@ -104,7 +107,16 @@ void UMyGameInstance::LoadStudentPackage() const
 
 ---
 
-## Object Path
+## Unreal의 애셋 정보의 저장과 로딩 전략
+
+* 애셋의 사용시 매번 패키지를 불러 할당하는 작업은 부하가 크다
+	* 애셋의 로딩 대신 패키지와 오브젝트를 지정한 문자열을 대체해 사용한다
+	* 프로젝트 내에 오브젝트 경로 값은 유일함을 UE에서 보장한다
+* 애셋의 로딩전략
+	* 프로젝트에서 반드시 필요한 애셋 - 생성자에서 미리 로딩 후 사용
+	* 동기/비동기 적으로 필요한 애셋 - 동기/비동기 적으로 생성 ...
+
+---
 
 * 패키지 이름과 애셋 이름을 한 데 묶은 문자열
 
