@@ -16,6 +16,9 @@ nav_order: 1
 
 * [Get Code 🌎](https://github.com/Arthur880708/Unreal_Cpp_Basic_2/tree/1)
 
+* C++ Blank로 프로젝트 생성, 이름은 ArenaBattle로 하자
+  * Starter Content가 포함안되게 주의
+
 ## 프로젝트 생성 + 기본환경 설정
 
 <p align="center">
