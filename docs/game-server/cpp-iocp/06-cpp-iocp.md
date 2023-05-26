@@ -16,6 +16,9 @@ nav_order: 1
 
 ## Event 방식의 문제점
 
+* 기본적으로 Event방식이 Window에서만 사용이 된다.
+* + 아래의 문제점도 있음
+
 ```cpp
 #include <windows.h>
 
@@ -86,7 +89,7 @@ int main()
 
 ## Condition Variable
 
-😺 Event의 변종!
+* Event에 기능이 추가된 개념!
 
 ```cpp
 mutex m;
@@ -153,4 +156,3 @@ int main()
     t2.join();
 }
 ```
-

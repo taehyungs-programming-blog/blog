@@ -16,7 +16,7 @@ nav_order: 1
 
 ## Lock 구현방법?
 
-😺 Lock의 종류는?
+* Lock의 종류는?
 
 * 무작정 기다린다. 👉 **SpinLock**
     * 컨텍스트 스위칭에 대한 비용이 작다.
@@ -24,13 +24,13 @@ nav_order: 1
 * 특정 시간을 대기 후 다시 mutex를 확인한다. 👉 **Sleep**
 * 다른 매니저를 두고 mutex상태를 보고 받는다. 👉 **Event**
 
-😺 이제 하나하나 구현방법에 대해 설명
+* 이제 하나하나 구현방법에 대해 설명
 
 ---
 
 ## SpinLock
 
-😺 아래를 SpinLock으로 구현해보자
+* 아래를 SpinLock으로 구현해보자
 
 ```cpp
 int32 sum = 0;
@@ -63,8 +63,6 @@ int main()
     t2.join();
 }
 ```
-
-<br>
 
 ```cpp
 int32 sum = 0;
@@ -121,12 +119,9 @@ int main()
 }
 ```
 
-<Br>
-
-😺 일단 문제가 두 가지 이다.
-
-* locked가 volatile하지 못하다
-* locked자체가 multi-thread safe하지 못하다
+* 일단 문제가 두 가지 이다.
+    * locked가 volatile하지 못하다
+    * locked자체가 multi-thread safe하지 못하다
 
 ```cpp
 // 1. SpinLock 변수에 volatile선언을 해줘야한다.
@@ -193,5 +188,3 @@ private:
     atomic<bool> _locked = false;
 };
 ```
-
-

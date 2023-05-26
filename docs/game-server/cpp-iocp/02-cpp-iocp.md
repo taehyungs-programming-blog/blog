@@ -16,7 +16,7 @@ nav_order: 1
 
 ## `std::thread` 생성
 
-😺 윈도우에 종속적인 API를 사용할수 있지만 C++11에서 추가된 std::thread를 이용해서 thread를 생성하는 것을 추천한다.
+* 윈도우에 종속적인 API를 사용할수 있지만 C++11에서 추가된 std::thread를 이용해서 thread를 생성하는 것을 추천한다.
 
 ```cpp
 #include <thread>
@@ -44,9 +44,7 @@ int main()
 }
 ```
 
-<br>
-
-😺 여러 thread를 한 번에 생성해보자
+* 여러 thread를 한 번에 생성해보자
 
 ```cpp
 // 배개변수 받기, thread여러개 생성해보기
@@ -75,6 +73,8 @@ int main()
 ---
 
 ## atomic
+
+* 우선 아래 문제를 생각해 보자.
 
 ```cpp
 // 힙 or 데이터 영역의 변수
@@ -109,9 +109,8 @@ int main()
 }
 ```
 
-<br>
-
-😺 단, atomic은 연산이 느리기에 절대적으로 필요한 경우에만 사용하자
+* 해결은? 미리 언급했듯 Atomic을 활용한다
+    * 단, atomic은 연산이 느리기에 절대적으로 필요한 경우에만 사용하자
 
 ```cpp
 #include <atomic>
@@ -148,13 +147,13 @@ int main()
 }
 ```
 
-<br>
+* 느낌이 오지만 한 번에 하나의 Thread에서만 접근이 가능하다
 
 ---
 
 ## `std::mutex`
 
-😺 atomic보다 좀 더 효율적인 방법을 알려준다.
+* atomic보다 좀 더 효율적인?(편리한) 방법을 알려준다.
 
 ```cpp
 vector<int32> v;
@@ -181,9 +180,7 @@ int main()
 }
 ```
 
-<Br>
-
-😺 해결법1
+* 해결법1
 
 ```cpp
 #include <mutex>
@@ -216,9 +213,8 @@ int main()
 }
 ```
 
-<Br>
-
-😺 조금 더 안전한 코드를 만들어 보자.
+* 조금 더 안전한 코드를 만들어 보자.
+    * 현재코드의 위험은 unlock을 호출하지 않았을때 있다.
 
 ```cpp
 #include <mutex>
@@ -251,13 +247,11 @@ int main()
 }
 ```
 
-<Br>
-
 ---
 
 ## Deadlock
 
-😺 lockguard로 모든 데드락을 방지할순 없다. 아래의 예시를 살펴보자.
+* lockguard로 모든 데드락을 방지할순 없다. 아래의 예시를 살펴보자.
 
 ```cpp
 class User
@@ -356,9 +350,9 @@ int main()
 }
 ```
 
-😺 어떤상황에 Deadlock이 발생할까 `ProcessSave()`, `ProcessLogin()`이 호출될 경우 lock이 발생하고 `ProcessSave()`, `ProcessLogin()`내부에서 `GetAccount`, `GetUser` 호출시 역시 lock이 발생하며 Deadlock이 된다.
-
-😺 해결책?? -> mutex lock을 잠그는 순서를 지정한다.
+* 어떤상황에 Deadlock이 발생할까 `ProcessSave()`, `ProcessLogin()`이 호출될 경우 lock이 발생하고 `ProcessSave()`, `ProcessLogin()`내부에서 `GetAccount`, `GetUser` 호출시 역시 lock이 발생하며 Deadlock이 된다.
+* 해결책?? -> mutex lock을 잠그는 순서를 지정한다.
+    * 결론적 ... 사용자가 조심히 써야한다는 말 ...
 
 ```cpp
 void ProcessLogin()
@@ -372,15 +366,13 @@ void ProcessLogin()
 }
 ```
 
-😺 Lock을 사용할때 주의해야 한다.
-
 ---
 
 ## jthread(C++20)
 
 * [참고사이트 🌎](https://taehyungs-programming-blog.github.io/blog/docs/cpp/concurrency/04.jthread/)
 
-🦄 기존 thread의 문제점??
+* 기존 thread의 문제점??
 
 ```cpp
 #include <iostream>
@@ -422,7 +414,7 @@ public:
 
 ---
 
-🦄 이걸 표준(C++20)에서 지원해줌
+* 이걸 표준(C++20)에서 지원해줌
 
 ```cpp
 int main()
