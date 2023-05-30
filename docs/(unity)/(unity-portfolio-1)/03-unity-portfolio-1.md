@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "14-2. (미니 RPG) 마우스커서"
-parent: "(Basic)"
+title: "3. 마우스커서"
+parent: "(포트폴리오 1 - 미니RPG)"
 grand_parent: "(Unity ✨)"
-nav_order: 2
+nav_order: 1
 ---
 
 ## Table of contents
