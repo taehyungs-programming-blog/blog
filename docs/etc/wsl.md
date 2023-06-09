@@ -18,12 +18,14 @@ nav_order: 10
 * 윈도우에서 Linux 환경쓰기
 * 환경구성 방법
     * Windows 기능 켜기/끄기
+* **(주의)** Hyper-V로 켜줘야함!! [참고사이트 🌍](https://imperfectblog.tistory.com/151)
     * Linux용 Window 하위 시스템 On -> **WSL1이 설치됨**
     * 가상 머신 플랫폼 On
     * Linux 커널 업데이트 패키지 다운 후 설치-> [링크](https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi) -> **WSL2가 설치됨**
     * Linux 배포판 설치 -> MS Store -> Ubuntu 20.04 LTS 설치 -> 실행
     * WSL2를 디폴트로 세팅 -> Power Shell `$ wsl --set-default-version 2` -> `$ wsl -l -v`
     * (추가) Visual Studio Code -> WSL 학장팩 설치
+
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/etc/os/os-1-1.png"/>
@@ -47,6 +49,27 @@ $ sudo apt-get install build-essential gdb
 $ gcc --version
 $ g++ --version
 $ gdb --version
+```
+
+```bash
+# ssh server 설치
+$ sudo apt-get install openssh-server
+$ sudo service ssh start
+
+# 시스템 시작시 ssh 자동실행
+$ sudo systemctl enable ssh
+
+# ssh port 및 접속방법 재설정 할 경우 수정
+$ sudo nano /etc/ssh/sshd_config
+
+# ssh 재시작
+$ sudo service ssh restart
+
+# ssh 상태확인
+$ sudo service ssh status
+
+# ssh 시작/중지
+$ sudo service ssh start/stop
 ```
 
 ---
