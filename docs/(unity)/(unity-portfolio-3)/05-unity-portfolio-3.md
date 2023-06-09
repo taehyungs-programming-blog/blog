@@ -90,6 +90,7 @@ public class ProjectileController : SkillController
 
 	public void SetInfo(int templateID, CreatureController owner, Vector3 moveDir)
 	{
+		// Skill Data로 부터 Skill 정보를 받아온다
 		if (Managers.Data.SkillDic.TryGetValue(templateID, out Data.SkillData data) == false) 
 		{
 			Debug.LogError("ProjecteController SetInfo Failed");
@@ -109,6 +110,7 @@ public class ProjectileController : SkillController
 		transform.position += _moveDir * _speed * Time.deltaTime;
 	}
 
+	// OnTriggerEnter2D를 받기위해서 prefab에서 trigger를 켜놔야함 (주의)
 	void OnTriggerEnter2D(Collider2D collision)
 	{
 		MonsterController mc = collision.gameObject.GetComponent<MonsterController>();
@@ -125,3 +127,49 @@ public class ProjectileController : SkillController
 	}
 }
 ```
+
+---
+
+* 쉽군 ... 
+* 좀 눈여겨 봐야할 점은
+
+```csharp
+// PlayerController에서 Projectile을 소환하는데
+
+IEnumerator CoStartProjectile()
+{
+	WaitForSeconds wait = new WaitForSeconds(0.5f);
+
+	while (true)
+	{
+		// Manager의 Spawn을 사용한다(중앙에서 관리하기 위함)
+		ProjectileController pc = Managers.Object.Spawn<ProjectileController>(_fireSocket.position, 1);
+		pc.SetInfo(1, this, (_fireSocket.position - _indicator.position).normalized);
+
+		yield return wait;
+	}
+}
+```
+
+```csharp
+public T Spawn<T>(Vector3 position, int templateID = 0) where T : BaseController
+{
+	// ...
+	else if (type == typeof(ProjectileController))
+	{
+		GameObject go = Managers.Resource.Instantiate("FireProjectile.prefab", pooling: true);
+		go.transform.position = position;
+
+		ProjectileController pc = go.GetOrAddComponent<ProjectileController>();
+		Projectiles.Add(pc);
+		pc.Init();
+
+		return pc as T;
+	}
+
+	return null;
+}
+```
+
+* 이런식으로 Manager에서 Object의 생성 및 삭제를 관리하는것에 유의!
+
