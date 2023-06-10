@@ -17,7 +17,7 @@ nav_order: 1
 
 ---
 
-👾 화살 컨트롤을 위해서 ArrowController.cs 생성
+* 화살 컨트롤을 위해서 `ArrowController.cs` 생성
 
 ```csharp
 public class ArrowController : CreatureController
@@ -93,29 +93,29 @@ public class ArrowController : CreatureController
 ```
 
 ```csharp
-	void GetIdleInput()
+void GetIdleInput()
+{
+    if (Input.GetKey(KeyCode.Space))
     {
-		if (Input.GetKey(KeyCode.Space))
-        {
-			State = CreatureState.Skill;
-			// _coSkill = StartCoroutine("CoStartPunch");
-			_coSkill = StartCoroutine("CoStartShootArrow");
-		}
-	}
+        State = CreatureState.Skill;
+        // _coSkill = StartCoroutine("CoStartPunch");
+        _coSkill = StartCoroutine("CoStartShootArrow");
+    }
+}
 
-	IEnumerator CoStartShootArrow()
-    {
-		GameObject go = Managers.Resource.Instantiate("Creature/Arrow");
-		ArrowController ac = go.GetComponent<ArrowController>();
-		ac.Dir = _lastDir;
-		ac.CellPos = CellPos;
-		_rangeSkill = true;
-		// 대기 시간
-		yield return new WaitForSeconds(0.3f);
-		State = CreatureState.Idle;
-		_coSkill = null;
+IEnumerator CoStartShootArrow()
+{
+    GameObject go = Managers.Resource.Instantiate("Creature/Arrow");
+    ArrowController ac = go.GetComponent<ArrowController>();
+    ac.Dir = _lastDir;
+    ac.CellPos = CellPos;
+    _rangeSkill = true;
+    // 대기 시간
+    yield return new WaitForSeconds(0.3f);
+    State = CreatureState.Idle;
+    _coSkill = null;
 
-	}
+}
 
-    // ...
+// ...
 ```

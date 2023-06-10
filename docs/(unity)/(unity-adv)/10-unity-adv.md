@@ -1,8 +1,8 @@
 ---
 layout: default
 title: "10. 멀티플레이"
-parent: Unity-심화
-grand_parent: "Unity 🎡"
+parent: "(Advanced)"
+grand_parent: "(Unity ✨)"
 nav_order: 2
 ---
 
@@ -16,7 +16,7 @@ nav_order: 2
 
 * [Get Code 🌍](https://github.com/EasyCoding-7/UnityPortfolio/tree/10.multiplay)
 
-🛵 Client를 여러개 띄워서 서버에 접속하게 해보자.
+* Client를 여러개 띄워서 서버에 접속하게 해보자.
 
 ```csharp
 // 우선 기존 Server 코드를 조금 정리해 주자.
@@ -56,9 +56,9 @@ class ClientSession : PacketSession
 
 ---
 
-🛵 Unity는 하나의 프로젝트에서 두 개의 바이너리 실행이 불가능 하기에, 프로젝트를 하나 더 만들거나 빌드 후 바이너리를 두 번 실행하거나 둘 중하나를 해야한다.<br>
-🛵 보통 빌드 후 바이너리를 두 번실행하곤 한다.<br>
-🛵 **File -> Build Setting** -> Build 클릭
+* Unity는 하나의 프로젝트에서 두 개의 바이너리 실행이 불가능 하기에, 프로젝트를 하나 더 만들거나 빌드 후 바이너리를 두 번 실행하거나 둘 중하나를 해야한다.
+* 보통 빌드 후 바이너리를 두 번실행하곤 한다.
+* **File -> Build Setting** -> Build 클릭
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-10-1.png"/>
@@ -68,7 +68,9 @@ class ClientSession : PacketSession
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-10-2.png"/>
 </p>
 
-🛵 Unity는 위 과정을 코드로도 가능하다.
+---
+
+* Unity는 위 과정을 코드로도 가능하다.
 
 ```csharp
 public class MultiplayersBuildAndRun
@@ -123,5 +125,3 @@ public class MultiplayersBuildAndRun
 	}
 }
 ```
-
-

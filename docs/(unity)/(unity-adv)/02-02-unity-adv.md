@@ -17,8 +17,8 @@ nav_order: 1
 
 ---
 
-🥨 Map Editor를 만들어 보자.<br>
-🥨 우선 Map Editor의 손쉬운 접근을 위해서 Assets/Editor/MapEditor C# Script를 하나 만들고
+* Map Editor를 만들어 보자.
+* 우선 Map Editor의 손쉬운 접근을 위해서 Assets/Editor/MapEditor C# Script를 하나 만들고
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-2-2-1.png"/>
@@ -112,7 +112,7 @@ public class MapEditor : MonoBehaviour
 
 ```
 
-🥨 Prefabs산하의 Map에 대해 모두 output.txt를 뽑게 변경해보자.
+* Prefabs산하의 Map에 대해 모두 output.txt를 뽑게 변경해보자.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-2-2-3.png"/>

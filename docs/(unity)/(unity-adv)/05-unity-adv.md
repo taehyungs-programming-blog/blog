@@ -1,8 +1,8 @@
 ---
 layout: default
 title: "5. Controller 정리"
-parent: Unity-심화
-grand_parent: "Unity 🎡"
+parent: "(Advanced)"
+grand_parent: "(Unity ✨)"
 nav_order: 1
 ---
 
@@ -16,13 +16,13 @@ nav_order: 1
 
 * [Get Code 🌍](https://github.com/EasyCoding-7/UnityPortfolio/tree/5.Controller)
 
-🐹 몬스터용으로 사용할 Player를 하나 복사해 색상만 바꿔 보자.
+* 몬스터용으로 사용할 Player를 하나 복사해 색상만 바꿔 보자.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-5-1.png"/>
 </p>
 
-🐹 이제 몬스터용 컨트롤러(MonsterController.cs)를 별도로 만들어보자.
+* 이제 몬스터용 컨트롤러(MonsterController.cs)를 별도로 만들어보자.
 
 ```csharp
 public class MonsterController : CreatureController

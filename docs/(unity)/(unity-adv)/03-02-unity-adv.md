@@ -17,37 +17,37 @@ nav_order: 1
 
 ---
 
-🦄 Player에 Animator를 붙여준다.
+* Player에 Animator를 붙여준다.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-3-2-1.png"/>
 </p>
 
-🦄 Animator에는 Controller가 필요하니 Animator Controller를 만들어 붙여준다.
+* Animator에는 Controller가 필요하니 Animator Controller를 만들어 붙여준다.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-3-2-2.png"/>
 </p>
 
-🦄 Animation에 사용될 Sprite를 모두 드래그앤드롭하여 Player에 넣어주자
+* Animation에 사용될 Sprite를 모두 드래그앤드롭하여 Player에 넣어주자
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-3-2-3.png"/>
 </p>
 
-🦄 넣어주면 이런게 생긴다.
+* 넣어주면 이런게 생긴다.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-3-2-4.png"/>
 </p>
 
-🦄 아래와 같이 필요한 Animation을 모두 드래그 앤 드롭하고
+* 아래와 같이 필요한 Animation을 모두 드래그 앤 드롭하고
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-3-2-5.png"/>
 </p>
 
-🦄 여기서 Sprite가 하나면 그냥 Player에 드래그 앤 드롭하면 object로 들어가 버리는데 아래와 같이 하면 된다.
+* 여기서 Sprite가 하나면 그냥 Player에 드래그 앤 드롭하면 object로 들어가 버리는데 아래와 같이 하면 된다.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-3-2-6.png"/>
@@ -57,7 +57,7 @@ nav_order: 1
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-3-2-7.png"/>
 </p>
 
-🦄 이제 PlayerController.cs에서 상태를 관리하면 애니메이션을 동작해 보자.
+* 이제 PlayerController.cs에서 상태를 관리하면 애니메이션을 동작해 보자.
 
 ```cs
 public class PlayerController : MonoBehaviour
@@ -127,5 +127,3 @@ public class PlayerController : MonoBehaviour
 
     // ...
 ```
-
-

@@ -17,8 +17,8 @@ nav_order: 1
 
 ---
 
-🍬 몬스터 사망시 나타나는 애니메이션이 필요하다<br>
-🍬 **Tiny RPG Forest/Artwork/sprites/misc/enemy-death**의 sprite중 하나를 gameobject에 넣으면 Sprite Renderer가 붙은 Gameobject가 하나 생성된다.
+* 몬스터 사망시 나타나는 애니메이션이 필요하다
+* **Tiny RPG Forest/Artwork/sprites/misc/enemy-death**의 sprite중 하나를 gameobject에 넣으면 Sprite Renderer가 붙은 Gameobject가 하나 생성된다.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-7-3-1.png"/>
@@ -28,7 +28,7 @@ nav_order: 1
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-7-3-2.png"/>
 </p>
 
-🍬 생성한 DieEffect GameObject에 Animator 컴포넌트를 하나 추가하고, Animator Controller를 추가한다.
+* 생성한 DieEffect GameObject에 Animator 컴포넌트를 하나 추가하고, Animator Controller를 추가한다.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-7-3-3.png"/>

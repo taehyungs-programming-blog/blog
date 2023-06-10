@@ -14,6 +14,3 @@ nav_order: 1
 ---
 
 * [Get Code 🌍](https://github.com/EasyCoding-7/UnityPortfolio/tree/8.3.Skill)
-
-
-

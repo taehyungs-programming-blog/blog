@@ -1,8 +1,8 @@
 ---
 layout: default
 title: "4. MapManager"
-parent: Unity-심화
-grand_parent: "Unity 🎡"
+parent: "(Advanced)"
+grand_parent: "(Unity ✨)"
 nav_order: 1
 ---
 
@@ -16,8 +16,8 @@ nav_order: 1
 
 * [Get Code 🌍](https://github.com/EasyCoding-7/UnityPortfolio/tree/4.MapManager)
 
-🦝 현재 해결이 필요한 부분은 충돌처리, 화면을 벗어날시 처리이다.<br>
-🦝 우선 충돌처리를 먼저해보자면.
+* 현재 해결이 필요한 부분은 충돌처리, 화면을 벗어날시 처리이다.
+* 우선 충돌처리를 먼저해보자면.
 
 ```csharp
 public class MapManager
@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour
 }
 ```
 
-🦝 이제 화면을 벗어나면 어떻게 처리할지 
+* 이제 화면을 벗어나면 어떻게 처리할지 
 
 ```csharp
 public class PlayerController : MonoBehaviour

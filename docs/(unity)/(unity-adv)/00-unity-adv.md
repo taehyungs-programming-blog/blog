@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Unity-심화
-parent: "Unity 🎡"
+title: "(Advanced)"
+parent: "(Unity ✨)"
 has_children: true
 nav_order: 2
 ---

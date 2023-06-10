@@ -1,8 +1,8 @@
 ---
 layout: default
 title: "6. ObjectManager"
-parent: Unity-심화
-grand_parent: "Unity 🎡"
+parent: "(Advanced)"
+grand_parent: "(Unity ✨)"
 nav_order: 1
 ---
 
@@ -20,9 +20,9 @@ nav_order: 1
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-6-1.png"/>
 </p>
 
-🍂 몬스터, Player간 충돌기능을 넣어보자.
+* 몬스터, Player간 충돌기능을 넣어보자.
 
-```cs
+```csharp
 public class ObjectManager
 {
     List<GameObject> _objects = new List<GameObject>();
@@ -62,43 +62,43 @@ public class ObjectManager
 
 ```
 
-```cs
-	void UpdateIsMoving()
-	{
-		if (State == CreatureState.Idle && _dir != MoveDir.None)
-		{
-			Vector3Int destPos = CellPos;
+```csharp
+void UpdateIsMoving()
+{
+    if (State == CreatureState.Idle && _dir != MoveDir.None)
+    {
+        Vector3Int destPos = CellPos;
 
-			switch (_dir)
-			{
-				case MoveDir.Up:
-					destPos += Vector3Int.up;
-					break;
-				case MoveDir.Down:
-					destPos += Vector3Int.down;
-					break;
-				case MoveDir.Left:
-					destPos += Vector3Int.left;
-					break;
-				case MoveDir.Right:
-					destPos += Vector3Int.right;
-					break;
-			}
+        switch (_dir)
+        {
+            case MoveDir.Up:
+                destPos += Vector3Int.up;
+                break;
+            case MoveDir.Down:
+                destPos += Vector3Int.down;
+                break;
+            case MoveDir.Left:
+                destPos += Vector3Int.left;
+                break;
+            case MoveDir.Right:
+                destPos += Vector3Int.right;
+                break;
+        }
 
-			if (Managers.Map.CanGo(destPos))
-			{
-                // Cango 호출후 체크
-				if(Managers.Object.Find(destPos) == null)
-                {
-					CellPos = destPos;
-					State = CreatureState.Moving;
-                }
-			}
-		}
-	}
+        if (Managers.Map.CanGo(destPos))
+        {
+            // Cango 호출후 체크
+            if(Managers.Object.Find(destPos) == null)
+            {
+                CellPos = destPos;
+                State = CreatureState.Moving;
+            }
+        }
+    }
+}
 ```
 
-```cs
+```csharp
 public class GameScene : BaseScene
 {
     protected override void Init()

@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "9. Protobuf"
-parent: Unity-심화
-grand_parent: "Unity 🎡"
+title: "9. ProtoBuf"
+parent: "(Advanced)"
+grand_parent: "(Unity ✨)"
 nav_order: 1
 ---
 
@@ -21,19 +21,19 @@ nav_order: 1
 * [ProtoBuf C# Tutorial 🌍](https://developers.google.com/protocol-buffers/docs/csharptutorial)
 * [ProtoBuf v3.12.3 Down 🌍](https://github.com/protocolbuffers/protobuf/releases/tag/v3.12.3)
 
-🦝 Protobuf자체를 빌드할게 아니라면 **protoc-3.12.3-win64.zip**을 다운받으면 된다.
+* Protobuf자체를 빌드할게 아니라면 **protoc-3.12.3-win64.zip**을 다운받으면 된다.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-9-1.png"/>
 </p>
 
-🦝 Common아래 Protoc를 넣자
+* Common아래 Protoc를 넣자
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-9-2.png"/>
 </p>
 
-🦝 ProtoBuf의 사용을 위해선 NuGet의 설치가 필요하다.
+* ProtoBuf의 사용을 위해선 NuGet의 설치가 필요하다.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-9-3.png"/>
@@ -80,4 +80,3 @@ namespace Server
 
             // ...
 ```
-

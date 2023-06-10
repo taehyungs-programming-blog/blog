@@ -17,19 +17,19 @@ nav_order: 1
 
 ---
 
-🍖 Player로 사용할 **Tiny RPG Forest/Artwork/sprites/hero/** 를 하나 만들자
+* Player로 사용할 **Tiny RPG Forest/Artwork/sprites/hero/** 를 하나 만들자
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-3-1-1.png"/>
 </p>
 
-🍖 그런데 Scene에 넣어도 캐릭터가 너무작아서 안보이는데 Pixels Per Unit을 16으로 바꾸면 나타난다.
+* 그런데 Scene에 넣어도 캐릭터가 너무작아서 안보이는데 Pixels Per Unit을 16으로 바꾸면 나타난다.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-3-1-2.png"/>
 </p>
 
-🍖 Player Controller를 Player에 붙이자
+* Player Controller를 Player에 붙이자
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/csharp/unity-adv/unity-adv-3-1-3.png"/>
@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
 }
 ```
 
-🍖 셀에 맞춰서 움직이게 해보자.
+* 셀에 맞춰서 움직이게 해보자.
 
 ```cs
 public class PlayerController : MonoBehaviour
