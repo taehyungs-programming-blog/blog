@@ -111,7 +111,7 @@ public class PlayerController : CreatureController
 * Window -> Asset Manager -> Group 클릭
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unity/portfolio-2/p3-2-1.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unity/portfolio-3/p3-2-1.png"/>
 </p>
 
 ```csharp
@@ -211,7 +211,7 @@ public class ObjectManager
 * 출돌을 위해서 Prefab에서 Box Collider 2D, Rigidbody 2D를 붙인다
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unity/portfolio-2/p3-2-2.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unity/portfolio-3/p3-2-2.png"/>
 </p>
 
 ---

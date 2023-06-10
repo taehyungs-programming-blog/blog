@@ -100,7 +100,7 @@ public class CameraController : MonoBehaviour
 * Main Camera Component에 Editor에서 붙임
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unity/portfolio-2/p3-1-1.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unity/portfolio-3/p3-1-1.png"/>
 </p>
 
 ---
@@ -110,7 +110,7 @@ public class CameraController : MonoBehaviour
 * Joystick의 주의사항은 Prefab에서 Raycast Target을 지정해놔야 우선순위로 터치 이벤트를 처리할 수 있다
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unity/portfolio-2/p3-1-2.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unity/portfolio-3/p3-1-2.png"/>
 </p>
 
 ```csharp

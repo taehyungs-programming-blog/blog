@@ -5,3 +5,7 @@ parent: "(Unity ✨)"
 has_children: true
 nav_order: 2
 ---
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unity/portfolio-1/p1-0-1.gif"/>
+</p>
