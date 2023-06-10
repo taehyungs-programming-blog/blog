@@ -16,6 +16,11 @@ nav_order: 2
 
 * 기존 코드의 복습에 가깝다
     * Event Bind부분은 다름!
+* 눈여겨 볼 부분?
+    * `BindXXX(typeof(GameObjects));`으로 Bind하는 부분인데
+    * Unity는 해당 Prefab에 직접접근이 안된다
+    * 그래서 변수를 별도로 하나 빼서 Unity Editor에서 드래그앤 드롭으로 연결하는 방식
+    * 코드상에서 처리하고 싶어서 Bind함수를 만들었다
 
 ```csharp
 public class UI_GameResultPopup : UI_Base
