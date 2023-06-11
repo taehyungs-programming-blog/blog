@@ -2,7 +2,7 @@
 layout: default
 title: "13. Async IO"
 parent: (C# Adv)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 2
 ---
 

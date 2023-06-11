@@ -2,7 +2,7 @@
 layout: default
 title: "Qt5 Native Code"
 parent: (QT)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 1
 ---
 

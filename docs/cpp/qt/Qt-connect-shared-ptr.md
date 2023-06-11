@@ -2,7 +2,7 @@
 layout: default
 title: "QSharedPointer는 Connect가 될까?"
 parent: (QT)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 1
 ---
 

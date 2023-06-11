@@ -2,7 +2,7 @@
 layout: default
 title: "4. 데이터 수정(Create, Update, Delete)"
 parent: (Entity)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

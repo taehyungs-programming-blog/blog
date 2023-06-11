@@ -1,8 +1,8 @@
 ---
 layout: default
 title: "09. Routed Event"
-parent: "(WPF basic)"
-grand_parent: "(WPF)"
+parent: "(WPF)"
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

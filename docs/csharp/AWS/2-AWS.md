@@ -2,7 +2,7 @@
 layout: default
 title: "2. 파일 다루기"
 parent: (AWS)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

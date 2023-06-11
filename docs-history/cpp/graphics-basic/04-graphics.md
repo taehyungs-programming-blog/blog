@@ -2,7 +2,7 @@
 layout: default
 title: "04. 원 그리기"
 parent: "(Graphics Basic 🎡)"
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 1
 ---
 

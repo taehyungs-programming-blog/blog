@@ -2,7 +2,7 @@
 layout: default
 title: "QT Event에 관한 몇가지 사실"
 parent: (QT)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 1
 ---
 

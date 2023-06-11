@@ -2,7 +2,7 @@
 layout: default
 title: "01. 환경설정 + Example 구조분석"
 parent: "(Graphics Basic 🎡)"
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 1
 ---
 

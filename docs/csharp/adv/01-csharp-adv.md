@@ -2,7 +2,7 @@
 layout: default
 title: "1. IL(Intermediate Language)"
 parent: (C# Adv)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

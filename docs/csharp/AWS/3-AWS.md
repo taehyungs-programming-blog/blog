@@ -2,7 +2,7 @@
 layout: default
 title: "3. VI 에디터"
 parent: (AWS)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

@@ -2,7 +2,7 @@
 layout: default
 title: "1. 환경설정 + DB연결"
 parent: (Entity)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

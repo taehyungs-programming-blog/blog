@@ -2,7 +2,7 @@
 layout: default
 title: "6. 각종 서비스"
 parent: (AWS)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

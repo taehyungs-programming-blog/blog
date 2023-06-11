@@ -1,8 +1,8 @@
 ---
 layout: default
 title: "11. Control"
-parent: "(WPF basic)"
-grand_parent: "(WPF)"
+parent: "(WPF)"
+grand_parent: "(C#)"
 nav_order: 2
 ---
 

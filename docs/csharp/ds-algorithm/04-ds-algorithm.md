@@ -2,7 +2,7 @@
 layout: default
 title: "04. graph"
 parent: "(자료구조 & 알고리즘)"
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

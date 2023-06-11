@@ -2,7 +2,7 @@
 layout: default
 title: "31. (C++17) std::apply"
 parent: (C++)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 5
 ---
 

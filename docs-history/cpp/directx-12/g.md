@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "(DirectX 12 🌠)"
-parent: C++
+parent: (C++)
 has_children: true
 nav_order: 11
 ---

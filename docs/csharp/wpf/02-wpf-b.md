@@ -2,7 +2,7 @@
 layout: default
 title: "02. Event Handling"
 parent: "(WPF)"
-grand_parent: "C#"
+grand_parent: "(C#)"
 nav_order: 1
 ---
 
@@ -18,7 +18,7 @@ nav_order: 1
 
 ### method override
 
-* [Get Code 🌎](https://github.com/EasyCoding-7/WPFExamples/tree/03/03)
+* [Get Code 🌎](https://github.com/Arthur880708/WPF-Example/tree/master/03)
 
 ```csharp
 using System;

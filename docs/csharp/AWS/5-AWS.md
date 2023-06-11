@@ -2,7 +2,7 @@
 layout: default
 title: "5. VPC(Virtual Private Cloud)"
 parent: (AWS)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

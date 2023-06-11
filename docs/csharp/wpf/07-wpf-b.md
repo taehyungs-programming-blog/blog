@@ -1,8 +1,8 @@
 ---
 layout: default
 title: "07. Sliding Puzzle Game 만들어보기"
-parent: "(WPF basic)"
-grand_parent: "(WPF)"
+parent: "(WPF)"
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

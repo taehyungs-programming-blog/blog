@@ -2,7 +2,7 @@
 layout: default
 title: "6. Pattern Matching"
 parent: (C# Adv)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

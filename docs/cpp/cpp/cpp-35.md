@@ -2,7 +2,7 @@
 layout: default
 title: "35. std::forward"
 parent: (C++)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 5
 ---
 

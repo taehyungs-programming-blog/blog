@@ -2,7 +2,7 @@
 layout: default
 title: "07. 원근법 적용"
 parent: "(Graphics Basic 🎡)"
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 1
 ---
 

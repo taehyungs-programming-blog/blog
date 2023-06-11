@@ -2,7 +2,7 @@
 layout: default
 title: "34. std::initializer_list"
 parent: (C++)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 5
 ---
 

@@ -2,7 +2,7 @@
 layout: default
 title: "Qt Concurrency 정리"
 parent: (QT)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 1
 ---
 

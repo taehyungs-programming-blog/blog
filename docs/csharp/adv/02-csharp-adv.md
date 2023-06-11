@@ -2,7 +2,7 @@
 layout: default
 title: "2. 참조(Class) 타입 생성자"
 parent: (C# Adv)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

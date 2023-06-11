@@ -2,7 +2,7 @@
 layout: default
 title: "29. std::explicit"
 parent: (C++)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 3
 ---
 

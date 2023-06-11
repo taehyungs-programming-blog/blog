@@ -2,7 +2,7 @@
 layout: default
 title: "32. std::set"
 parent: (C++)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 5
 ---
 

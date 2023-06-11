@@ -1,8 +1,8 @@
 ---
 layout: default
 title: "15. Command"
-parent: "(WPF basic)"
-grand_parent: "(WPF)"
+parent: "(WPF)"
+grand_parent: "(C#)"
 nav_order: 2
 ---
 

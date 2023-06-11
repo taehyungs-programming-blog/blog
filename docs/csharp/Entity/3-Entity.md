@@ -2,7 +2,7 @@
 layout: default
 title: "3. Read (데이터 쿼리)"
 parent: (Entity)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

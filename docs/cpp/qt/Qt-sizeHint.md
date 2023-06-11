@@ -2,7 +2,7 @@
 layout: default
 title: "size와 sizeHint + widget의 정확한 size는 언제 구할 수 있을까?"
 parent: (QT)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 1
 ---
 

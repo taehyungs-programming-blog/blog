@@ -2,7 +2,7 @@
 layout: default
 title: "23. notify, wait"
 parent: (C++)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 3
 ---
 

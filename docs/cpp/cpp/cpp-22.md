@@ -2,7 +2,7 @@
 layout: default
 title: "22. C++11 이후 thread"
 parent: (C++)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 3
 ---
 

@@ -2,7 +2,7 @@
 layout: default
 title: "5. Index & Range"
 parent: (C# Adv)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

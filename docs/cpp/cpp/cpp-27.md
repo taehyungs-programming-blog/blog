@@ -2,7 +2,7 @@
 layout: default
 title: "27. std::tuple, structor binding"
 parent: (C++)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 3
 ---
 

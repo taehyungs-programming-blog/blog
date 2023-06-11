@@ -2,7 +2,7 @@
 layout: default
 title: "QString은 어떻게 인코딩되어 있나?"
 parent: (QT)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 1
 ---
 

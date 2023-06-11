@@ -2,7 +2,7 @@
 layout: default
 title: "33. std::vector vs std::array"
 parent: (C++)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 5
 ---
 

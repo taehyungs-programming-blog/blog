@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "01. 환경설정"
+title: "01. 프로젝트 설정"
 parent: "(WPF)"
-grand_parent: "C#"
+grand_parent: "(C#)"
 nav_order: 1
 ---
 
@@ -26,13 +26,13 @@ nav_order: 1
     * System.Xaml
     * WindowsBase
 
-* [Get Code 🌎](https://github.com/EasyCoding-7/WPFExamples/tree/01/01)
+* [Get Code 🌎](https://github.com/Arthur880708/WPF-Example/tree/master/01)
 
 ---
 
 ## 윈도우 띄워보기
 
-* [Get Code 🌎](https://github.com/EasyCoding-7/WPFExamples/tree/02/02)
+* [Get Code 🌎](https://github.com/Arthur880708/WPF-Example/tree/master/02)
 
 ```csharp
 using System;
@@ -83,3 +83,4 @@ public class Program
     }
 }
 ```
+

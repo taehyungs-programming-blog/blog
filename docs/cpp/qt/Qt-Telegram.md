@@ -2,7 +2,7 @@
 layout: default
 title: "QT GUI의 끝판왕 Telegram 분석기"
 parent: (QT)
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 1
 ---
 

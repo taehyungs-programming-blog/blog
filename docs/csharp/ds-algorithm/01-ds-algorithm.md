@@ -2,7 +2,7 @@
 layout: default
 title: "01. 배열/동적배열/연결리스트"
 parent: "(자료구조 & 알고리즘)"
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

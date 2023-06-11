@@ -2,7 +2,7 @@
 layout: default
 title: "8. C# 8.0 최신 문법"
 parent: (C# Adv)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

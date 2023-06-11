@@ -2,7 +2,7 @@
 layout: default
 title: "10. 무게 중심 좌표계"
 parent: "(Graphics Basic 🎡)"
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 2
 ---
 

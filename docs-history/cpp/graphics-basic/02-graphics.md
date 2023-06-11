@@ -2,7 +2,7 @@
 layout: default
 title: "02. Gussian Filter"
 parent: "(Graphics Basic 🎡)"
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 1
 ---
 

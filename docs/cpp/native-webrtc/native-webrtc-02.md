@@ -2,7 +2,7 @@
 layout: default
 title: "2. WebRTC Architecture"
 parent: "(native-WebRTC)"
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 1
 ---
 

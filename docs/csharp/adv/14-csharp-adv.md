@@ -2,7 +2,7 @@
 layout: default
 title: "14. Stream Decorator"
 parent: (C# Adv)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 2
 ---
 

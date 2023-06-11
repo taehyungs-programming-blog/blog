@@ -2,7 +2,7 @@
 layout: default
 title: "4. EC2"
 parent: (AWS)
-grand_parent: C#
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

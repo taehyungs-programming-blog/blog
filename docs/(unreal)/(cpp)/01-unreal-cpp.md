@@ -18,10 +18,10 @@ nav_order: 1
 
 * Visual Studio Community 2022
     * C++을 이용한 게임개발 설치할 것
-    * [Visual Commander](https://marketplace.visualstudio.com/items?itemName=SergeyVlasov.VisualCommander)도 다운받아 두자
-    * [ue4-vs-extensions](https://github.com/hackalyze/ue4-vs-extensions)도 다운받아 두자
-    * Visual Commander에서 us4-vs-extensions을 Import하자
-        * 다운받은 `ue4_smarter_macro_indenting_vs2017-2019.vcmd`를 Import하면 됨.
+* [Visual Commander](https://marketplace.visualstudio.com/items?itemName=SergeyVlasov.VisualCommander)
+* [ue4-vs-extensions](https://github.com/hackalyze/ue4-vs-extensions)
+* Visual Commander에서 us4-vs-extensions을 Import하자
+    * 다운받은 `ue4_smarter_macro_indenting_vs2017-2019.vcmd`를 Import하면 됨.
 * Unreal 5.1.1
     * 이후에 심볼도 사용되니 심볼까지 설치하는것 추천
 

@@ -1,8 +1,8 @@
 ---
 layout: default
 title: "05. WPF Project 생성, XAML + Code"
-parent: "(WPF basic)"
-grand_parent: "(WPF)"
+parent: "(WPF)"
+grand_parent: "(C#)"
 nav_order: 1
 ---
 

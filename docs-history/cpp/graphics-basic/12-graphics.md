@@ -2,7 +2,7 @@
 layout: default
 title: "12. Super Sampling"
 parent: "(Graphics Basic 🎡)"
-grand_parent: C++
+grand_parent: (C++)
 nav_order: 2
 ---
 
