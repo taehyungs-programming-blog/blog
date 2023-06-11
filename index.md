@@ -6,7 +6,7 @@ permalink: /
 ---
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/about-me/photo2.jpg" style="border-radius:5%;border:1px solid #e6e1e8"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/about-me/photo.jpg" style="border-radius:5%;border:1px solid #e6e1e8"/>
 </p>
 
 ## 🙋‍♂️ About Me
