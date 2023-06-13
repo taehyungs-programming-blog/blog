@@ -26,6 +26,18 @@ nav_order: 10
     * WSL2를 디폴트로 세팅 -> Power Shell `$ wsl --set-default-version 2` -> `$ wsl -l -v`
     * (추가) Visual Studio Code -> WSL 학장팩 설치
 
+```bash
+# posershell의 명령 참조
+
+# 기본 버전 세팅
+$ wsl --set-default-version 2
+
+# 현재 버전 확인
+$ wsl -l -v
+
+# 버전올리기
+$ wsl --set-version {name} 2
+```
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/etc/os/os-1-1.png"/>
