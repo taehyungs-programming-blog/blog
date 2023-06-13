@@ -37,6 +37,13 @@ $ sudo apt-get update
 # gdb
 $ sudo apt-get install build-essentail gdb
  
+# 버전확인
+$ gcc --version
+$ g++ --version
+  # 만약 설치가 안되어 있다면
+  $ sudo apt-get install g++
+$ gdb --version
+
 # openssh
 $ sudo apt-get install openssh-server
 $ sudo service ssh start
@@ -47,6 +54,8 @@ $ sudo apt-get install cmake
  
 # ninja
 $ sudo apt-get install ninja
+# 설치가 안된다면
+$ sudo apt-get install ninja-build
 
 # << 여기부턴 옵션 >>
 # git

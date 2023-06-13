@@ -48,6 +48,8 @@ $ sudo apt-get install build-essential gdb
 # 버전확인
 $ gcc --version
 $ g++ --version
+  # 만약 설치가 안되어 있다면
+  $ sudo apt-get install g++
 $ gdb --version
 ```
 
