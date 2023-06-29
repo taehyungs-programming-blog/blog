@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "26. [C++17] std::variant"
-parent: (C++)
+parent: "(C++) 문법"
 grand_parent: (C++)
 nav_order: 3
 ---

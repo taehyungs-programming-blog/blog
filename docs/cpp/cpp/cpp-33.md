@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "33. std::vector vs std::array"
-parent: (C++)
+parent: "(C++) 문법"
 grand_parent: (C++)
 nav_order: 5
 ---

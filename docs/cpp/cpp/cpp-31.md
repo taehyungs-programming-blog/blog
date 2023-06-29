@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "31. (C++17) std::apply"
-parent: (C++)
+parent: "(C++) 문법"
 grand_parent: (C++)
 nav_order: 5
 ---

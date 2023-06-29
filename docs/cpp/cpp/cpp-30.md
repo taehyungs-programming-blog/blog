@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "30. 기본, 복사, 이동 생성자 호출"
-parent: (C++)
+parent: "(C++) 문법"
 grand_parent: (C++)
 nav_order: 4
 ---

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "36. std::vector와 std::array의 std::move"
-parent: (C++)
+parent: "(C++) 문법"
 grand_parent: (C++)
 nav_order: 5
 ---

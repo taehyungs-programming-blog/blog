@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "23. notify, wait"
-parent: (C++)
+parent: "(C++) 문법"
 grand_parent: (C++)
 nav_order: 3
 ---

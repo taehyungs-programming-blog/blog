@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "22. C++11 이후 thread"
-parent: (C++)
+parent: "(C++) 문법"
 grand_parent: (C++)
 nav_order: 3
 ---

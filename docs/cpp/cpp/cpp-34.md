@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "34. std::initializer_list"
-parent: (C++)
+parent: "(C++) 문법"
 grand_parent: (C++)
 nav_order: 5
 ---

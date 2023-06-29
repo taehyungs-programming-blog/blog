@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "37. 문자집합에 대해서 💥"
-parent: (C++)
+parent: "(C++) 문법"
 grand_parent: (C++)
 nav_order: 5
 ---
