@@ -1,7 +1,7 @@
 ---
 layout: default
-title: "(Unreal 5 - 기초)"
+title: "(Unreal BP - Basic)"
 parent: "(Unreal 🚀)"
 has_children: true
-nav_order: 6
+nav_order: 1
 ---
