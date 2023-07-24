@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "(Unreal BP - Basic)"
+title: "(Unreal C++ - Basic Example)"
 parent: "(Unreal 🚀)"
 has_children: true
 nav_order: 1
