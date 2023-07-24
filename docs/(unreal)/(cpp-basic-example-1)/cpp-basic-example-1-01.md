@@ -29,7 +29,9 @@ nav_order: 1
     * 2022를 사용하는 것을 추천(2019도 상관은 없음)
     * C++를 사용한 게임 개발을 설치하며 Unreal Engine 설치 관리자가 포함되어야 함을 주의
 
-<사진1>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-1-1.png"/>
+</p>
 
 * Visual Studio Code Extension
     * C/C++
@@ -45,9 +47,13 @@ nav_order: 1
     * Auto Possess Player를 Player0로 설정한다
 * 상속한 ThirdPersonChacter Event Graph에 Warning이 두 개 나있을건데 아래와 같이 해결한다
 
-<사진2>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-1-2.png"/>
+</p>
 
-<사진3>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-1-3.png"/>
+</p>
 
 ---
 

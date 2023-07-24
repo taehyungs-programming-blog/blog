@@ -18,7 +18,9 @@ nav_order: 1
 
 * 아래와 같이 수정 후 Editor에서 Recompile And Reload버튼을 클릭
 
-<사진1>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-2-1.png"/>
+</p>
 
 ```cpp
 UCLASS()
@@ -72,7 +74,9 @@ void AMovingActors::Tick(float DeltaTime)
 
 * C++ 클래스 우클릭 후 Create Blueprint class based on ... 클릭
 
-<사진>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-2-2.png"/>
+</p>
 
 ---
 
@@ -80,12 +84,16 @@ void AMovingActors::Tick(float DeltaTime)
 
 * 현재의 문제점은 충돌이 되면 카메라 처리가 이상하게 된다. + 캐릭터가 밀리지 않는다
 
-<사진>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-2-3.png"/>
+</p>
 
 * 해결법은 일종의 편법을 사용해야한다
 * MoveUpdate를 호출하여 캐릭터의 움직임의 변화를 매 Tick체크해야함
 
-<사진>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-2-4.png"/>
+</p>
 
 ---
 
@@ -93,11 +101,15 @@ void AMovingActors::Tick(float DeltaTime)
 
 * 우선 아래와 같이 GameMode를 생성해보자
 
-<사진>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-2-5.png"/>
+</p>
 
 * 생성된 GameMode의 Default Pawn Class를 기존에 생성한 Blueprint Character로 설정한다
 
-<사진>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-2-6.png"/>
+</p>
 
 * 이제 Level에 생성된 Blueprint Character를 삭제하고 PlayStart로 대체한다
 
