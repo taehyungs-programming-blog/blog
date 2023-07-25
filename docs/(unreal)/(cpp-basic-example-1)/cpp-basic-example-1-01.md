@@ -71,7 +71,7 @@ nav_order: 1
 * 아래와 같이 수정 후 Editor에서 Recompile And Reload버튼을 클릭
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-2-1.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-1-4.png"/>
 </p>
 
 ```cpp
@@ -127,7 +127,7 @@ void AMovingActors::Tick(float DeltaTime)
 * C++ 클래스 우클릭 후 Create Blueprint class based on ... 클릭
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-2-2.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-1-5.png"/>
 </p>
 
 ---
@@ -137,14 +137,14 @@ void AMovingActors::Tick(float DeltaTime)
 * 현재의 문제점은 충돌이 되면 카메라 처리가 이상하게 된다. + 캐릭터가 밀리지 않는다
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-2-3.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-1-6.png"/>
 </p>
 
 * 해결법은 일종의 편법을 사용해야한다
 * MoveUpdate를 호출하여 캐릭터의 움직임의 변화를 매 Tick체크해야함
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-2-4.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-1-7.png"/>
 </p>
 
 ---
@@ -154,13 +154,13 @@ void AMovingActors::Tick(float DeltaTime)
 * 우선 아래와 같이 GameMode를 생성해보자
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-2-5.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-1-8.png"/>
 </p>
 
 * 생성된 GameMode의 Default Pawn Class를 기존에 생성한 Blueprint Character로 설정한다
 
 <p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-2-6.png"/>
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-1-9.png"/>
 </p>
 
 * 이제 Level에 생성된 Blueprint Character를 삭제하고 PlayStart로 대체한다
@@ -173,10 +173,13 @@ void AMovingActors::Tick(float DeltaTime)
 * 역시 Collision을 이용, 간단히 Line이나 Shape를 쏴 앞에 있는 물체의 Collsion을 얻어오는 방식이다
 * Project Settings -> Engine -> Collision -> Trace Channels 에서 New Trace Channel로 새채널을 만든다
 
-<사진1>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-1-10.png"/>
+</p>
 
 * 잡을수 있는 Object의 Collision Preset을 Custom으로 둔다
 
-<사진2>
-
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/cpp-basic-example-1/cpp-basic-example-1-11.png"/>
+</p>
 
