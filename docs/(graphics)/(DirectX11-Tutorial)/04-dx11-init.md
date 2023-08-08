@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "04. Engine 구조 잡기"
+title: "04. Lighting, Material"
 parent: "(DirectX11 Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1
