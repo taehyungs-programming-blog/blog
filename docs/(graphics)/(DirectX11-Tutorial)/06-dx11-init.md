@@ -36,4 +36,24 @@ struct VertexTextureNormalTangentBlend
 
 ## 에니메이션 적용
 
+```cpp
+void AnimationDemo::CreateKachujin()
+{
+	shared_ptr<class Model> m1 = make_shared<Model>();
+	m1->ReadModel(L"Kachujin/Kachujin");
+	m1->ReadMaterial(L"Kachujin/Kachujin");
+	m1->ReadAnimation(L"Kachujin/Idle");
+	m1->ReadAnimation(L"Kachujin/Run");
+	m1->ReadAnimation(L"Kachujin/Slash");
 
+	_obj = make_shared<GameObject>();
+	_obj->GetOrAddTransform()->SetPosition(Vec3(0, 0, 1));
+	_obj->GetOrAddTransform()->SetScale(Vec3(0.01f));
+
+	_obj->AddComponent(make_shared<ModelAnimator>(_shader));
+	{
+		_obj->GetModelAnimator()->SetModel(m1);
+		//_obj->GetModelAnimator()->SetPass(1);
+	}
+}
+```
