@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "(DirectX11 Tutorial)"
+title: "(DirectX11 2D Tutorial)"
 parent: "(Graphics 😎)"
 has_children: true
 nav_order: 1

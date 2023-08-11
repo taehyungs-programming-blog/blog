@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "01. Project Settings"
-parent: "(DirectX11 Tutorial)"
+parent: "(DirectX11 2D Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1
 ---

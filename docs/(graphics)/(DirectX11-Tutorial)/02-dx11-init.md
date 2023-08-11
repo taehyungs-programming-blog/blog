@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "02. (Math) Matrix"
-parent: "(DirectX11 Tutorial)"
+parent: "(DirectX11 2D Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1
 ---

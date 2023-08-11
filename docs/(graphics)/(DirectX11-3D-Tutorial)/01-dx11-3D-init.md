@@ -1,7 +1,7 @@
 ---
 layout: default
-title: "09. 물방울 책 정리"
-parent: "(DirectX11 2D Tutorial)"
+title: "01. Project Settings"
+parent: "(DirectX11 3D Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1
 ---

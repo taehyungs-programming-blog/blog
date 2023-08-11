@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "07. 인스턴싱"
-parent: "(DirectX11 Tutorial)"
+parent: "(DirectX11 2D Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1
 ---
@@ -45,3 +45,6 @@ nav_order: 1
 * 이번 장에선 이 인스턴싱을 공부해볼 예정이다.
 
 ---
+
+## Instancing을 적용해 보자
+
