@@ -50,3 +50,116 @@ nav_order: 1
 
 ## Instancing을 적용해 보자
 
+* 결론부터 말하면 `DrawIndexedInstanced`를 사용하게 된다.
+
+```cpp
+void InstancingDemo::Update()
+{
+	_camera->Update();
+	RENDER->Update();
+
+	{
+		LightDesc lightDesc;
+		lightDesc.ambient = Vec4(0.4f);
+		lightDesc.diffuse = Vec4(1.f);
+		lightDesc.specular = Vec4(0.1f);
+		lightDesc.direction = Vec3(1.f, 0.f, 1.f);
+		RENDER->PushLightData(lightDesc);
+	}
+
+	_material->Update();
+
+	_mesh->GetVertexBuffer()->PushData();
+	_instanceBuffer->PushData();
+	_mesh->GetIndexBuffer()->PushData();
+
+	_shader->DrawIndexedInstanced(0, 0, _mesh->GetIndexBuffer()->GetCount(), _objs.size());
+}
+```
+
+* 궁금한건 각 Instance의 World Position을 어떻게 넘기느냐다.
+
+```cpp
+void InstancingDemo::Init()
+{
+	// ...
+
+	// instance buffer라는 vertex buffer를 만들고
+	_instanceBuffer = make_shared<VertexBuffer>();
+
+	for (auto& obj : _objs)
+	{
+		Matrix world = obj->GetTransform()->GetWorldMatrix();
+		_worlds.push_back(world);
+	}
+
+  // 기존 vertex buffer와 차이를 두기위해 slot을 1로 정의한다
+	_instanceBuffer->Create(_worlds, /*slot*/1);
+}
+```
+
+```cpp
+void InstancingDemo::Update()
+{
+	// ...
+
+	_mesh->GetVertexBuffer()->PushData();
+
+  // instance buffer를 push한다
+	_instanceBuffer->PushData();
+	_mesh->GetIndexBuffer()->PushData();
+
+	_shader->DrawIndexedInstanced(0, 0, _mesh->GetIndexBuffer()->GetCount(), _objs.size());
+}
+```
+
+```cpp
+#include "00. Global.fx"
+#include "00. Light.fx"
+
+struct VS_IN
+{
+	float4 position : POSITION;
+	float2 uv : TEXCOORD;
+	float3 normal : NORMAL;
+	float3 tangent : TANGENT;
+	// INST일 경우 slot 1을 사용하게됨(effect 코드 참조)
+	matrix world : INST;
+};
+
+struct VS_OUT
+{
+	float4 position : SV_POSITION;
+	float3 worldPosition : POSITION1;
+	float2 uv : TEXCOORD;
+	float3 normal : NORMAL;
+};
+
+VS_OUT VS(VS_IN input)
+{
+	VS_OUT output;
+
+	output.position = mul(input.position, input.world); // W
+	output.worldPosition = output.position;
+	output.position = mul(output.position, VP);
+	output.uv = input.uv;
+	output.normal = input.normal;
+
+	return output;
+}
+
+float4 PS(VS_OUT input) : SV_TARGET
+{
+	float4 color = DiffuseMap.Sample(LinearSampler, input.uv);
+	return color;
+}
+
+technique11 T0
+{
+	PASS_VP(P0, VS, PS)
+};
+
+```
+
+---
+
