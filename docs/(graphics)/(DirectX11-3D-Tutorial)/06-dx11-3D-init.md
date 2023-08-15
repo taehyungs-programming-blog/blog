@@ -285,3 +285,199 @@ technique11 T0
 	PASS_RS_VP(P1, FillModeWireFrame, VS, PS_RED)
 };
 ```
+
+---
+
+## 애니메이션을 연속적으로 틀어보자
+
+```cpp
+#define MAX_MODEL_TRANSFORMS 250
+#define MAX_MODEL_KEYFRAMES 500
+
+struct KeyframeDesc
+{
+	int animIndex;
+	uint currFrame;
+	uint nextFrame;
+	float ratio;
+	float sumTime;
+	float speed;
+	float2 padding;
+};
+
+struct TweenFrameDesc
+{
+	float tweenDuration;
+	float tweenRatio;
+	float tweenSumTime;
+	float padding;
+	KeyframeDesc curr;
+	KeyframeDesc next;
+};
+
+cbuffer TweenBuffer
+{
+	TweenFrameDesc TweenFrames;
+};
+
+cbuffer BoneBuffer
+{
+	matrix BoneTransforms[MAX_MODEL_TRANSFORMS];
+};
+
+uint BoneIndex;
+Texture2DArray TransformMap;
+
+matrix GetAnimationMatrix(VertexTextureNormalTangentBlend input)
+{
+	float indices[4] = { input.blendIndices.x, input.blendIndices.y, input.blendIndices.z, input.blendIndices.w };
+	float weights[4] = { input.blendWeights.x, input.blendWeights.y, input.blendWeights.z, input.blendWeights.w };
+
+	int animIndex[2];
+	int currFrame[2];
+	int nextFrame[2];
+	float ratio[2];
+
+	animIndex[0] = TweenFrames.curr.animIndex;
+	currFrame[0] = TweenFrames.curr.currFrame;
+	nextFrame[0] = TweenFrames.curr.nextFrame;
+	ratio[0] = TweenFrames.curr.ratio;
+
+	animIndex[1] = TweenFrames.next.animIndex;
+	currFrame[1] = TweenFrames.next.currFrame;
+	nextFrame[1] = TweenFrames.next.nextFrame;
+	ratio[1] = TweenFrames.next.ratio;
+
+	float4 c0, c1, c2, c3;
+	float4 n0, n1, n2, n3;
+	matrix curr = 0;
+	matrix next = 0;
+	matrix transform = 0;
+
+	for (int i = 0; i < 4; i++)
+	{
+		c0 = TransformMap.Load(int4(indices[i] * 4 + 0, currFrame[0], animIndex[0], 0));
+		c1 = TransformMap.Load(int4(indices[i] * 4 + 1, currFrame[0], animIndex[0], 0));
+		c2 = TransformMap.Load(int4(indices[i] * 4 + 2, currFrame[0], animIndex[0], 0));
+		c3 = TransformMap.Load(int4(indices[i] * 4 + 3, currFrame[0], animIndex[0], 0));		
+		curr = matrix(c0, c1, c2, c3);
+
+		n0 = TransformMap.Load(int4(indices[i] * 4 + 0, nextFrame[0], animIndex[0], 0));
+		n1 = TransformMap.Load(int4(indices[i] * 4 + 1, nextFrame[0], animIndex[0], 0));
+		n2 = TransformMap.Load(int4(indices[i] * 4 + 2, nextFrame[0], animIndex[0], 0));
+		n3 = TransformMap.Load(int4(indices[i] * 4 + 3, nextFrame[0], animIndex[0], 0));
+		next = matrix(n0, n1, n2, n3);
+
+		matrix result = lerp(curr, next, ratio[0]);
+
+		// 간단하다
+		// 다음 애니메이션이 있다면,
+		// 그 애니메이션도 result에 적용해 달라
+		if (animIndex[1] >= 0)
+		{
+			c0 = TransformMap.Load(int4(indices[i] * 4 + 0, currFrame[1], animIndex[1], 0));
+			c1 = TransformMap.Load(int4(indices[i] * 4 + 1, currFrame[1], animIndex[1], 0));
+			c2 = TransformMap.Load(int4(indices[i] * 4 + 2, currFrame[1], animIndex[1], 0));
+			c3 = TransformMap.Load(int4(indices[i] * 4 + 3, currFrame[1], animIndex[1], 0));
+			curr = matrix(c0, c1, c2, c3);
+
+			n0 = TransformMap.Load(int4(indices[i] * 4 + 0, nextFrame[1], animIndex[1], 0));
+			n1 = TransformMap.Load(int4(indices[i] * 4 + 1, nextFrame[1], animIndex[1], 0));
+			n2 = TransformMap.Load(int4(indices[i] * 4 + 2, nextFrame[1], animIndex[1], 0));
+			n3 = TransformMap.Load(int4(indices[i] * 4 + 3, nextFrame[1], animIndex[1], 0));
+			next = matrix(n0, n1, n2, n3);
+
+			matrix nextResult = lerp(curr, next, ratio[1]);
+			result = lerp(result, nextResult, TweenFrames.tweenRatio);
+		}
+
+		transform += mul(weights[i], result);
+	}
+
+	return transform;
+}
+```
+
+* 그럼 `TweenBuffer`에 CPU에서 어떻게 넘길까
+
+```cpp
+void ModelAnimator::Update()
+{
+	if (_model == nullptr)
+		return;
+	if (_texture == nullptr)
+		CreateTexture();
+
+	TweenDesc& desc = _tweenDesc;
+
+	desc.curr.sumTime += DT;
+	// 현재 애니메이션
+	{
+		shared_ptr<ModelAnimation> currentAnim = _model->GetAnimationByIndex(desc.curr.animIndex);
+		if (currentAnim)
+		{
+			float timePerFrame = 1 / (currentAnim->frameRate * desc.curr.speed);
+			if (desc.curr.sumTime >= timePerFrame)
+			{
+				desc.curr.sumTime = 0;
+				desc.curr.currFrame = (desc.curr.currFrame + 1) % currentAnim->frameCount;
+				desc.curr.nextFrame = (desc.curr.currFrame + 1) % currentAnim->frameCount;
+			}
+
+			desc.curr.ratio = (desc.curr.sumTime / timePerFrame);
+		}
+	}
+
+	// 다음 애니메이션이 예약 되어 있다면
+	if (desc.next.animIndex >= 0)
+	{
+		desc.tweenSumTime += DT;
+		desc.tweenRatio = desc.tweenSumTime / desc.tweenDuration;
+
+		if (desc.tweenRatio >= 1.f)
+		{
+			// 애니메이션 교체 성공
+			desc.curr = desc.next;
+			desc.ClearNextAnim();
+		}
+		else
+		{
+			// 교체중
+			shared_ptr<ModelAnimation> nextAnim = _model->GetAnimationByIndex(desc.next.animIndex);
+			desc.next.sumTime += DT;
+
+			float timePerFrame = 1.f / (nextAnim->frameRate * desc.next.speed);
+
+			if (desc.next.ratio >= 1.f)
+			{
+				desc.next.sumTime = 0;
+
+				desc.next.currFrame = (desc.next.currFrame + 1) % nextAnim->frameCount;
+				desc.next.nextFrame = (desc.next.currFrame + 1) % nextAnim->frameCount;
+			}
+
+			desc.next.ratio = desc.next.sumTime / timePerFrame;
+		}
+	}
+
+	// Anim Update
+	ImGui::InputInt("AnimIndex", &desc.curr.animIndex);
+	_keyframeDesc.animIndex %= _model->GetAnimationCount();
+
+	static int32 nextAnimIndex = 0;
+	if (ImGui::InputInt("NextAnimIndex", &nextAnimIndex))
+	{
+		nextAnimIndex %= _model->GetAnimationCount();
+		desc.ClearNextAnim(); 
+		desc.next.animIndex = nextAnimIndex;
+	}
+
+	if (_model->GetAnimationCount() > 0)
+		desc.curr.animIndex %= _model->GetAnimationCount();
+
+	ImGui::InputFloat("Speed", &desc.curr.speed, 0.5f, 4.f);
+
+	RENDER->PushTweenData(desc);
+
+	// ...
+```
