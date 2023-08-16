@@ -163,3 +163,56 @@ technique11 T0
 
 ---
 
+## MeshInstancing
+
+```cpp
+void MeshInstancingDemo::Update()
+{
+	// ...
+
+	// 생성한 object를 instancing manager를 통해 render한다
+	INSTANCING->Render(_objs);
+}
+```
+
+```cpp
+void InstancingManager::RenderMeshRenderer(vector<shared_ptr<GameObject>>& gameObjects)
+{
+	map<InstanceID, vector<shared_ptr<GameObject>>> cache;
+
+	for (shared_ptr<GameObject>& gameObject : gameObjects)
+	{
+		if (gameObject->GetMeshRenderer() == nullptr)
+			continue;
+
+		const InstanceID instanceId = gameObject->GetMeshRenderer()->GetInstanceID();
+		cache[instanceId].push_back(gameObject);
+	}
+
+	for (auto& pair : cache)
+	{
+		const vector<shared_ptr<GameObject>>& vec = pair.second;
+
+		{
+			const InstanceID instanceId = pair.first;
+
+			for (int32 i = 0; i < vec.size(); i++)
+			{
+				const shared_ptr<GameObject>& gameObject = vec[i];
+				InstancingData data;
+				data.world = gameObject->GetTransform()->GetWorldMatrix();
+
+				AddData(instanceId, data);
+			}
+
+			shared_ptr<InstancingBuffer>& buffer = _buffers[instanceId];
+			vec[0]->GetMeshRenderer()->RenderInstancing(buffer);
+		}
+	}
+}
+```
+
+* 핵심은 Instancing Manager로 Instance를 관리한다.
+* InstancingBuffer를 이용해 Instance Data를 밀어넣는다.
+
+---
