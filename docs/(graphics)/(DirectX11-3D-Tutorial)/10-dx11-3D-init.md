@@ -185,3 +185,110 @@ void RawBufferDemo::Init()
 
 ---
 
+## System Value - 로그에 찍힌 값이 뭔지 알아보자.
+
+<그림>
+https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/sv-groupid
+
+* 위 그림에 나온 대로 
+
+```cpp
+// thread group을 x, y, z (1, 1, 1)로 선언합니다.
+_shader->Dispatch(0, 0, 1, 1, 1);
+```
+
+```cpp
+// 각 thread group에는 x, y, z (10, 8, 3) = 240개의 thread가 존재합니다.
+[numthreads(10, 8, 3)]
+```
+
+* 가령 아래와 같이 설정한다면
+
+```cpp
+// 2 * 2 * 2 = 8
+_shader->Dispatch(0, 0, 2, 2, 2);
+
+// 240 
+[numthreads(10, 8, 3)]
+
+// Total = 8 * 240 = 1920개의 thread
+```
+
+* 그럼 각 System Value의 의미는 뭘까?
+* `SV_GroupID`, `SV_GroupThreadID`, `SV_DispatchThreadID`, `SV_GroupIndex`
+    * `SV_GroupID` - 말 그대로 Group id
+    * `SV_GroupThreadID` - 말 그대로 Group Thread id
+    * `SV_DispatchThreadID` - group 까지 포함해 unique한 id
+    * `SV_GroupIndex` - 현재 group에서 해당 thread의 index
+
+---
+
+## input에 뭔가 데이터를 넣어보자
+
+```cpp
+void GroupDemo::Init()
+{
+	_shader = make_shared<Shader>(L"25. GroupDemo.fx");
+
+	// 하나의 쓰레드 그룹 내에서, 운영할 쓰레드 개수
+	uint32 threadCount = 10 * 8 * 3;
+	uint32 groupCount = 2 * 1 * 1;
+	uint32 count = groupCount * threadCount;
+
+	vector<Input> inputs(count);
+	for (int32 i = 0; i < count; i++)
+		inputs[i].value = rand() % 10000;
+
+	shared_ptr<RawBuffer> rawBuffer = make_shared<RawBuffer>(inputs.data(), sizeof(Input) * count, sizeof(Output) * count);
+	
+	_shader->GetSRV("Input")->SetResource(rawBuffer->GetSRV().Get());
+	_shader->GetUAV("Output")->SetUnorderedAccessView(rawBuffer->GetUAV().Get());
+
+	// x, y, z 쓰레드 그룹
+	_shader->Dispatch(0, 0, 2, 1, 1);
+
+	vector<Output> outputs(count);
+	rawBuffer->CopyFromOutput(outputs.data());
+```
+
+```cpp
+ByteAddressBuffer Input; // SRV
+RWByteAddressBuffer Output; // UAV
+
+struct ComputeInput
+{
+	uint3 groupID : SV_GroupID;
+	uint3 groupThreadID : SV_GroupThreadID;
+	uint3 dispatchThreadID : SV_DispatchThreadID;
+	uint groupIndex : SV_GroupIndex;
+};
+
+[numthreads(10, 8, 3)]
+void CS(ComputeInput input)
+{
+	uint index = input.groupID.x * (10 * 8 * 3) + input.groupIndex;
+	uint outAddress = index * 11 * 4;
+
+	uint inAddress = index * 4;
+	float value = (float)Input.Load(inAddress);
+
+	Output.Store3(outAddress + 0, input.groupID);
+	Output.Store3(outAddress + 12, input.groupThreadID);
+	Output.Store3(outAddress + 24, input.dispatchThreadID);
+	Output.Store(outAddress + 36, input.groupIndex);
+	Output.Store(outAddress + 40, (uint)value);
+}
+
+technique11 T0
+{
+	pass P0
+	{
+		SetVertexShader(NULL);
+		SetPixelShader(NULL);
+		SetComputeShader(CompileShader(cs_5_0, CS()));
+	}
+};
+```
+
+---
+
