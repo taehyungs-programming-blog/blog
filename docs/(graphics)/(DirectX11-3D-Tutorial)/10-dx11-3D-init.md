@@ -292,3 +292,95 @@ technique11 T0
 
 ---
 
+## Texture Buffer
+
+* Buffer를 Texture로 보내려한다
+
+```cpp
+Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> TextureBufferDemo::MakeComputeShaderTexture()
+{
+	auto shader = make_shared<Shader>(L"26. TextureBufferDemo.fx");
+	
+	auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\veigar.jpg");
+	shared_ptr<TextureBuffer> textureBuffer = make_shared<TextureBuffer>(texture->GetTexture2D());
+
+	shader->GetSRV("Input")->SetResource(textureBuffer->GetSRV().Get());
+	shader->GetUAV("Output")->SetUnorderedAccessView(textureBuffer->GetUAV().Get());
+
+	uint32 width = textureBuffer->GetWidth();
+	uint32 height = textureBuffer->GetHeight();
+	uint32 arraySize = textureBuffer->GetArraySize();
+
+	uint32 x = max(1, (width + 31) / 32);
+	uint32 y = max(1, (height + 31) / 32);
+	shader->Dispatch(0, 0, x, y, arraySize);
+
+	return textureBuffer->GetOutputSRV();
+}
+```
+
+```cpp
+Texture2DArray<float4> Input;
+RWTexture2DArray<float4> Output;
+
+[numthreads(32, 32, 1)]
+void CS(uint3 id : SV_DispatchThreadID)
+{
+	float4 color = Input.Load(int4(id, 0));
+
+	//Output[id] = color;
+	Output[id] = 1.0f - color;
+	//Output[id] = (color.r + color.g + color.b) / 3.0f;
+}
+
+technique11 T0
+{
+	pass P0
+	{
+		SetVertexShader(NULL);
+		SetPixelShader(NULL);
+		SetComputeShader(CompileShader(cs_5_0, CS()));
+	}
+};
+```
+
+---
+
+## Structure Buffer
+
+* 우리가 원하는 구조로 Buffer를 만들어보자
+* 복잡하진 않아 설명은 생략, 자세한건 코드를 보자.
+
+```cpp
+
+struct InputDesc
+{
+	matrix input;
+};
+
+struct OutputDesc
+{
+	matrix result;
+};
+
+StructuredBuffer<InputDesc> Input;
+RWStructuredBuffer<OutputDesc> Output;
+
+[numthreads(500, 1, 1)]
+void CS(uint id : SV_GroupIndex)
+{
+	matrix result = Input[id].input * 2;
+
+	Output[id].result = result;
+}
+
+technique11 T0
+{
+	pass P0
+	{
+		SetVertexShader(NULL);
+		SetPixelShader(NULL);
+		SetComputeShader(CompileShader(cs_5_0, CS()));
+	}
+};
+```
