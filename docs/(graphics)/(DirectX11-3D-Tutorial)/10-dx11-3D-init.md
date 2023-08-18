@@ -14,7 +14,7 @@ nav_order: 2
 
 ---
 
-* [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/8)
+* [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/9)
 
 ## RawBuffer
 
