@@ -187,8 +187,9 @@ void RawBufferDemo::Init()
 
 ## System Value - 로그에 찍힌 값이 뭔지 알아보자.
 
-<그림>
-https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/sv-groupid
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/dx11/dx11-10-1.png"/>
+</p>
 
 * 위 그림에 나온 대로 
 

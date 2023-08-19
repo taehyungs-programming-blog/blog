@@ -66,3 +66,146 @@ W/2+Left W/2+Top MinD      1
 ```
 
 ---
+
+## Sphere Collider
+
+* Mesh에 직접 Collider를 붙이면 연산이 많아지니 Sphere를 하나 만들어두고 거기에 Collider를 붙인다.
+* 자세한 설명 전 Picking하는 부분을 먼저 보자
+
+```cpp
+std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
+{
+	shared_ptr<Camera> camera = GetCamera()->GetCamera();
+
+	float width = GRAPHICS->GetViewport().GetWidth();
+	float height = GRAPHICS->GetViewport().GetHeight();
+
+	Matrix projectionMatrix = camera->GetProjectionMatrix();
+
+	// Viewport의 좌표로 변환한다
+	float viewX = (+2.0f * screenX / width - 1.0f) / projectionMatrix(0, 0);
+	float viewY = (-2.0f * screenY / height + 1.0f) / projectionMatrix(1, 1);
+
+	Matrix viewMatrix = camera->GetViewMatrix();
+	Matrix viewMatrixInv = viewMatrix.Invert();
+
+	const auto& gameObjects = GetObjects();
+
+	float minDistance = FLT_MAX;
+	shared_ptr<GameObject> picked;
+
+	// 현재 그려지고 있는 gameObject를 순회
+	for (auto& gameObject : gameObjects)
+	{
+		// Collider가 붙지 않았다면 continue
+		if (gameObject->GetCollider() == nullptr)
+			continue;
+
+		// 0.0f, 0.0f, 0.0f는 ViewPort의 카메라 좌표를 의미한다
+		Vec4 rayOrigin = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		Vec4 rayDir = Vec4(viewX, viewY, 1.0f, 0.0f);
+
+		// WorldSpace에서의 Ray 정의
+		Vec3 worldRayOrigin = XMVector3TransformCoord(rayOrigin, viewMatrixInv);
+		Vec3 worldRayDir = XMVector3TransformNormal(rayDir, viewMatrixInv);
+		worldRayDir.Normalize();
+
+		// WorldSpace에서 연산
+		Ray ray = Ray(worldRayOrigin, worldRayDir);
+
+		float distance = 0.f;
+		if (gameObject->GetCollider()->Intersects(ray, OUT distance) == false)
+			continue;
+
+		if (distance < minDistance)
+		{
+			minDistance = distance;
+			picked = gameObject;
+		}
+	}
+
+	// ...
+
+	return picked;
+}
+```
+
+* 이제 저 코드에서 BlackBox인 부분은 `GetCollider()->Intersects`
+
+```cpp
+class SphereCollider : public BaseCollider
+{
+public:
+	SphereCollider();
+	virtual ~SphereCollider();
+
+	virtual void Update() override;
+	virtual bool Intersects(Ray& ray, OUT float& distance) override;
+	virtual bool Intersects(shared_ptr<BaseCollider>& other) override;
+
+	void SetRadius(float radius) { _radius = radius; }
+	BoundingSphere& GetBoundingSphere() { return _boundingSphere; }
+
+private:
+	float _radius = 1.f;
+	// 사실 BoundingSphere는 DirectX lib를 그냥 땡겨쓴 것이다 ㅎㅎ.
+	BoundingSphere _boundingSphere;
+};
+```
+
+---
+
+## Box Collider
+
+* AABB, OBB Box Collider 개념이 나온다.
+* 아래 그림을 보면 이해가 되는데
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/dx11/dx11-11-1.png"/>
+</p>
+
+* 비스듬히 있는 물체의 Collider설정을 그냥 Box로 해버리는게 정말 Collider로 의미가 있나?
+* 틀어진 만큼 Collider의 축을 보정해줘야 하는게 아닌가? -> **OBB Collider**
+
+```cpp
+class OBBBoxCollider : public BaseCollider
+{
+public:
+	OBBBoxCollider();
+	virtual ~OBBBoxCollider();
+
+	virtual void Update() override;
+	virtual bool Intersects(Ray& ray, OUT float& distance) override;
+	virtual bool Intersects(shared_ptr<BaseCollider>& other) override;
+
+	BoundingOrientedBox& GetBoundingBox() { return _boundingBox; }
+
+private:	
+	BoundingOrientedBox _boundingBox;
+};
+```
+
+```cpp
+class AABBBoxCollider : public BaseCollider
+{
+public:
+	AABBBoxCollider();
+	virtual ~AABBBoxCollider();
+
+	virtual void Update() override;
+	virtual bool Intersects(Ray& ray, OUT float& distance) override;
+
+	// 다른 Collider와 충돌의 의미
+	virtual bool Intersects(shared_ptr<BaseCollider>& other) override;
+
+	BoundingBox& GetBoundingBox() { return _boundingBox; }
+
+private:
+	BoundingBox _boundingBox;
+};
+```
+
+* `BoundingOrientedBox`냐 `BoundingBox`냐 차이뿐임
+
+---
+
