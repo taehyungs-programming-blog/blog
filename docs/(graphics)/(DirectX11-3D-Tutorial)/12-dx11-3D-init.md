@@ -175,11 +175,207 @@ return Point3D(ray.origin + ray.direction * t);
 
 ## Intersection
 
+### Sphere to Sphere
+
+* 아주 쉽다. 원점간 거리를 구하고 두 반지름 보다 작다면 Intersection!
+
+---
+
+### Sphere to AABB
+
+* 위의 Point에서 구한 Closest Point를 찾아 반지름 보다 작다면 Intersection
+
+---
+
+### Sphere to OBB
+
+* AABB와 동일함
+* 위의 Point에서 구한 Closest Point를 찾아 반지름 보다 작다면 Intersection
+
+---
+
+### Sphere to plane
+
+* 역시 동일함
+* 위의 Point에서 구한 Closest Point를 찾아 반지름 보다 작다면 Intersection
+* 이로서 Point에서 **Closest Point**를 구하는게 왜 중요한지 알수있을것이다.
+
+---
+
+### AABB to AABB
+
+* x, y, z 세 축으로 min, max를 비교하여 겹치는비 확인
+
+```cpp
+Point3D aMin = AABB3D::GetMin(aabb1):
+Point3D aMax = AABB3D::GetMax(aabb1):
+Point3D bMin = AABB3D::GetMin(aabb2):
+Point3D bMax = AABB3D::GetMax(aabb2):
+
+return (aMin.x <= bMax.x && aMax.x >= bMin.x) &&
+      (aMin.y <= bMax.y && aMax.y >= bMin.y) &&
+      (aMin.z <= bMax.z && aMax.z >= bMin.z);
+```
+
+---
+
+### AABB to OBB
+
+* SAT(Separating Axis Theorem)을 이용하는데, 간단히 말하면 AABB의 세 축, OBB의 세 축, AABB, OBB의 외적한 Matrix의 세 축을 모두 AABB to AABB처럼 분석하는것이다.
+  * 총 15개의 축을 비교하면 된다.
+
+```cpp
+// AABB, OBB의 Min, Max가 필요하기에 Min, Max를 구해주는 함수를 파자
+Interval3D GetInterval(const AABB3D& aabb, const Vec3& axis);
+Interval3D GetInterval(const OBB3D& obb, const Vec3& axis);
+```
+
+```cpp
+bool OverlapOnAxis = [](const AABB3D& aabb, const OBB& obb, Vec3& axis) {
+  Interval3D a = GetInterval(aabb, axis);
+  Interval3D b = GetInterval(obb, axis);
+  return ((b.min <= a.max) && (a.min <= b.max));
+}
+
+Vec3 test[15] = {
+  Vec3(1, 0, 0),          // AABB axis
+  Vec3(0, 1, 0),  
+  Vec3(0, 0, 1),
+  obb.orientation.Right(),// OBB axis
+  obb.orientation.Up(),
+  obb.orientation.Backward(),
+};
+
+// 외적으로 남은축을 넣는다
+for(int i = 0; i < 3; i++){
+  test[6 + i * 3 + 0] = test[i].Cross(test[0]);
+  test[6 + i * 3 + 1] = test[i].Cross(test[1]);
+  test[6 + i * 3 + 2] = test[i].Cross(test[2]);
+}
+
+for(int i = 0; i < 15; i++) {
+  if(OverlapOnAxis(aabb, obb, test[i]) == false)
+    return false;
+}
+
+return true;
+```
+
+---
+
+### AABB to plane
+
+```cpp
+float pLen = aabb.size.x * fabsf(plane.normal.x) +
+              aabb.size.y * fabsf(plane.normal.y) +
+              aabb.size.z * fabsf(plane.normal.z);
+
+float dot = plane.normal.Dot(aabb.position);
+float dist = dot - plane.distance;
+
+return fabsf(dist) <= pLen;
+```
+
+---
+
+### OBB to OBB
+
+```cpp
+Vec3 test[15] = {
+  // AABB to OBB와 이 부분만 다르다
+  obb1.orientation.Right(),// OBB1 axis
+  obb1.orientation.Up(),
+  obb1.orientation.Backward(),
+  obb2.orientation.Right(),// OBB2 axis
+  obb2.orientation.Up(),
+  obb2.orientation.Backward(),
+};
+```
+
 ---
 
 ## Raycasting
 
+### Raycast Sphere
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/dx11/dx11-12-1.png"/>
+</p>
+
+```cpp
+// e - ray원점에서 sphere 중심까지 vector
+Vec3 e = sphere.position - ray.origin;
+
+float rSq = sphere.radius * sphere.radius;
+float eSq = e.LengthSquared();
+
+// a - 원점에서 중심까지 직선거리
+float a = e.Dot(ray.direction);
+
+// bSq - 원점에서 ray의 직선거리까지 거리
+float bSq = eSq - (a * a);
+float f = sqrt(rSq - bSq);
+
+// No Collision
+if(rSq - (eSq - (a * a)) < 0.0f)
+  return false;
+
+if(eSq < rSq)
+{
+  // ray가 안에서 시작하는 케이스
+  distance = a + f;
+  return true;
+}
+
+// Normal intersection
+distance = a - f;
+return true;
+```
+
 ---
 
-## Point in Triangle
+### Raycast Axis Aligned Bounding Box
+
+* 3축으로 아래를 비교하면 된다.
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/dx11/dx11-12-5.webp"/>
+</p>
+
+---
+
+## 3D Triangle
+
+### Point in Triangle
+
+```
+    c
+    /\
+   /  \
+  /    \
+ /  d   \
+a-------- b
+```
+
+* d점이 Triangle내에 있는지 확인방법
+* ab x ad의 방향과 ad x ac의 방향이 일치하는지 확인
+* 이런식으로 세 변을 확인한다
+
+```cpp
+Vec3 a = t.a - p;
+Vec3 b = t.b - p;
+Vec3 c = t.c - p;
+
+Vec3 normPBC = b.Cross(c);
+Vec3 normPCA = c.Cross(a);
+Vec3 normPAB = a.Cross(b);
+
+if (normPBC.Dot(normPCA < 0.0f))
+  return false;
+else if (normPBC.Dot(normPAB < 0.0f))
+  return false;
+return true;
+```
+
+* Barycentric으로 구하는 방법도 있다.(미정리)
 
