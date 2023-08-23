@@ -14,6 +14,10 @@ nav_order: 1
 
 ---
 
+* 모두 정리하려했지만 ... 중복된 부분이 많아서 중요 하다 혹은 몰랐던 부분만 정리합니다.
+
+---
+
 * [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/12)
 
 ## Rendering Pipeline
