@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "1. 도형 띄워보기"
+title: "1. Rendering Pipeline의 복습 + Init Dx11"
 parent: "(DirectX11 물방울책 리뷰)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1
@@ -14,16 +14,11 @@ nav_order: 1
 
 ---
 
-* 모두 정리하려했지만 ... 중복된 부분이 많아서 중요 하다 혹은 몰랐던 부분만 정리합니다.
-
----
-
 * [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/12)
 
 ## Rendering Pipeline
 
-<사진>
-https://learn.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-graphics-pipeline
+<사진1>
 
 * **Input Assembler, IA**
     * 정점 데이터를 받아들입니다.
@@ -51,67 +46,19 @@ https://learn.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11
 
 ---
 
-## 도형 띄워 보기
+## Init Dx11
 
-* 간단한 부분은 생략
+* **App** 클래스를 상속받아 Dx11이 초기화 되게 만들어 둠.
+	* 코드를 보는게 오히려 편함
 
 ```cpp
-void ShapesDemo::DrawScene()
+// 유의할 점은 ClearRenderTarget과 Clear DSV는 컨텐츠 구현단에서 해줘야 한다.
+void InitDemo::DrawScene()
 {
-	_deviceContext->ClearRenderTargetView(_renderTargetView.Get(), reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+	_deviceContext->ClearRenderTargetView(_renderTargetView.Get(), reinterpret_cast<const float*>(&Colors::Blue));
 	_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	_deviceContext->IASetInputLayout(_inputLayout.Get());
-	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	HR(_swapChain->Present(0, 0));
+}
 
-	_deviceContext->RSSetState(_wireframeRS.Get());
-
-	uint32 stride = sizeof(Vertex);
-	uint32 offset = 0;
-	_deviceContext->IASetVertexBuffers(0, 1, _vertedBuffer.GetAddressOf(), &stride, &offset);
-	_deviceContext->IASetIndexBuffer(_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-
-	// Set constants
-	XMMATRIX view = ::XMLoadFloat4x4(&_view);
-	XMMATRIX proj = ::XMLoadFloat4x4(&_proj);
-	XMMATRIX viewProj =  view * proj;
-
-	D3DX11_TECHNIQUE_DESC techDesc;
-	_tech->GetDesc(&techDesc);
-
-	for (uint32 p = 0; p < techDesc.Passes; ++p)
-	{
-		// Draw the grid.
-		XMMATRIX world = XMLoadFloat4x4(&_gridWorld);
-		XMMATRIX wvp = world * viewProj;
-		_fxWorldViewProj->SetMatrix(reinterpret_cast<float*>(&(wvp)));
-		_tech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
-		_deviceContext->DrawIndexed(_gridIndexCount, _gridIndexOffset, _gridVertexOffset);
-
-		// Draw the box.
-		world = XMLoadFloat4x4(&_boxWorld);
-		wvp = world * viewProj;
-		_fxWorldViewProj->SetMatrix(reinterpret_cast<float*>(&(wvp)));
-		_tech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
-		_deviceContext->DrawIndexed(_boxIndexCount, _boxIndexOffset, _boxVertexOffset);
-
-        // 이런식으로 부분 부분 나눠서 그릴 수 있다.
-
-        // ...
-```
-
-```cpp
-void WavesDemo::BuildWavesGeometryBuffers()
-{
-	D3D11_BUFFER_DESC vbd;
-    // CPU에서 Vertex수정이 필요한 경우 이렇게 설정 1
-	vbd.Usage = D3D11_USAGE_DYNAMIC;
-	vbd.ByteWidth = sizeof(Vertex) * _waves.VertexCount();
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    // CPU에서 Vertex수정이 필요한 경우 이렇게 설정 2
-	vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	vbd.MiscFlags = 0;
-	HR(_device->CreateBuffer(&vbd, 0, _wavesVB.GetAddressOf()));
-
-    // ...
 ```

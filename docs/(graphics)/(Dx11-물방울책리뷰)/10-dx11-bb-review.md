@@ -1,0 +1,43 @@
+---
+layout: default
+title: "10. Blend 적용하기"
+parent: "(DirectX11 물방울책 리뷰)"
+grand_parent: "(Graphics 😎)"
+nav_order: 2
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+* [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/13)
+
+<사진10>
+
+```cpp
+float4 PS(VertexOut pin, uniform int gLightCount, uniform bool gUseTexure, uniform bool gAlphaClip, uniform bool gFogEnabled) : SV_Target
+{
+    // ...
+
+    //
+    // Fogging
+    //
+
+    if (gFogEnabled)
+    {
+        float fogLerp = saturate((distToEye - gFogStart) / gFogRange);
+
+        // Blend the fog color and the lit color.
+        litColor = lerp(litColor, gFogColor, fogLerp);
+    }
+
+    // Common to take alpha from diffuse material and texture.
+    litColor.a = gMaterial.Diffuse.a * texColor.a;
+
+    return litColor;
+}
+```
