@@ -18,7 +18,9 @@ nav_order: 1
 
 ## Rendering Pipeline
 
-<사진1>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-1-1.png"/>
+</p>
 
 * **Input Assembler, IA**
     * 정점 데이터를 받아들입니다.

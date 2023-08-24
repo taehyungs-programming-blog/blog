@@ -54,7 +54,9 @@ technique11 VecAdd
 
 * 가로, 세로 두 번 픽셀단위로 Gaussian Blur 반영
 
-<사진13>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-13-1.png"/>
+</p>
 
 ```cpp
 void BlurDemo::DrawScene()

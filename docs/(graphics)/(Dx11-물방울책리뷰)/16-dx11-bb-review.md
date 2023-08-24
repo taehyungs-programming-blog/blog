@@ -16,7 +16,9 @@ nav_order: 2
 
 * [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/14)
 
-<사진16>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-16-1.png"/>
+</p>
 
 ## Instancing
 

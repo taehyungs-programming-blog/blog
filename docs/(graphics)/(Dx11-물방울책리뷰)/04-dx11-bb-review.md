@@ -16,7 +16,9 @@ nav_order: 1
 
 * [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/12)
 
-<사진4>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-4-1.png"/>
+</p>
 
 * 여기도 Box와 크게 다를게 없음.
 * 주목 할 만한 점이라면 아래와 같이 Index기반으로 그릴수 있다는 정도?

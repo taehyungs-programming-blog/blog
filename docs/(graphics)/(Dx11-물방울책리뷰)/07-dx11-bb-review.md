@@ -16,7 +16,9 @@ nav_order: 1
 
 * [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/12)
 
-<사진7>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-7-1.png"/>
+</p>
 
 * 핵심은 Pixel Shader에서 Light 적용을 어떻게 해주느냐
 

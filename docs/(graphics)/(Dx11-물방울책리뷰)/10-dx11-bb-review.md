@@ -16,7 +16,9 @@ nav_order: 2
 
 * [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/13)
 
-<사진10>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-10-1.png"/>
+</p>
 
 ```cpp
 float4 PS(VertexOut pin, uniform int gLightCount, uniform bool gUseTexure, uniform bool gAlphaClip, uniform bool gFogEnabled) : SV_Target

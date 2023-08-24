@@ -16,7 +16,9 @@ nav_order: 1
 
 * [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/12)
 
-<사진5>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-5-1.png"/>
+</p>
 
 * 역시 box와 크게 다를게 없고
 * 다른점이라면 vertex정보를 txt에서 읽어와 표현하는것 정도

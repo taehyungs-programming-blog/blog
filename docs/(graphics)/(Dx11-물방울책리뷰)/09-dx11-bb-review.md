@@ -16,7 +16,9 @@ nav_order: 1
 
 * [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/13)
 
-<사진9>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-9-1.png"/>
+</p>
 
 * 여긴 Wave Texture를 어떻게 움직이냐가 핵심
 

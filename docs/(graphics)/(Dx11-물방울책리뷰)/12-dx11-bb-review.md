@@ -16,7 +16,9 @@ nav_order: 2
 
 * [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/13)
 
-<사진12>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-12-1.png"/>
+</p>
 
 * GeometryShader - Rendering Pipeline에서 정점을 늘리고 줄일수 있다.
 

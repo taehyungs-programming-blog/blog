@@ -16,7 +16,9 @@ nav_order: 1
 
 * [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/12)
 
-<사진6>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-6-1.png"/>
+</p>
 
 * 특이 한 부분은 Vertex를 CPU에서 수정하기에 아래와 같이 Flag를 수정해야하며
 

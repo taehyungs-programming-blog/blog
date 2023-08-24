@@ -16,7 +16,9 @@ nav_order: 2
 
 * [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/14)
 
-<사진14>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-14-1.png"/>
+</p>
 
 * 뭔가 싶겠지만 당겨보면 Vertex해상도가 높아지고 멀어지면 해당도가 낮아진다
     * LOD(Level Of Detail)이라 설명하면 편하다

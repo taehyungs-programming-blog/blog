@@ -16,7 +16,9 @@ nav_order: 2
 
 * [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/13)
 
-<사진11>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-11-1.png"/>
+</p>
 
 * 핵심은 Stencil을 이용해 Mirror를 구현하는 것이다.
     * 추가적으론 그림자도 구현!

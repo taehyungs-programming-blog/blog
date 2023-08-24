@@ -16,7 +16,9 @@ nav_order: 1
 
 * [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/12)
 
-<사진3>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-3-1.png"/>
+</p>
 
 * 이 부분은 앞선 Box만들기와 유사하다. 다른 부분이라면
 * `GeometryGenerator`를 통해 Map을 만든다 정도?

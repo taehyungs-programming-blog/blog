@@ -18,7 +18,9 @@ nav_order: 1
 
 ## Box 띄워 보기
 
-<사진2>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-2-1.png"/>
+</p>
 
 * 사실상 Init과 DrawScene만 보면 되는데
 
