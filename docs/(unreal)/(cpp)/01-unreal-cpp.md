@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "01. 환경설정"
+title: "01. 환경설정 + 빌드 유의사항"
 parent: "(Unreal C++)"
 grand_parent: "(Unreal 🚀)"
 nav_order: 1
@@ -17,13 +17,14 @@ nav_order: 1
 ## 환경
 
 * Visual Studio Community 2022
-    * C++을 이용한 게임개발 설치할 것
-* [Visual Commander](https://marketplace.visualstudio.com/items?itemName=SergeyVlasov.VisualCommander)
-* [ue4-vs-extensions](https://github.com/hackalyze/ue4-vs-extensions)
+  * C++을 이용한 게임개발 설치할 것
+* VS Extension
+  * [Visual Commander](https://marketplace.visualstudio.com/items?itemName=SergeyVlasov.VisualCommander)
 * Visual Commander에서 us4-vs-extensions을 Import하자
-    * 다운받은 `ue4_smarter_macro_indenting_vs2017-2019.vcmd`를 Import하면 됨.
+  * [ue4-vs-extensions](https://github.com/hackalyze/ue4-vs-extensions)
+  * 다운받은 `ue4_smarter_macro_indenting_vs2017-2019.vcmd`를 Import하면 됨.
 * Unreal 5.1.1
-    * 이후에 심볼도 사용되니 심볼까지 설치하는것 추천
+  * 이후에 심볼도 사용되니 심볼까지 설치하는것 추천
 
 * (추가) [Jetbrains의 Rider](https://www.jetbrains.com/ko-kr/rider/)가 최근에 많이 사용된다고 하니 참고(빠르다고 한다.)
 
