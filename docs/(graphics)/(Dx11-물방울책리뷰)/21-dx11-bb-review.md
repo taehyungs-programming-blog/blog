@@ -14,8 +14,14 @@ nav_order: 3
 
 ---
 
-* [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/16)
+* [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/14)
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-21-1.png"/>
 </p>
+
+* 지형 정보를 넣어보자
+
+```cpp
+
+```

@@ -14,7 +14,7 @@ nav_order: 1
 
 ---
 
-* [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/12)
+* [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/10)
 
 ## Box 띄워 보기
 

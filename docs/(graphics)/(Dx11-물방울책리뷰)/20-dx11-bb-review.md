@@ -14,7 +14,7 @@ nav_order: 3
 
 ---
 
-* [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/15)
+* [Get Code 🌎](https://github.com/Arthur880708/DirectX11-3d-tutorials/tree/13)
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/graphics/bb/bb-20-1.png"/>
