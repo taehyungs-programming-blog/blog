@@ -65,3 +65,164 @@ nav_order: 1
 
 ---
 
+## 달리기 처리할 Blender Space 1D하나 추가
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-5.png"/>
+</p>
+
+---
+
+## AnimInstance 만들기
+
+* C++ -> AnimInstance로 하나 만들자
+
+```cpp
+UCLASS()
+class PROJECTRPG_API UProjectRPGAnimInstance : public UAnimInstance
+{
+	GENERATED_BODY()
+	
+public:
+	virtual void NativeInitializeAnimation() override;
+
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn", meta = (AllowPrivateAccess = true))
+	class ACharacter* Character;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn", meta = (AllowPrivateAccess = true))
+	class UCharacterMovementComponent* MovementComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn", meta = (AllowPrivateAccess = true))
+	FVector Velocity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn", meta = (AllowPrivateAccess = true))
+	float GroundSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn", meta = (AllowPrivateAccess = true))
+	bool bShouldMove;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn", meta = (AllowPrivateAccess = true))
+	bool bIsFalling;
+
+private:
+
+};
+```
+
+* 이제 이 AnimInstance를 기반으로 Blueprint를 하나 만들자
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-6.png"/>
+</p>
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-7.png"/>
+</p>
+
+* Tip) C++에서 만든 변수가 안보인다면?
+  * 설정 -> Show Inherited Variables
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-8.png"/>
+</p>
+
+### Animation Blue Print을 만져보자!
+
+* 다른 부분은 Blueprint를 보면 되고
+* State Alias가 뭔지 알아야한다.
+  * 간단히 특정 State일때 Alias가 바로 호출된다.
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-9.png"/>
+</p>
+
+* 예를들어 To Falling Alias는 Locomotion, Land일때 호출되며
+* 그럼 매번 Jump를 해야하는거 아닌가 싶지만 그렇진 않다 State가 호출되기 위해선 또 조건검사를 하기 때문이다.
+
+---
+
+## GameMode도 Blueprint로 만들자
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-10.png"/>
+</p>
+
+---
+
+## Item에 따라 파츠가 변경되게 해보자
+
+* 파츠 저장을 위해 Character 소스코드 수정이 필요하다
+
+```cpp
+class AProjectRPGCharacter : public ACharacter
+{
+	GENERATED_BODY()
+
+private:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Parts", meta = (AllowPrivateAccess = true))
+	class USkeletalMeshComponent* UpperBody;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Parts", meta = (AllowPrivateAccess = true))
+	class USkeletalMeshComponent* LowerBody;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Parts", meta = (AllowPrivateAccess = true))
+	class USkeletalMeshComponent* Hand;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Parts", meta = (AllowPrivateAccess = true))
+	class USkeletalMeshComponent* Hair;
+
+
+  // 파츠를 담을 배열
+	UPROPERTY(EditDefaultsOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
+	TArray<class USkeletalMesh*> UpperBodys;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Inventory", meta = (AllowPrivateAccess = true))
+	TArray<class USkeletalMesh*> LowerBodys;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
+	TArray<class USkeletalMesh*> Hairs;
+
+
+public:
+	TArray<class USkeletalMesh*> GetUpperBodys() const;
+
+	TArray<class USkeletalMesh*> GetLowerBodys() const;
+
+	TArray<class USkeletalMesh*> GetHairs() const;
+
+  // ...
+```
+
+* Mesh아래 각 파츠를 붙이고(코드확인) blueprint를 보자
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-11.png"/>
+</p>
+
+* 그런데 Blueprint에서 각 파츠에 Mesh를 넣으면 마치 정렬이 안된거 처럼 보이게 되는데
+* Set Master Pose Component의 호출이 한 번 필요하다
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-12.png"/>
+</p>
+
+* 이제 파츠를 랜덤으로 호출해 보자
+
+```cpp
+void AProjectRPGCharacter::OnChangeParts()
+{
+	int32 RandomIndex = FMath::RandRange(0, GetUpperBodys().Num() - 1);
+	UpperBody->SetSkeletalMesh(GetUpperBodys()[RandomIndex]);
+
+	RandomIndex = FMath::RandRange(0, GetLowerBodys().Num() - 1);
+	LowerBody->SetSkeletalMesh(GetLowerBodys()[RandomIndex]);
+
+	RandomIndex = FMath::RandRange(0, GetHairs().Num() - 1);
+	Hair->SetSkeletalMesh(GetHairs()[RandomIndex]);
+}
+```
