@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "01. 캐릭터 세팅"
-parent: "(Unreal C++ Part2 - 게임만들어 보기)"
+parent: "(Unreal C++ RPG Action만 구현)"
 grand_parent: "(Unreal 🚀)"
 nav_order: 1
 ---
