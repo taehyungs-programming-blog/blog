@@ -148,4 +148,139 @@ void AProjectRPGCharacter::SpawnPlayerWeapon()
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-2-2.png"/>
 </p>
 
+---
 
+## 공격 애니메이션 처리
+
+* 애니메이션 우 클릭 후 -> 애니메이션 에셋 리타깃
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-2-3.png"/>
+</p>
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-2-4.png"/>
+</p>
+
+* 생성된 애니메이션 우 클릭 후 -> Anim 몽타주 생성
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-2-5.png"/>
+</p>
+
+* PlayerWeapon 클래스에서 공격 애니메이션을 처리해 보자
+
+```cpp
+UPROPERTY(EditDefaultsOnly, Category = "Inventory", meta = (AllowPrivateAccess = true))
+TArray<class UAnimMontage*> AttackAnimMontages;
+```
+
+```cpp
+void APlayerWeapon::StartAttack()
+{
+	if (bIsAttack == false)
+	{
+		if (AttackIndex > 3)
+		{
+			AttackIndex = 0;
+		}
+
+		float AnimDuration = PlayerPawn->PlayAnimMontage(AttackAnimMontages[AttackIndex]);
+
+		bIsAttack = true;
+
+		AttackIndex++;
+
+		FTimerHandle TimerHandle;
+
+		GetWorldTimerManager().SetTimer(TimerHandle, this, &APlayerWeapon::EndAttack, AnimDuration);
+	}
+}
+```
+
+---
+
+## Weapon 충돌(공격) 처리
+
+* 우선 Player에 Health를 두자
+
+```cpp
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "health", meta = (AllowPrivateAccess = true))
+	float Health;
+
+    // 넣는김에 Hit, Die Anim도 넣어두자
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "health", meta = (AllowPrivateAccess = true))
+	UAnimMontage* HitAnimMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "health", meta = (AllowPrivateAccess = true))
+	UAnimMontage* DeathAnimMontage;
+```
+
+```cpp
+// TakeDamage는 Unreal에서 지원해 주는 함수이다.
+float AProjectRPGCharacter::TakeDamage (
+    float Damage, FDamageEvent const& DamageEvent, 
+    AController* EventInstigator, AActor* DamageCauser)
+{
+	
+	if (Health <= 0.0f)
+	{
+		return 0.0f;
+	}
+	
+	float ActualDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	
+	if (ActualDamage > 0)
+	{
+		Health -= ActualDamage;
+	}
+	
+	if (Health <= 0.0f)
+	{
+		Die();
+	} 
+	else
+	{
+		Hit();
+	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("Player's Health : %f"), Health);
+
+	return ActualDamage;
+}
+```
+
+* 자! 이제 충돌을 처리할 Collision을 넣자
+* Weapon 클래스에 아래를 추가
+
+```cpp
+private:
+	UPROPERTY(VisibleAnywhere, Category = "Collision", meta = (AllowPrivateAccess = true))
+	class USphereComponent* WeaponCollision;
+
+public:
+    // Weapon에 Overlap(충돌)됐다면 여기가 호출됨.
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+private:
+
+public:
+	void SetWeaponCollisionEnabled();
+
+	void SetWeaponCollisionDisabled();
+```
+
+```cpp
+WeaponCollision = CreateDefaultSubobject<USphereComponent>(TEXT("WeaponCollision"));
+
+WeaponCollision->InitSphereRadius(10.0f);
+
+
+WeaponCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+
+// WeaponPivotSocket이란 Socket을 각 Weapon에 추가해야함을 잊지말자
+FName WeaponSocket = FName(TEXT("WeaponPivotSocket"));
+
+WeaponCollision->AttachToComponent(WeaponMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
+```
