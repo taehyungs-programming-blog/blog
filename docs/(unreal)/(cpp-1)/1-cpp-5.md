@@ -33,11 +33,15 @@ public class ProjectRPG : ModuleRules
 }
 ```
 
-<사진>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-5-1.png"/>
+</p>
 
 * 우클릭 후 UI -> 사용자 위젯 생성
 
-<사진2>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-5-2.png"/>
+</p>
 
 * 이제 C++클래스로 상속해 사용해 보자
 

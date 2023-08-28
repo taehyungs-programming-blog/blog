@@ -122,8 +122,12 @@ public:
 };
 ```
 
-<사진1>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-3-1.png"/>
+</p>
 
 * 애니메이션 blueprint를 지정
 
-<사진2>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-3-2.png"/>
+</p>

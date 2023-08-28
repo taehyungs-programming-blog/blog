@@ -87,17 +87,33 @@ AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 * Blackboard, Behavior Tree를 만들어 주자
 * Blackboard에 사용될 변수를 선언하자
 
-<사진3, 4, 5>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-4-1.png"/>
+</p>
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-4-2.png"/>
+</p>
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-4-3.png"/>
+</p>
 
 * 길찾기를 넣으려면 NavMeshBoundsVolume이 필요하다
 
-<사진6>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-4-4.png"/>
+</p>
 
 * 적당히 구역을 잡고 show -> Navigation으로 확인해 봐야한다
 
-<사진7>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-4-5.png"/>
+</p>
 
-<사진8>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-4-6.png"/>
+</p>
 
 * 서비스도 하나 생성
 
