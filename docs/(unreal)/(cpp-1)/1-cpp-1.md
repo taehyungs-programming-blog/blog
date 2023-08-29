@@ -68,8 +68,6 @@ nav_order: 1
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-1.png"/>
 </p>
 
-<사진>
-
 ---
 
 ## 모든 애니메이션을 공통으로 쓰기위해 IK Rig을 만들자

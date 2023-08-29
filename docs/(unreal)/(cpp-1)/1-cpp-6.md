@@ -49,13 +49,19 @@ SphereComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToT
 
 * 애니메이션이 Notify를 추가하자
 
-<사진1>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-6-1.png"/>
+</p>
 
-<사진2>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-6-2.png"/>
+</p>
 
 * 추가로 피격시 카메라가 흔들리는 버그가 있는데
 
-<사진3>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-6-3.png"/>
+</p>
 
 * Do Collision Test를 끄면 해결된다
 

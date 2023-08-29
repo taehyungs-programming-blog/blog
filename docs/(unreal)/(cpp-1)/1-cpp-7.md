@@ -41,7 +41,9 @@ public:
     * BP_RandomPosition이라는 이름으로 생성
     * Level에 30개 정도 넣어두자
 
-<사진>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-7-1.png"/>
+</p>
 
 ```cpp
 void AProjectRPGGameMode::SpawnCreature()
