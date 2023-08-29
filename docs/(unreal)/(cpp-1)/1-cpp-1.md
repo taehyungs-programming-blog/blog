@@ -21,22 +21,54 @@ nav_order: 1
 * 환경
     * UE 5.0.3
     * Visual Studio 2022
+* 필요 패키지
+	* Stylized Character Kit: Casual 01
+	* Adventure Character
+	* Pirate
+	* Infinity Blade: Weapons
+	* FX Variety Pack
+	* Realistic Starter VFX Pack Vol 2
+	* Niagara Footstep VFX
+	* Human Vocalizations
+	* Interface & Item Sounds Pack
+	* Paragon: Gideon
+	* Paragon: Greystone
+	* Paragon: Kwang
+	* Paragon: Murdock
+
+---
+
+## Project 생성
+
+* Third Person, C++로 만들자
+* 필요 패키지를 추가하자
+	* Stylized Character Kit: Casual 01
+	* Adventure Character
+	* Infinity Blade: Weapons
+* 애니메이션은 별도로 다운이 필요
+	* [여기](https://downapi.cafe.naver.com/v1.0/cafes/article/file/ca135895-2c2d-11ee-9cd8-0050568dd5de/download)
+	* Import시 적당히 마네퀸 정도로 UE4 Skeletal Mesh를 정하면 된다.(어차피 나중에 바꿀예정)
 
 ---
 
 ## 패키지 Import시 주의사항, 애니메이션 Import 하기
 
 * EnbaleRootMotion과 Force Root Lock을 Enable시켜놔야 한다
+* 애니메이션 우 클릭 후 -> Asset Actions -> Bulk Edit via Property Matrix ...
+* 우측에 RootMotion -> Enable RootMion, Force Root Lock 클릭
 
 ---
 
 ## 캐릭터에 사용될 Skeletal Mesh 준비
 
-* 아래와 같이 Skeletal Meshx에 Material만 수정해 여러개를 만들어 두자
+* 아래와 같이 Skeletal Mesh에 Material만 수정해 여러개를 만들어 두자
+	* 수정방법은 사용되는 Mesh의 Color만 수정하면 됨
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-1.png"/>
 </p>
+
+<사진>
 
 ---
 
