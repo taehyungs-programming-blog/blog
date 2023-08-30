@@ -46,7 +46,9 @@ nav_order: 1
 * 특정 Material의 Find Reference
 	* Asset -> Reference Viewer
 
-<사진>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-13.png"/>
+</p>
 
 ---
 
@@ -82,7 +84,9 @@ nav_order: 1
 
 * 요거만 수정해주면 된다는 말
 
-<사진2>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-14.png"/>
+</p>
 
 ---
 
@@ -215,23 +219,33 @@ private:
 * 설명이 부족한거 같아 추가설명함.
 * **State Machine** - 함수라 생각하면되고 단, Animation을 리턴해준다
 
-<사진3>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-15.png"/>
+</p>
 
 * State Machine내부로 들어가보자
 
-<사진4>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-16.png"/>
+</p>
 
 * 여러 State가 존재 하며 State내부에는 Animation을 리턴하게 되어있다.
 
-<사진5>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-17.png"/>
+</p>
 
 * 단, Animation을 바로 리턴하지않고 cache에 임시 저장할 수도 있다.
 
-<사진6>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-18.png"/>
+</p>
 
 * 특이한 점은 State Machine이후에 Slot DefaultSlot을 거친다는 것인데
 
-<사진7>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-19.png"/>
+</p>
 
 * 코드상에서 Animation Montage를 출력할 경우 이 State에서 그리게 해준다
 
@@ -323,6 +337,10 @@ void AProjectRPGCharacter::OnChangeParts()
 * 나도 처음엔 신기했음, 해당 Mesh로 가보면 Mesh의 Skeleton이 내가 사용하는 Mesh의 Skeleton과 일치하고
 * Skeleton Tree로 가보면 Vertice가 연관됨을 알려준다
 
-<사진8>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-20.png"/>
+</p>
 
-<사진9>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_1/1-cpp-1-21.png"/>
+</p>
