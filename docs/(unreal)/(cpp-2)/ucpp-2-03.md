@@ -256,6 +256,8 @@ AABCharacterPlayer::AABCharacterPlayer()
 	FollowCamera->bUsePawnControlRotation = false;
 
 	// Input
+		// 여기가 기존에 입력처리와 조금 다른데
+		// 이게 더 진화된 버전임, 이건 코드에서만 수정으로 입력처리를 수정할 수 있음.
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/ArenaBattle/Input/IMC_Default.IMC_Default'"));
 	if (nullptr != InputMappingContextRef.Object)
 	{
@@ -328,3 +330,9 @@ void AABCharacterPlayer::Look(const FInputActionValue& Value)
 	AddControllerPitchInput(LookAxisVector.Y);
 }
 ```
+
+* IMC(Input Mapping Context)도 직접만들어 줘야한다
+
+<사진1>
+
+<사진2>
