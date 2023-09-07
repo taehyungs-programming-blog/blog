@@ -16,7 +16,7 @@ nav_order: 1
 
 * [Get Code 🌎](https://github.com/Arthur880708/Unreal_Cpp_Basic_2/tree/7)
 
-* 우선 Project Settings에서 Collision 세팅이 필요하다
+* 우선 Project Settings에서 **Engine - Collision** 세팅이 필요하다
 * Trace Channels -> New Trace Channel -> ABAction 생성
 * Preset도 생성이 필요함 -> New -> AbCapsule
     * CollisionEnabled: QueryOnly

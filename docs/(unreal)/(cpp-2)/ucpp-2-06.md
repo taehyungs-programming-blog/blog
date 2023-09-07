@@ -217,4 +217,30 @@ void UABAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_2/ucpp_2_6_9.png"/>
 </p>
 
+---
 
+## 추가
+
+* 약간 설명이 부족한거 같아 설명을 추가한다.
+* 우선 Blueprint Anim인 ABP_ABCharacter의 AnimGraph에 들어가보면
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_2/ucpp_2_6_10.png"/>
+</p>
+
+* State Machine이 두 개(Locomotion, MainStateMachine) 존재한다.
+* 우선 Locomotion의 output이 LocomotionCache에 캐쉬되며 MainStateMachine의 결과가 Output으로 나감을 확인할 수 있다.
+* Locomotion State부터 보자면
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_2/ucpp_2_6_11.png"/>
+</p>
+
+* Idle 혹은 Walk상태를 분석 후 Output(cache)로 내보낸다.
+* 다음은 MainStateMachine을 보자면
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_2/ucpp_2_6_12.png"/>
+</p>
+
+* 현재 상태가 Jump나 Land가 아닐경우 Locomotion(Cache된 값)으로 Output을 내보내고 Jump, Land일 경우 다른 애니메이션을 내보낸다
