@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "02. 이미지에 각종 필터 적용하기"
+title: "02. CPU를 이용해 이미지에 각종 필터 적용해 보기"
 parent: "(Graphics Basic Concept)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1
@@ -18,7 +18,7 @@ nav_order: 1
 
 ```s
 # 이미지 처리용 라이브러리라 생각하자
-$ vcpkg install stb:x64-windows
+$ .\vcpkg install stb:x64-windows
 ```
 
 ---
@@ -203,6 +203,22 @@ void Image::BoxBlur5()
 
 	// Swap
 	std::swap(this->pixels, pixelsBuffer);
+}
+```
+
+* Tips) `#pragma omp parallel for`
+
+```cpp
+#include <omp.h>
+#include <stdio.h>
+
+int main() {
+    int i;
+    #pragma omp parallel for
+    for (i = 0; i < 10; i++) {
+        printf("Thread %d executes loop iteration %d\n", omp_get_thread_num(), i);
+    }
+    return 0;
 }
 ```
 

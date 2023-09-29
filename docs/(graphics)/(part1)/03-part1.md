@@ -42,8 +42,8 @@ nav_order: 1
 * DirectX에도 계산용 api가 있지만 사용법이 복잡하여 비교적 간단한 GLM을 사용한다.
 
 ```bash
-$ vcpkg install glm:x64-windows
-$ vcpkg integrate install 
+$ .\vcpkg install glm:x64-windows
+$ .\vcpkg integrate install 
 ```
 
 * 사용해보기
