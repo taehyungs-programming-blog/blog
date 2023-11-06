@@ -14,34 +14,6 @@ nav_order: 1
 
 ---
 
-## 빌드(22.01.19 기준)
-
-😺 [Telegram Github 🌍](https://github.com/telegramdesktop/tdesktop/blob/dev/docs/building-win-x64.md) 에서 시키는데로 하면 된다.<br>
-
-* 환경
-	* Visual Studio 2022 (10.0.22000.0 SDK)
-	* Commit : bf0ad9e7ca22f94c9cb7eb64de1c77cb3b7235cd [bf0ad9e] / 
-	* Tag : v4.0.2
-* 빌드
-	* `BuildPath\ThirdParty`, `BuildPath\Libraries` 두 폴더 생성
-	* 각 ThirdParty software를 설치한다.
-	* pip install `$ python -m pip install pywin32`
-	* clone code `$ git clone --recursive https://github.com/telegramdesktop/tdesktop.git`
-	* bat start `$ tdesktop\Telegram\build\prepare\win.bat`
-	* build `$ configure.bat x64 -D TDESKTOP_API_ID=[[api id]] -D TDESKTOP_API_HASH=[[api hash]] -D DESKTOP_APP_USE_PACKAGED=OFF -D DESKTOP_APP_DISABLE_CRASH_REPORTS=OFF`
-
-🙀 하지만 막히는 부분이 몇 군데 있을 텐데 그 부분만 정리한다.
-
-* jom이 다운이 안됨 👉 한국에서 링크가 막힌거 같음. [여기](https://download.qt.io/official_releases/jom/jom.zip.mirrorlist)서 torrent로 받도록 하자.
-* `tdesktop\Telegram\build\prepare\win.bat` 과정에서 `os.environ['Platform']` 👉 [ x64 Native Tools Command Propt for VS 2022 ]로 실행한게 맞는지 다시 확인하자
-* breakpad lib 설치중 `UnicodeDecodeError: 'cp949' codec can't decode byte 0xbf in position 2: illegal multibyte sequence`에러가 발생시 시스템언어를 영어로 바꾸고 다시 빌드해보자.
-
-😺 여기까지하면 별 문제없이 빌드가 됨(어어어어어어어어ㅓ어엄청 오래걸림.. 주의)
-
-* 추가로 시스템 로캘이 한글일 경우 빌드가 안됨. 영어로 해두고 디버깅해보시오.
-
----
-
 ## GUI적으로 너무 신기했던 구현 부분 정리
 
 ### DPI를 어떻게 유지하는지?
