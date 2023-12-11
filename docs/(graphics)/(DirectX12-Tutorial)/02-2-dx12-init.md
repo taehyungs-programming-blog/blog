@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "02. 장치 초기화 (CommandQueue)"
+title: "02-02. 장치 초기화 (CommandQueue)"
 parent: "(DirectX12 Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1

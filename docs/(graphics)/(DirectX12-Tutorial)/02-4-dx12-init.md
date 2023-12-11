@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "02. 장치 초기화 (DescriptorHeap)"
+title: "02-04. 장치 초기화 (DescriptorHeap)"
 parent: "(DirectX12 Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1

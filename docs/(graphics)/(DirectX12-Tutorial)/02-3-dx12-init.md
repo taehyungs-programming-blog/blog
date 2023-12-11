@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "02. 장치 초기화 (Swapchain)"
+title: "02-03. 장치 초기화 (Swapchain)"
 parent: "(DirectX12 Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1

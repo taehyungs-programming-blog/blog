@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "02. 장치 초기화"
+title: "02-00. 장치 초기화"
 parent: "(DirectX12 Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 1
