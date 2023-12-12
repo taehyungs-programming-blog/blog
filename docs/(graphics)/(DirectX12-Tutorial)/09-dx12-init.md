@@ -214,3 +214,39 @@ void Timer::Update()
 	}
 }
 ```
+
+---
+
+## 버그수정
+
+* 생각보다 프레임이 안나오는데 아래의 문제때문이다.
+
+```cpp
+void Input::Update()
+{
+	// ...
+
+	for (uint32 key = 0; key < KEY_TYPE_COUNT; key++)
+	{
+		// 프레임마다 GetAsyncKeyState를 호출하는것이 부담이다.
+		if (::GetAsyncKeyState(key) & 0x8000)
+		{
+			//...
+```
+
+```cpp
+void Input::Update()
+{
+	// ...
+
+    // key의 상태를 배열로 한 번에 받아와 준다
+	BYTE asciiKeys[KEY_TYPE_COUNT] = {};
+	if (::GetKeyboardState(asciiKeys) == false)
+		return;
+
+    for (uint32 key = 0; key < KEY_TYPE_COUNT; key++)
+	{
+		if (asciiKeys[key] & 0x80)
+		{
+            // ...
+```
