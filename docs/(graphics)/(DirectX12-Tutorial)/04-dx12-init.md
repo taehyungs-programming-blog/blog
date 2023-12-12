@@ -251,47 +251,6 @@ void ConstantBuffer::CreateBuffer()
 
 ---
 
-## (TIPS2) fence 사용하기
-
-```cpp
-void CommandQueue::WaitSync()
-{
-	// Advance the fence value to mark commands up to this fence point.
-	_fenceValue++;
-
-	// Add an instruction to the command queue to set a new fence point.  Because we 
-	// are on the GPU timeline, the new fence point won't be set until the GPU finishes
-	// processing all the commands prior to this Signal().
-	_cmdQueue->Signal(_fence.Get(), _fenceValue);
-
-	// Wait until the GPU has completed commands up to this fence point.
-	if (_fence->GetCompletedValue() < _fenceValue)
-	{
-		// Fire event when GPU hits current fence.  
-		_fence->SetEventOnCompletion(_fenceValue, _fenceEvent);
-
-		// Wait until the GPU hits current fence event is fired.
-		::WaitForSingleObject(_fenceEvent, INFINITE);
-	}
-}
-```
-
-```cpp
-void CommandQueue::RenderEnd()
-{
-    // ...
-
-	// Wait until frame commands are complete.  This waiting is inefficient and is
-	// done for simplicity.  Later we will show how to organize our rendering code
-	// so we do not have to wait per frame.
-	WaitSync();
-
-	_swapChain->SwapIndex();
-}
-```
-
----
-
 ## 결과출력
 
 ```cpp
