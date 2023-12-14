@@ -16,32 +16,6 @@ nav_order: 2
 
 * [Get Code 🌍](https://github.com/Arthur880708/DirextX12-Example/tree/12)
 
-## (TIPS) Singleton 구현
-
-```cpp
-// EnginePch.h
-
-// ...
-
-#define DECLARE_SINGLE(type)		\
-// private로 생성자/소멸자를 선언해 외부에서 new로 새롭게 생성하는 것을 막는다
-private:							\
-	type() {}						\
-	~type() {}						\
-public:								\
-	static type* GetInstance()		\
-	{								\
-		static type instance;		\
-		return &instance;			\
-	}								\
-
-#define GET_SINGLE(type)	type::GetInstance()
-
-// ...
-```
-
----
-
 ## Scene
 
 * Unity에도 아래와 같이 Scene이 등장하는데 간단하게 설명하면 GameObject를 관리하는 Manager의 개념이다. 

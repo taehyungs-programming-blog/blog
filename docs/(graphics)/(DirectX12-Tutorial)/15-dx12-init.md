@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "15. Projection <-> Screen 변환"
+title: "15. [이론] Projection <-> Screen 변환"
 parent: "(DirectX12 Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 2
