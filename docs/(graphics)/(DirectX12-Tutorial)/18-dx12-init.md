@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "18. Lighting - 이론"
+title: "18. [이론] Lighting"
 parent: "(DirectX12 Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 2

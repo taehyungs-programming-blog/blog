@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "21. Normal Mapping"
+title: "21. Normal Mapping + Tangent 좌표계"
 parent: "(DirectX12 Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 3
@@ -15,6 +15,21 @@ nav_order: 3
 ---
 
 * [Get Code 🌍](https://github.com/Arthur880708/DirextX12-Example/tree/16)
+
+---
+
+## 이론
+
+* **Normal Mapping** 이란? : 
+    * DirectX의 Normal Map은 3D 그래픽스에서 표면의 디테일과 질감을 향상시키는 데 사용되는 기술입니다. 
+    * Normal Map은 표면의 각 픽셀마다 법선 벡터(Normal Vector)의 정보를 담고 있으며, 이를 통해 빛의 반사와 그림자 효과를 더욱 사실적으로 표현할 수 있습니다.
+    * 법선 벡터 정보는 빛이 객체에 닿았을 때의 반사 방향을 결정하는 데 사용되며, 이를 통해 표면의 거칠기나 세부 질감을 사실적으로 모방할 수 있습니다.
+* 그런데 Normal Mapping만 있으면 접면의 수직한 Vector만 알수 있다.
+    * 그럼 수직한 빛의 반사만 계산이 된다는건데 ... 이건 좀 ... -> **Tangent 좌표계**로 다양한 각도의 빛의 반사를 표현해 보자!
+
+---
+
+## 구현 + 설명
 
 * Texture를 사용하기 위해 [3D Textures](https://3dtextures.me/)와 같은 사이트에서 Texture를 다운후 사용하면 생각보다 밋밋하다...
 
@@ -70,7 +85,7 @@ shared_ptr<Mesh> Resources::LoadCubeMesh()
     * Normal-Mapping Texture는 Local좌표계를 사용하는 것이 아니라 Tagent 좌표계를 사용하게 된다.
     * Tagent(접하는 평면)의 좌표계란 말인데, 말 그대로 Object의 표면과 접하는 좌표계이다.
 
-* Tagent 좌표계의 좌표는 x(right), y(look), z(up) (순서대로 rgb) 인데 대부분 z(up)으로 향하기에(아무래도 색을 반사하기 위한 좌표계이기에 up성분이 많음 right, look도 약간은 있으나 색을 비스듬히 반사시키려는 정도?
+* Tagent 좌표계의 좌표는 x(right), y(look), z(up) (순서대로 rgb) 인데 대부분 z(up)으로 향하기에(아무래도 색을 반사하기 위한 좌표계이기에 up성분이 많음 right, look도 약간은 있으나 색을 비스듬히 반사시키려는 정도?)
     * 어떻게 사용될까? -> 일단 현재 Light를 그리는 좌표계가 View좌표계이기에 Tagent 좌표계에서 View좌표계로 변환을 시켜주고 그 Normal Vector를 이용해 Light를 그리면 된다.
 
 * 여기부턴 오히려 코드보는게 편함.
