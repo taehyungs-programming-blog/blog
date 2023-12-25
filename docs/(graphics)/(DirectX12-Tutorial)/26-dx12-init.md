@@ -96,7 +96,7 @@ void CommandQueue::RenderEnd()
     * 준비된 BackBuffer를 비워주고
     * 비워진 BackBuffer에 `OMSetRenderTargets`를 통하여 최종 랜더링 결과를 넣어달라고 한다.
 
-* 그런데 이 과정에서 좀 아쉬운 점은 Rendering과정에서 만들어진 각종변수를 재활용할 수 없다는 점이다.
+* 그런데 이 과정에서 좀 아쉬운 점은 Rendering과정에서 만들어진 각종변수를 **재활용**할 수 없다는 점이다.
 
 ```cpp
 VS_OUT VS_Main(VS_IN input)
@@ -149,10 +149,10 @@ float4 PS_Main(VS_OUT input) : SV_Target
 
 ---
 
-## Deferred Rendering
+## (이론) Deferred Rendering
 
 * 이런 단점의 보완을 위해서 **Deferred Rendering**이 나타났다
-* 아래가 Forward Rendering의 과정인데 **VS(Vertex Shader) -> GS(Geometry Shader) -> FS(Pixel Shader)**를 거치고 마지막 Render Target에 넘긴다.
+* 아래가 Forward Rendering의 과정인데 **VS(Vertex Shader) -> GS(Geometry Shader) -> PS(Pixel Shader)**를 거치고 마지막 Render Target에 넘긴다.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/directx/directx-26-1.png"/>
@@ -690,7 +690,7 @@ void Scene::Render()
 
 ### 흠... 잘 이해가... 그려지는 부분 부터 다시 보자면
 
-😺 아래 그림처럼 총 세개의 UI(쉐이더의 중간 결과물)을 그려보려한다.
+ * 아래 그림처럼 총 세개의 UI(쉐이더의 중간 결과물)을 그려보려한다. 😺
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/cpp/directx/directx-26-3.png"/>
@@ -698,7 +698,6 @@ void Scene::Render()
 
 ```cpp
 // 텍스쳐의 생성
-
 void Engine::CreateRenderTargetGroups() 
 { 
 	// DepthStencil 
@@ -706,25 +705,8 @@ void Engine::CreateRenderTargetGroups()
 		DXGI_FORMAT_D32_FLOAT, _window.width, _window.height, 
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), 
 		D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
-
-
-
-	// SwapChain Group 
-	{ 
-		vector<RenderTarget> rtVec(SWAP_CHAIN_BUFFER_COUNT); 
-		for (uint32 i = 0; i < SWAP_CHAIN_BUFFER_COUNT; ++i) 
-		{ 
-			wstring name = L"SwapChainTarget_" + std::to_wstring(i); 
-			ComPtr<ID3D12Resource> resource; 
-			_swapChain->GetSwapChain()->GetBuffer(i, IID_PPV_ARGS(&resource)); 
-			rtVec[i].target = GET_SINGLE(Resources)->CreateTextureFromResource(name, resource); 
-		} 
-		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)] = make_shared<RenderTargetGroup>(); 
-		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)]->Create(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN, rtVec, dsTexture); 
-	}
-
-
-
+	
+	// ...
 
 	// Deferred Group 
 	{ 
@@ -768,7 +750,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		{ 
 			shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Forward"); 
 
-                        // 만들어둔 Texture를 넣는다
+            // 만들어둔 Texture를 넣는다
 			shared_ptr<Texture> texture = GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->GetRTTexture(i);
 
 			shared_ptr<Material> material = make_shared<Material>(); 
@@ -805,4 +787,120 @@ void Scene::Render()
 		gameObject->GetCamera()->Render_Forward(); 
 	} 
 }
+```
+
+---
+
+### 이래도 이해가 안되는 부분은 ... Rendering부분
+
+* 주요과정
+	* Deferred Shader를 통해 임시 결과 저장
+	* Forward Shader를 통해 화면에 출력
+* 이 과정을 보자
+
+#### Deferred Shader를 통해 임시 결과 저장
+
+```cpp
+shared_ptr<Scene> SceneManager::LoadTestScene()
+{
+// ...
+
+#pragma region Cube
+	{
+		shared_ptr<GameObject> sphere = make_shared<GameObject>();
+		sphere->AddComponent(make_shared<Transform>());
+		sphere->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+		sphere->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 150.f));
+		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		{
+			shared_ptr<Mesh> sphereMesh = GET_SINGLE(Resources)->LoadCubeMesh();
+			meshRenderer->SetMesh(sphereMesh);
+		}
+		{
+			// Deferred로 Cube를 그린다
+			shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Deferred");
+			
+```
+
+```cpp
+void Engine::CreateRenderTargetGroups()
+{
+	// ...
+	// Deferred Group
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_G_BUFFER_GROUP_MEMBER_COUNT);
+
+		// 여기서 deferred shader에서 그려질 target을 지정
+		rtVec[0].target = GET_SINGLE(Resources)->CreateTexture(L"PositionTarget",
+			DXGI_FORMAT_R32G32B32A32_FLOAT, _window.width, _window.height,
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+
+		rtVec[1].target = GET_SINGLE(Resources)->CreateTexture(L"NormalTarget",
+			DXGI_FORMAT_R32G32B32A32_FLOAT, _window.width, _window.height,
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+
+		rtVec[2].target = GET_SINGLE(Resources)->CreateTexture(L"DiffuseTarget",
+			DXGI_FORMAT_R8G8B8A8_UNORM, _window.width, _window.height,
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+
+		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::G_BUFFER)] = make_shared<RenderTargetGroup>();
+		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::G_BUFFER)]->Create(RENDER_TARGET_GROUP_TYPE::G_BUFFER, rtVec, dsTexture);
+	}
+}
+```
+
+```cpp
+// deferred.fx
+// ...
+struct PS_OUT
+{
+    float4 position : SV_Target0;
+    float4 normal : SV_Target1;
+    float4 color : SV_Target2;
+};
+
+PS_OUT PS_Main(VS_OUT input)
+{
+    // ...
+
+	// deferred Pixel Shader의 결과로 normal과 color값을 넣는다
+    output.position = float4(input.viewPos.xyz, 0.f);
+    output.normal = float4(viewNormal.xyz, 0.f);
+    output.color = color;
+
+    return output;
+}
+```
+
+#### Forward Shader를 통해 화면에 출력
+
+```cpp
+#pragma region UI_Test
+	for (int32 i = 0; i < 3; i++)
+	{
+		shared_ptr<GameObject> sphere = make_shared<GameObject>();
+		sphere->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI")); // UI
+		sphere->AddComponent(make_shared<Transform>());
+		sphere->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+		sphere->GetTransform()->SetLocalPosition(Vec3(-350.f + (i * 160), 250.f, 500.f));
+		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		{
+			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+			meshRenderer->SetMesh(mesh);
+		}
+		{
+			shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Forward");
+			shared_ptr<Texture> texture = GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->GetRTTexture(i);
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(shader);
+			material->SetTexture(0, texture);
+			meshRenderer->SetMaterial(material);
+		}
+		sphere->AddComponent(meshRenderer);
+		scene->AddGameObject(sphere);
+	}
+#pragma endregion
 ```

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "20. Lighting - 구현2"
+title: "20. [구현] Lighting Shader"
 parent: "(DirectX12 Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 3

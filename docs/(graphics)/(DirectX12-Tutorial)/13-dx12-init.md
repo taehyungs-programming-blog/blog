@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "13. Scale, Rotation, Translation Matrix"
+title: "13. [이론] Scale, Rotation, Translation Matrix"
 parent: "(DirectX12 Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 2
@@ -18,8 +18,8 @@ nav_order: 2
 
 ## Translation Matrix
 
-* [x, y, z]에 있는 물체를 [x+1, y+2, z+3]이동하고자 한다면?
-* [x, y, z] + [1, 2, 3] 너무 쉬운데??
+* `[x, y, z]`에 있는 물체를 `[x+1, y+2, z+3]`이동하고자 한다면?
+* `[x, y, z] + [1, 2, 3]` 너무 쉬운데??
 
 * 인생이 이렇게 쉬우면 좋겠지만 … 우리는 효율성을 따져야한다.
 * Rotation, Scale등을 함께 담은 Matrix(SRT(Scale, Rotation, Translation) Matrix)로 연산되기에 Translation또한 Matrix로 연산가능하게 해줘야 한다.
@@ -57,7 +57,7 @@ W = x*m14 + y*m24 +z*m34 + m44
 a b c 1
 ```
 
-* 이게 Translation Matrix이다. (쉽군)
+* 이게 **Translation Matrix**이다. (쉽군)
 
 ---
 
@@ -79,7 +79,7 @@ a 0 0 0
 0 0 0 1
 ```
 
-* 이게 Scale Matrix이다. (더 쉽군)
+* 이게 **Scale Matrix**이다. (더 쉽군)
 
 ---
 
@@ -158,8 +158,6 @@ cos(b)  0 sin(b) 0
 -sin(b) 0 cos(b) 0
 0       0 0      1
 ```
-
-<br>
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "14. World <-> View 변환"
+title: "14. [이론] World <-> View 변환"
 parent: "(DirectX12 Tutorial)"
 grand_parent: "(Graphics 😎)"
 nav_order: 2

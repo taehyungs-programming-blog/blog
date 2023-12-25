@@ -18,7 +18,7 @@ nav_order: 2
 
 * 게임엔진은 Object -> Object를 쌓아서 만드는 구조이다
 * 하나하나의 Object를 Component로 정의하고 필요한 Component를 넣는식으로 하나의 Object를 만든다(그말이 그말인가?)
-    * 참고로 Unity의 경우 위 설명처럼 Compoennt를 추가해서 Object를 만드는개념이고
+    * 참고로 Unity의 경우 위 설명처럼 Component를 추가해서 Object를 만드는개념이고
     * Unreal의 경우 상속을 통해서 Object를 만드는 개념이다.
     * Unreal이 조금 더 보수적(자유도가 낮다)이다.
 * 여기서 만드려는 것은 Component를 만들어 보려한다.
@@ -36,6 +36,11 @@ nav_order: 2
 
 * Component는 현재 *
 MeshRenderer, Transform, MonoBehavior 세 가지가 있음
+
+* UML *
+Component <--- MeshRenderer
+          <--- Transform
+		  <--- MonoBehavior
 ```
 
 ```cpp
