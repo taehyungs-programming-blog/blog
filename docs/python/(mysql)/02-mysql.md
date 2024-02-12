@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "02. DATA 다뤄보기"
+title: "02. SQL-Query로 DATA 다뤄보기"
 parent: "(MySQL 💾)"
 grand_parent: "Python"
 nav_order: 1

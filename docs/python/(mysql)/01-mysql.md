@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "01. MySQL 환경설정 / TABLE 다뤄보기"
+title: "01. MySQL 환경설정 / SQL-Query로 TABLE 다뤄보기"
 parent: "(MySQL 💾)"
 grand_parent: "Python"
 nav_order: 1
@@ -14,15 +14,30 @@ nav_order: 1
 
 ---
 
+## 설치
+
+* [Link MySQL WorkBench 🌎](https://www.mysql.com/downloads/) : 아래의 MySQL Community Down
+* [Link MySQL Server 🌎](https://dev.mysql.com/downloads/mysql/) : MySQL Sever 다운
+
+---
+
+## 이미 MySQL이 설치되어 있는데 비밀번호를 까먹은 경우?
+
+* 특별한 경우가 아니라면, 그냥 MySQL 서버를 재설치하자
+  * MySQL Server XX 삭제 후 재설치하면 됨.
+
+---
+
 ## MySQL 설치확인
 
-🍁 (설치하는것은 쉽기에 생략) 서비스에서 설치 후 도작중인지 확인이 가능하다.
+* 서비스에서 설치 후 동작중인지 확인이 가능하다.
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/python/mysql/mysql-1-1.png"/>
 </p>
 
-🍁 명령어 넣어보기 -> **MySQL Workbench** 실행
+* 명령어 넣어보기 -> **MySQL Workbench** 실행
+  * MySQL Connections에서 Local instance연결
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/python/mysql/mysql-1-2.png"/>
