@@ -29,3 +29,10 @@ nav_order: 2
 
 # TODO : 범위스킬 구현
 
+---
+
+# TODO: Damage Font 구현부
+
+---
+
+# TODO : 맞았을때 깜빡이는 효과
