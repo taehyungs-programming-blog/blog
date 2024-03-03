@@ -28,3 +28,8 @@ nav_order: 2
 * 우선, 갈수 있는 곳 없는곳을 그리기 위해서 Tile Palette를 이용해 그려놔야한다.
     * Window -> 2D -> Tile Palette
 
+---
+
+# TODO
+
+* MpaManager를 어떻게 사용하고 있나확인.
