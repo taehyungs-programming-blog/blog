@@ -77,6 +77,7 @@ $ npm install vuex@3.6.2 --save
 ```
 
 ```json
+// package.json
 {
   /* */
   "dependencies": {
