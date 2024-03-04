@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "14. Unity Shader"
+title: "14. Skill System"
 parent: "(포트폴리오 4 - 방치형 게임)"
 grand_parent: "(Unity ✨)"
 nav_order: 2
@@ -18,5 +18,21 @@ nav_order: 2
 
 ---
 
+# TODO : Data.Contents가 달라짐 확인바람
+# 전반적으로 DataSheet읽어서 어떻게 처리하나 확인
 
-# TODO : Unreal GAS(Game Ability System) -> 요건 강의 다시 정리 (이후에)
+---
+
+# TODO : Skill System이 어떻게 돌아가나 확인
+
+---
+
+# TODO : 범위스킬 구현
+
+---
+
+# TODO: Damage Font 구현부
+
+---
+
+# TODO : 맞았을때 깜빡이는 효과

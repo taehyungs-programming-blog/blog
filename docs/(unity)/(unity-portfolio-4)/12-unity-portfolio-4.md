@@ -26,7 +26,8 @@ public List<Vector3Int> FindPath(Vector3Int startCellPos, Vector3Int destCellPos
     Dictionary<Vector3Int, int> best = new Dictionary<Vector3Int, int>();
     Dictionary<Vector3Int, Vector3Int> parent = new Dictionary<Vector3Int, Vector3Int>();
 
-    // PriorityQueue의 구현은 아래서 다룬다
+    // PriorityQueue는 그리 어렵지 않아 설명생략 
+        // 그냥 compareto를 보고 내부에서 list정렬
     PriorityQueue<PQNode> pq = new PriorityQueue<PQNode>();
 
     Vector3Int pos = startCellPos;
@@ -96,12 +97,4 @@ public List<Vector3Int> FindPath(Vector3Int startCellPos, Vector3Int destCellPos
     return CalcCellPathFromParent(parent, dest);
 }
 ```
-
----
-
-# TODO : PriorityQueue
-
----
-
-# TODO : Object Tool
 
