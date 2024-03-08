@@ -212,6 +212,7 @@ public TrackEntry PlayAnimation(int trackIndex, string animName, bool loop)
 ---
 
 # TODO : 범위스킬 구현
+# TODO : Unreal Shader
 
 ---
 
@@ -220,3 +221,4 @@ public TrackEntry PlayAnimation(int trackIndex, string animName, bool loop)
 ---
 
 # TODO : 맞았을때 깜빡이는 효과
+
