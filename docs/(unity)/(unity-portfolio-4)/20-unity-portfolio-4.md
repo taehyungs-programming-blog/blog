@@ -18,10 +18,58 @@ nav_order: 3
 
 ---
 
-# TODO : 타일을 2개 이상 차지하는 대형몬스터
+## 타일을 2칸 이상 차지하는 경우 대형몬스터라 간주
 
-* CanGo를 여러타일에 대해 계산
-    * CanGo_Internal
+* 타 2칸이상 체크하는 로직이 필요해진다.
+
+```csharp
+public bool CanGo(BaseObject self, Vector3Int cellPos, bool ignoreObjects = false, bool ignoreSemiWall = false)
+{
+    int extraCells = 0;
+    if (self != null)
+        extraCells = self.ExtraCells;
+
+    // extraCells을 한 번 더 체크
+    for (int dx = -extraCells; dx <= extraCells; dx++)
+    {
+        for (int dy = -extraCells; dy <= extraCells; dy++)
+        {
+            Vector3Int checkPos = new Vector3Int(cellPos.x + dx, cellPos.y + dy);
+
+            if (CanGo_Internal(self, checkPos, ignoreObjects, ignoreSemiWall) == false)
+                return false;
+        }
+    }
+
+    return true;
+}
+
+bool CanGo_Internal(BaseObject self, Vector3Int cellPos, bool ignoreObjects = false, bool ignoreSemiWall = false)
+{
+    if (cellPos.x < MinX || cellPos.x > MaxX)
+        return false;
+    if (cellPos.y < MinY || cellPos.y > MaxY)
+        return false;
+
+    if (ignoreObjects == false)
+    {
+        BaseObject obj = GetObject(cellPos);
+        if (obj != null && obj != self)
+            return false;
+    }
+
+    int x = cellPos.x - MinX;
+    int y = MaxY - cellPos.y;
+    ECellCollisionType type = _collision[x, y];
+    if (type == ECellCollisionType.None)
+        return true;
+
+    if (ignoreSemiWall && type == ECellCollisionType.SemiWall)
+        return true;
+
+    return false;
+}
+```
 
 ---
 
