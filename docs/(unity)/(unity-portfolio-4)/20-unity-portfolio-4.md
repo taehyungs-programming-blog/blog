@@ -73,7 +73,7 @@ bool CanGo_Internal(BaseObject self, Vector3Int cellPos, bool ignoreObjects = fa
 
 ---
 
-# TODO : A* 알고리즘
+## 대형몬스터를 찾게 A* 알고리즘 변수수정
 
 * 대형몬스터의 중점을 위주로 찾는데 그게 맞나?
     * 문제는 보스몬스터 주변에 내 캐릭들이 들어가는경우 빈자리를 찾아가게 해야한다
@@ -87,3 +87,13 @@ v - 여기에 내 캐릭들이 들어가게 해야함.
 ```
 
 * 현재는 depth를 수정해서 보완 (이후 더 고려할 것)
+    * A* 내부를 보면 알겠지만 Depth가 좀 돌아가더라도 목적지를 찾자임.
+
+```csharp
+/*
+public const int HERO_DEFAULT_MOVE_DEPTH = 10;
+public const int MONSTER_DEFAULT_MOVE_DEPTH = 3;
+*/
+
+FindPathAndMoveToCellPos(Target.transform.position, HERO_DEFAULT_MOVE_DEPTH);
+```
