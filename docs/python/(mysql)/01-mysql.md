@@ -14,6 +14,10 @@ nav_order: 1
 
 ---
 
+> 수정예정, ORM을 쓰는 방식이 나을 듯.
+
+---
+
 ## 설치
 
 * [Link MySQL WorkBench 🌎](https://www.mysql.com/downloads/) : 아래의 MySQL Community Down
