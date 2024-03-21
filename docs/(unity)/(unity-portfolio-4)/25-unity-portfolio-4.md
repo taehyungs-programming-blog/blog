@@ -185,7 +185,91 @@ void Refresh()
 
 ### 어떻게 구현?
 
+```csharp
+// UI_Joystick.cs
+
+// Bind를 걸고
+gameObject.BindEvent(OnPointerDown, type: Define.EUIEvent.PointerDown);
+
+// ...
+
+// Event가 동작시
+public void OnPointerDown(PointerEventData eventData)
+{
+    _touchPos = Input.mousePosition;
+
+    Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    _background.transform.position = mouseWorldPos;
+    _cursor.transform.position = mouseWorldPos;
+
+    // JoysticState를 수정한다
+    Managers.Game.JoystickState = EJoystickState.PointerDown;
+}
+
+// ...
+
+// JoystickState은 아래와 같이 set할시 이벤트 발동
+public Define.EJoystickState JoystickState
+{
+    get { return _joystickState; }
+    set
+    {
+        _joystickState = value;
+        OnJoystickStateChanged?.Invoke(_joystickState);
+    }
+}
+```
+
+```csharp
+// Hero.cs
+
+// State를 업데이트 한다
+private void HandleOnJoystickStateChanged(EJoystickState joystickState)
+{
+    switch (joystickState)
+    {
+        case Define.EJoystickState.PointerDown:
+            HeroMoveState = EHeroMoveState.ForceMove;
+            break;
+        case Define.EJoystickState.Drag:
+            HeroMoveState = EHeroMoveState.ForceMove;
+            break;
+        case Define.EJoystickState.PointerUp:
+            HeroMoveState = EHeroMoveState.None;
+            break;
+        default:
+            break;
+    }
+}
+```
+
+```csharp
+// HeroCamp.cs
+
+    // 내부적으로 위치가 관리 됨.
+private void Update()
+{
+    Vector3 dir = _moveDir * Time.deltaTime * Speed;
+    Vector3 newPos = transform.position + dir;
+
+    if (Managers.Map == null)
+        return;
+    if (Managers.Map.CanGo(null, newPos, ignoreObjects: true, ignoreSemiWall: true) == false)
+        return;
+
+    transform.position = newPos;
+    Managers.Map.StageTransition.CheckMapChanged(newPos);
+}
+```
+
 ### 왜 이렇게 설계?
+
+* 1. UI_Joystick에서 발생한 Event를 GameManager에서 관리
+    * 이건 타당.
+* 2. GameManager에서 받은 Joystick-Event를 토대로 HeroMoveState 변경
+    * State만 확인 후 동작은 각 Creature가 알아서 처리함.
+* 3. 어디로 이동할지 여부 데이터도 HeroCamp에서 담당
+    * 역할의 분리
 
 ---
 
