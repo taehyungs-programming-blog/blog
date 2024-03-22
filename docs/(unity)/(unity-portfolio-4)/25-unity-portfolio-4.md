@@ -277,20 +277,40 @@ private void Update()
 
 ### 어떻게 구현?
 
+```csharp
+// UI_WaypointPopup.cs
+
+void Refresh()
+{
+    if (_init == false)
+        return;
+    if (Managers.Map == null)
+        return;
+    if (Managers.Map.StageTransition == null)
+        return;
+
+    GameObject parent = GetObject((int)GameObjects.WaypointList);
+    // MapManager의 Stage정보를 읽어옴.
+    List<Stage> stages = Managers.Map.StageTransition.Stages;
+
+    for (int i = 0; i < _items.Count; i++)
+    {
+        if (i < stages.Count)
+        {
+            Stage stage = stages[i];
+            // Item에 주
+            _items[i].SetInfo(stage, () => Managers.UI.ClosePopupUI(this));
+            _items[i].gameObject.SetActive(true);
+        }
+        else
+        {
+            _items[i].gameObject.SetActive(false);
+        }
+    }
+}
+```
+
 ### 왜 이렇게 설계?
 
----
+* 역시 역할의 분리가 핵심이다.
 
-## 전투시스템
-
-### 어떻게 구현?
-
-### 왜 이렇게 설계?
-
----
-
-## Stat 시스템
-
-### 어떻게 구현?
-
-### 왜 이렇게 설계?
