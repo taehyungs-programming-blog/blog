@@ -15,4 +15,4 @@ nav_order: 1
 ---
 
 * `Launch.h`
-
+* `UObject.h` 가 붙었다면 GC가 붙는 Object라 생각하면 좋다
