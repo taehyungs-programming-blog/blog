@@ -42,3 +42,13 @@ Note: 23.03.24 - ActionClass
 * **Unreal기준 코드에 남겨져 있는 주석은 무조건 읽어봐야한다**
 
 ---
+
+## Unreal Insights 사용
+
+* UnrealInsights를 빌드한다.
+* UnrealInsights.exe를 실행
+* 프로젝트의 아규먼트로 아래를 추가
+
+```shell
+-tracehost=127.0.0.1 -trace=cpu,gpu,frame
+```
