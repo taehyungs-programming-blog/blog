@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "03. "
+title: "03. UEngine"
 parent: "(Engine Source Code 분석 1)"
 grand_parent: "(Unreal C++ 🚀)"
 nav_order: 1
@@ -12,6 +12,18 @@ nav_order: 1
 1. TOC
 {:toc}
 
+---
+
+* UEngine의 자녀인 UEditorEngine를 살펴보자
+
+## UEngine
+
+```cpp
+class UEngine : public UObject, public FExec
+// class UEditorEngine : public UEngine
+```
+
+---
 ---
 
 ## TIPS) `: 1` 과 같은 표현은 뭘 의미할까?
