@@ -2,7 +2,7 @@
 layout: default
 title: "01. Engine Build + Open Source 분석하는 법"
 parent: "(Engine Source Code 분석 1)"
-grand_parent: "(Unreal C++ 🚀)"
+grand_parent: "(OpenSource👽)"
 nav_order: 1
 ---
 

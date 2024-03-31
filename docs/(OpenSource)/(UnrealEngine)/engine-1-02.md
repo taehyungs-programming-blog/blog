@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "02. Unreal Main Function ~ Tick"
+title: "02. Unreal Main Function"
 parent: "(Engine Source Code 분석 1)"
-grand_parent: "(Unreal C++ 🚀)"
+grand_parent: "(OpenSource👽)"
 nav_order: 1
 ---
 
@@ -170,7 +170,7 @@ void FEngineLoop::Tick()
     GEngine->Tick(FApp::GetDeltaTime(), bIdleMode);
 ```
 
-* 그럼 GEngine는 뭘까? -> 이후강의 진행
+* 그럼 GEngine는 뭘까?
 
 ```
 @startuml
@@ -202,4 +202,66 @@ UEditorEngine <|-- UUnrealEdEngine
 |ULyradEditorEngine|
 |------------------|
 `------------------'
+```
+
+* UEngine의 자녀인 UEditorEngine를 살펴보자
+
+## UEngine
+
+```cpp
+class UEngine : public UObject, public FExec
+// class UEditorEngine : public UEngine
+{
+    // ...
+
+    // Engine에선 WorldList를 별도로 관리한다.
+        // --> World의 생성/제거의 주체는 Engine이다.
+    TIndirectArray<FWorldContext> WorldList;
+    int32 NextWorldContextHandle;
+}
+```
+
+* `UObject` - GC에 의해  LifeTime이 결정
+
+## FWorldContext
+
+* UEngine과 World의 Dependency를 끊기위해 사용됨.
+
+```cpp
+struct FWorldContext
+{
+    void SetCurrentWorld(UWorld* World)
+    {
+        UWorld* OldWorld = ThisCurrentWorld;
+        ThisCurrentWorld = World;
+
+        if (OwningGameInstance)
+        {
+            OwningGameInstance->OnWorldChanged(OldWorld, ThisCurrentWorld);
+        }
+    }
+
+    TObjectPtr<UWorld> ThisCurrentWorld;
+    // ...
+```
+
+* 예를들어 보자면 ..
+
+```cpp
+class UEditorEngine : public UEngine
+{
+public:
+    // UEditorEngine에서 이런식으로 WorldContext를 받아온다
+    FWorldContext& GetEditorWorldContext(bool bEnsureIsGWorld = false)
+```
+
+```cpp
+// 실 사용은 이렇게 ..
+UWorld* World = GEditor->GetEditorWorldContext().World();
+/*
+FORCEINLINE UWorld* World() const
+{
+    return ThisCurrentWorld;
+}
+*/
 ```
