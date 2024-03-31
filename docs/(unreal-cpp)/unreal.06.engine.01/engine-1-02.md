@@ -136,6 +136,25 @@ int32 GuardedMain( const TCHAR* CmdLine )
 }
 ```
 
+### Tips) 이런패턴이 자주 사용된다.
+
+```cpp
+struct EngineLoopCleanupGuard 
+{ 
+    ~EngineLoopCleanupGuard()
+    {
+        // Don't shut down the engine on scope exit when we are running embedded
+        // because the outer application will take care of that.
+        if (!GUELibraryOverrideSettings.bIsEmbedded)
+        {
+            EngineExit();
+        }
+    }
+} CleanupGuard;
+// EngineLoopCleanupGuard를 선언하자마자 CleanupGuard로 생성
+    // 목적은 EngineExit();에 호출에 있음.
+```
+
 ---
 
 ## Tick
@@ -152,3 +171,35 @@ void FEngineLoop::Tick()
 ```
 
 * 그럼 GEngine는 뭘까? -> 이후강의 진행
+
+```
+@startuml
+UEngine <|-- UEditorEngine 
+UUnrealEdEngine <|-- ULyradEditorEngine 
+UEditorEngine <|-- UUnrealEdEngine
+@enduml
+```
+
+```
+     ,-------.      
+     |UEngine|      
+     |-------|      
+     `-------'      
+          |         
+          |         
+  ,-------------.   
+  |UEditorEngine|   
+  |-------------|   
+  `-------------'   
+          |         
+ ,---------------.  
+ |UUnrealEdEngine|  
+ |---------------|  
+ `---------------'  
+          |         
+                    
+,------------------.
+|ULyradEditorEngine|
+|------------------|
+`------------------'
+```
