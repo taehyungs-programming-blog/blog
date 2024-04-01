@@ -1,7 +1,7 @@
 ---
 layout: default
-title: "(Engine Source Code 분석 1)"
+title: "(Engine Source Code 자잘한 부분)"
 parent: "(OpenSource👽)"
 has_children: true
-nav_order: 1
+nav_order: 9
 ---
