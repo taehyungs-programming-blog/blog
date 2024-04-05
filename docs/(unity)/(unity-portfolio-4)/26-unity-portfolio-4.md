@@ -65,4 +65,5 @@ public class MonsterData : CreatureData
 
 * GetRandomReward
 * ItemHolder
+* Item이 어떻게 떨어지나 확인
 
