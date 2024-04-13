@@ -63,6 +63,9 @@ static UWorld* CreateWorld(/* ... */)
 	UWorld* NewWorld = NewObject<UWorld>(WorldPackage, *WorldNameString);
 
 	// ...
+	
+	// 여기는 내용이 길어서 8강 참조!
+	NewWorld->InitializeNewWorld(
 }
 ```
 
