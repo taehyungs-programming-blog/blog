@@ -14,6 +14,10 @@ nav_order: 1
 
 ---
 
+* [Refernece ✨](https://rinthel.github.io/rust-lang-book-ko/ch01-01-installation.html)
+
+---
+
 ## Rust 설치
 
 * 간단한 코딩은 [Rust Playground](https://play.rust-lang.org/)에서 하자
@@ -63,5 +67,6 @@ $ rustup self uninstall
 
 ## Visual Studio Code Extension
 
-* rust-analyzer
-* crate - Seray Uzgur : gargo.toml 편집 지원
+* [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+* [crate - Seray Uzgur](https://marketplace.visualstudio.com/items?itemName=serayuzgur.crates) : gargo.toml 편집 지원
+* [Even Better TOML](https://marketplace.visualstudio.com/items?itemName=tamasfe.even-better-toml)
