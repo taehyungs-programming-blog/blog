@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "02. 소소한 팁"
+title: "02-00. 소소한 팁"
 parent: "(Rust 기초)"
 grand_parent: "(Rust 🦀)"
 nav_order: 1
