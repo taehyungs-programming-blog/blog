@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "03. rust문법 훑어보기"
+title: "03-00. rust문법 훑어보기"
 parent: "(Rust 기초)"
 grand_parent: "(Rust 🦀)"
 nav_order: 1
@@ -14,9 +14,35 @@ nav_order: 1
 
 ---
 
+* [Reference ✨](https://rinthel.github.io/rust-lang-book-ko/ch03-01-variables-and-mutability.html)
+
 * 이후 더 상세히 살펴보니 여기선 간단히 보자.
 
 ## 변수
+
+* 기본적으로 rust의 변수는 immutable이다.
+
+```rust
+fn main() {
+    let x = 5;
+    println!("The value of x is: {}", x);
+    x = 6;  // Error!
+    println!("The value of x is: {}", x);
+}
+```
+
+```rust
+// 단순 읽기는 가능!
+fn main() {
+    let x = 5;
+
+    let x = x + 1;
+
+    let x = x * 2;
+
+    println!("The value of x is: {}", x);
+}
+```
 
 ```rust
 // preview 1. variable, array, tuple
@@ -30,10 +56,13 @@ fn main()
 	println!("{v1}, {v2}");	// 변수값 출력
 
 	// 2 array : "같은 타입" 의 값을 여러개 보관
+		// 참고) 메모리에 일자로 리니어하게 들어감
 	let arr = [1,2,3,4,5];	
 	let v3  = arr[0];	
 
 	// 3 tuple : "다른 타입" 의 값을 여러개 보관
+		// 참고) tuple도 메모리공간엔 일자로 들어감(리니어하게)
+		// 아마 랜덤액세스가 목적인듯?
 	let tp = (1, 3.4, 'A');
 	let v4 = tp.0;	
 	let v5 = tp.1;
