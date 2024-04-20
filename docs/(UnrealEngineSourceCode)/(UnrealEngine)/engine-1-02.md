@@ -2,7 +2,7 @@
 layout: default
 title: "02. Unreal Main Function"
 parent: "(Engine Source Code 분석 1)"
-grand_parent: "(OpenSource👽)"
+grand_parent: "(UE SourceCode 분석 🤖)"
 nav_order: 1
 ---
 
