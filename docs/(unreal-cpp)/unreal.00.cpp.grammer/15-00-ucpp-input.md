@@ -90,8 +90,12 @@ void AMyPlayerController::Input_Move(const FInputActionValue& InputValue)
 		//FVector Direction = FVector::ForwardVector * MovementVector.X;
 		//GetPawn()->AddActorWorldOffset(Direction * 50.f); // * DeltaTime
 
+		// GetControlRotation() - 카메라 기준 몇도가 돌았나
 		FRotator Rotator = GetControlRotation();
+		// 움직일 방향 계산
 		FVector Direction = UKismetMathLibrary::GetForwardVector(FRotator(0, Rotator.Yaw, 0));
+		// AddMovementInput - 첫 인자는 방향, 두 번째 인자는 속도를 의미 
+			// 참고로 속도는 -1~1이고 이 값은 캐릭터 무브먼트(BP)에서 설정한다.
 		GetPawn()->AddMovementInput(Direction, MovementVector.X);
 	}
 
@@ -109,7 +113,12 @@ void AMyPlayerController::Input_Move(const FInputActionValue& InputValue)
 void AMyPlayerController::Input_Turn(const FInputActionValue& InputValue)
 {
 	float Val = InputValue.Get<float>();
+	// 컨트롤러(마우스)의 회전을 의미한다.
+		// 이걸 Cube Socket에 넣어 회전이 어떻게 동작하나 확인해 보자.
 	AddYawInput(Val);
 }
-
 ```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_6/ucpp15-0-5.png"/>
+</p>
