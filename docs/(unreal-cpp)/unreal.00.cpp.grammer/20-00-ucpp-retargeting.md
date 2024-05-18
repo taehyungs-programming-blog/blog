@@ -32,4 +32,21 @@ nav_order: 3
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/grammer/ucpp0-20-2.png"/>
 </p>
 
-* 요렇게 하고 애니메이션을 적용하면 된다.
+* 요렇게 하고 리타게터를 만들어준다.
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/grammer/ucpp0-20-3.png"/>
+</p>
+
+* Source에 내가 만들고 싶은 Asset을
+* Target에 내가 가져오고 싶은 애니메이션의 Asset을 넣자
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/grammer/ucpp0-20-4.png"/>
+</p>
+
+* 원하는 애니메이션 클릭 후 Export Selected Animations 클릭
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/grammer/ucpp0-20-5.png"/>
+</p>
