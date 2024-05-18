@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "15. enhanced input"
+title: "15-00. enhanced input"
 parent: "(문법)"
 grand_parent: "(Unreal C++ 🚀)"
 nav_order: 2
