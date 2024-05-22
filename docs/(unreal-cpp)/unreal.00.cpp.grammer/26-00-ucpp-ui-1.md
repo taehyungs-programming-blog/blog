@@ -104,3 +104,30 @@ void UR1HpBarWidget::SetHpRatio(float Ratio)
 	}
 }
 ```
+
+```cpp
+void AR1Character::RefreshHpBarRatio()
+{
+	if (HpBarComponent)
+	{
+		float Ratio = static_cast<float>(Hp) / MaxHp;
+		UR1HpBarWidget* HpBar = Cast<UR1HpBarWidget>(HpBarComponent->GetUserWidgetObject());
+		HpBar->SetHpRatio(Ratio);
+	}
+}
+```
+
+```cpp
+void AR1Character::OnDamaged(int32 Damage, TObjectPtr<AR1Character> Attacker)
+{
+	Hp = FMath::Clamp(Hp - Damage, 0, MaxHp);
+	if (Hp == 0)
+	{
+		OnDead(Attacker);
+	}
+
+	RefreshHpBarRatio();
+}
+```
+
+---
