@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "26. ui - 2"
+title: "26. GAS(Game Ability System)"
 parent: "(문법)"
 grand_parent: "(Unreal C++ 🚀)"
 nav_order: 3
@@ -14,6 +14,8 @@ nav_order: 3
 
 ---
 
-* [Get Code 🌟](https://github.com/Arthur880708/UnrealEngineGrammer/tree/4)
+* [Get Code 🌟](https://github.com/Arthur880708/UnrealEngineGrammer/tree/5)
 
 ---
+
+

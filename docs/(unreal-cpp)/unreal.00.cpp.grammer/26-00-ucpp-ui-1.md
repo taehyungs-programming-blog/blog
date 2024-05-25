@@ -11,10 +11,10 @@ nav_order: 3
 
 1. TOC
 {:toc}
-
+s
 ---
 
-* [Get Code 🌟](https://github.com/Arthur880708/UnrealEngineGrammer/tree/3)
+* [Get Code 🌟](https://github.com/Arthur880708/UnrealEngineGrammer/tree/4)
 
 ---
 
@@ -131,3 +131,226 @@ void AR1Character::OnDamaged(int32 Damage, TObjectPtr<AR1Character> Attacker)
 ```
 
 ---
+
+### Inventor 만들어보기
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/grammer/ucpp0-26-4.png"/>
+</p>
+
+```cpp
+class UImage;
+class USizeBox;
+
+UCLASS()
+class R1_API UR1InventorySlotWidget : public UR1UserWidget
+{
+	GENERATED_BODY()
+	
+public:
+	UR1InventorySlotWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+protected:
+	virtual void NativeConstruct() override;
+
+	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+
+	virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;
+	virtual void NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+
+public:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USizeBox> SizeBox_Root;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> Image_Slot;
+};
+```
+
+```cpp
+UCLASS()
+class R1_API UR1InventorySlotsWidget : public UR1UserWidget
+{
+	GENERATED_BODY()
+	
+
+public:
+	UR1InventorySlotsWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+protected:
+	virtual void NativeConstruct() override;
+
+protected:
+	UPROPERTY()
+	TSubclassOf<UR1InventorySlotWidget> SlotWidgetClass;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UR1InventorySlotWidget>> SlotWidgets;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UUniformGridPanel> GridPanel_Slots;
+};
+```
+
+---
+
+* UI와 Data를 분리해보자
+
+```cpp
+UCLASS(BlueprintType)
+class R1_API UR1ItemInstance : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UR1ItemInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+public:
+	void Init(int32 InItemID);
+	
+public:
+	UPROPERTY()
+	int32 ItemID = 0;
+
+	UPROPERTY()
+	EItemRarity ItemRarity = EItemRarity::Junk;
+};
+```
+
+```cpp
+void UR1InventorySubsystem::AddDefaultItems()
+{
+	TObjectPtr<UR1ItemInstance> Item = NewObject<UR1ItemInstance>();
+	Item->Init(100);
+
+	Items.Add(Item);
+}
+```
+
+```cpp
+void AR1GameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+
+	UR1InventorySubsystem* Inventory = Cast<UR1InventorySubsystem>(USubsystemBlueprintLibrary::GetWorldSubsystem(this, UR1InventorySubsystem::StaticClass()));
+	if (Inventory)
+	{
+		Inventory->AddDefaultItems();
+	}
+}
+```
+
+* `UR1InventorySubsystem` 이란?
+
+```cpp
+UCLASS()
+class R1_API UR1InventorySubsystem : public UWorldSubsystem
+{
+	GENERATED_BODY()
+	
+public:
+	/** Implement this for initialization of instances of the system */
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
+	/** Implement this for deinitialization of instances of the system */
+	virtual void Deinitialize() override;
+
+	// TEMP
+	void AddDefaultItems();
+
+	const TArray<TObjectPtr<UR1ItemInstance>>& GetItems() { return Items; }
+
+protected:
+	UPROPERTY()
+	TArray<TObjectPtr<UR1ItemInstance>> Items;
+};
+```
+
+* Subsystem이 뭐지?
+    * [Docs 🌟](https://dev.epicgames.com/documentation/ko-kr/unreal-engine/programming-subsystems-in-unreal-engine?application_version=5.3)
+    *  게임의 전역적인 기능을 관리하는 구조를 제공하여, 특정 시스템이나 기능을 게임의 모든 부분에서 쉽게 접근하고 사용할 수 있게 해줍니다
+    * 전역 접근성: SubSystem은 **전역적으로 접근** 가능하여, 게임의 모든 부분에서 쉽게 사용할 수 있습니다.
+    * 독립적 기능 모듈화: 각 SubSystem은 독립적으로 기능을 모듈화하여, 특정 기능을 관리하고 사용할 수 있게 합니다.
+자동 초기화 및 종료: 엔진이 실행될 때 자동으로 초기화되며, 종료될 때 자동으로 정리됩니다.
+* 엔진 서브시스템 (Engine SubSystem)
+    * 엔진 전체에 걸쳐 사용되는 서브시스템으로, 엔진 레벨에서의 전역적인 기능을 제공합니다.
+    * 예: 네트워크 관리, 파일 시스템 관리 등.
+* 게임 인스턴스 서브시스템 (Game Instance SubSystem)
+    * 특정 게임 인스턴스에 속하는 서브시스템으로, 주로 게임 실행 동안 지속적으로 필요한 기능을 제공합니다.
+    * 예: 세션 관리, 저장 및 로드 시스템 등.
+* 로컬 플레이어 서브시스템 (Local Player SubSystem)
+    * 특정 로컬 플레이어와 관련된 서브시스템으로, 플레이어별로 필요한 기능을 제공합니다.
+    * 예: 입력 관리, 플레이어 설정 등.
+* 월드 서브시스템 (World SubSystem)
+    * 특정 월드에 관련된 서브시스템으로, 월드(레벨)별로 필요한 기능을 제공합니다.
+    * 예: 월드 상태 관리, AI 시스템 등.
+
+---
+
+* DragAndDrop 처리
+    * Operation을 객체로 만듦.
+
+```cpp
+UCLASS()
+class R1_API UR1DragDropOperation : public UDragDropOperation
+{
+	GENERATED_BODY()
+	
+public:
+	UR1DragDropOperation(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+public:
+	FIntPoint FromItemSlotPos = FIntPoint::ZeroValue;
+
+	UPROPERTY()
+	TObjectPtr<UR1ItemInstance> ItemInstance;
+
+	FVector2D DeltaWidgetPos = FVector2D::ZeroVector;
+};
+```
+
+```cpp
+void UR1InventoryEntryWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, OUT UDragDropOperation*& OutOperation)
+{
+	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
+	 
+	UR1ItemDragWidget* DragWidget = CreateWidget<UR1ItemDragWidget>(GetOwningPlayer(), DragWidgetClass);
+	FVector2D EntityWidgetSize = FVector2D(1 * 50, 1 * 50);
+	DragWidget->Init(EntityWidgetSize, nullptr, ItemCount);
+
+	UR1DragDropOperation* DragDrop = NewObject<UR1DragDropOperation>();
+	DragDrop->DefaultDragVisual = DragWidget;
+	DragDrop->Pivot = EDragPivot::MouseDown;
+	DragDrop->FromItemSlotPos = CachedFromSlotPos;
+	DragDrop->ItemInstance = ItemInstance;
+	DragDrop->DeltaWidgetPos = CachedDeltaWidgetPos;
+
+	OutOperation = DragDrop;
+}
+```
+
+```cpp
+UCLASS()
+class R1_API UR1ItemDragWidget : public UR1UserWidget
+{
+	GENERATED_BODY()
+
+public:
+	UR1ItemDragWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+public:
+	void Init(const FVector2D& InWidgetSize, UTexture2D* InItemIcon, int32 InItemCount);
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USizeBox> SizeBox_Root;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> Image_Icon;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> Text_Count;
+};
+```
