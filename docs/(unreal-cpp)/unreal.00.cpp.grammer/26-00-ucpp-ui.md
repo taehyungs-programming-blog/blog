@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "26. ui - 1"
+title: "26. ui"
 parent: "(문법)"
 grand_parent: "(Unreal C++ 🚀)"
 nav_order: 3

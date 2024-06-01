@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "28. dedi server"
+title: "28. Dedi Server"
 parent: "(문법)"
 grand_parent: "(Unreal C++ 🚀)"
 nav_order: 3
@@ -14,6 +14,4 @@ nav_order: 3
 
 ---
 
-* [Get Code 🌟](https://github.com/Arthur880708/UnrealEngineGrammer/tree/6)
-
----
+* 미정리.

@@ -16,6 +16,8 @@ nav_order: 1
 
 * [Get Code 🌎](https://github.com/Arthur880708/Unreal_Example_Network/tree/2)
 
+---
+
 ## 로그 카테고리 지정
 
 ```cpp
@@ -32,7 +34,6 @@ IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, MyGame, "MyGame" );
 * 이런식으로 로그 카테고리를 지정해준다.
 
 ---
-
 
 ## GameMode구현
 
