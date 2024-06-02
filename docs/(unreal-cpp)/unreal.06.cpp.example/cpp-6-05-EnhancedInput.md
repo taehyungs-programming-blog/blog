@@ -18,7 +18,7 @@ nav_order: 1
 
 ---
 
-## Loading Screen
+## (Tip) Loading Screen
 
 * 이건 간단하다
 * Project Settings -> Game -> Common Loading Screen -> Display -> Loading Screen Widget
@@ -42,6 +42,8 @@ nav_order: 1
   * CrossPlaftorm의 Keymap은 어떻게 처리할지 여부
 
 ---
+
+* 그래서 UE5에선 어떻게 처리할까?
 
 ## Enhanced Input (Third Party Example)
 
