@@ -18,6 +18,22 @@ nav_order: 1
 
 ---
 
+## Gameplay Tag란 뭘까?
+
+* GameplayTag
+    * 일종의 글로벌 정의(Global Define)로 볼 수 있긴 하지만, 
+    * 좀 더 정확히는 유연하고 확장 가능한 **메타데이터 시스템**이라고 보는 것이 적합하다. 
+    * 글로벌 정의는 주로 컴파일 시간에 결정되는 상수값을 의미하며, 프로그램 전반에 걸쳐 변경되지 않는 값을 지정하는 데 사용된다. 
+    * 반면, GameplayTag는 런타임에도 추가, 수정, 조회가 가능하며 게임의 다양한 엔티티와 상호작용을 동적으로 태깅하고 분류하는 데 사용된다.
+
+* **대략 게임 전반적으로 사용되는 변수? 혹은 Define이라 생각하자.**
+
+---
+
+## 어떻게 쓸까?
+
+### 시작 전, Log를 등록해 로그 관리를 좀 편하게 해보자
+
 ```cpp
 // LyraLogChannels.h
 
@@ -36,6 +52,10 @@ LYRAGAME_API DECLARE_LOG_CATEGORY_EXTERN(LogLyraTeams, Log, All);
 LYRAGAME_API FString GetClientServerContextString(UObject* ContextObject = nullptr);
 ```
 
+---
+
+### Gameplay Tag 등록
+
 * 참고로 GameplayTags는 Moudle을 추가해야 사용이 가능하다.
 
 ```cpp
@@ -44,6 +64,7 @@ namespace LyraGameplayTags
 	LYRAGAME_API	FGameplayTag FindTagByString(const FString& TagString, bool bMatchPartialString = false);
 
 	// Declare all of the custom native tags that Lyra will use
+    // 대략 이런식으로 선언한다.
 	LYRAGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_ActivateFail_IsDead);
 
     // ...
@@ -60,12 +81,10 @@ namespace LyraGameplayTags
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_6/ucpp6-1-2.png"/>
 </p>
 
-*  그럼 이걸 어디에 쓸까?
-
 ```cpp
 #include "GameplayTagContainer.h"
 
-// GameplayTag 선언
+// GameplayTag 가져오기
 FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Character.Ability.Damage"));
 
 // 캐릭터에 대한 특정 능력이나 상태를 체크하는 함수
@@ -97,11 +116,4 @@ int main()
 
     return 0;
 }
-
 ```
-
-* GameplayTag
-    * 일종의 글로벌 정의(Global Define)로 볼 수 있긴 하지만, 
-    * 좀 더 정확히는 유연하고 확장 가능한 **메타데이터 시스템**이라고 보는 것이 적합하다. 
-    * 글로벌 정의는 주로 컴파일 시간에 결정되는 상수값을 의미하며, 프로그램 전반에 걸쳐 변경되지 않는 값을 지정하는 데 사용된다. 
-    * 반면, GameplayTag는 런타임에도 추가, 수정, 조회가 가능하며 게임의 다양한 엔티티와 상호작용을 동적으로 태깅하고 분류하는 데 사용된다.
