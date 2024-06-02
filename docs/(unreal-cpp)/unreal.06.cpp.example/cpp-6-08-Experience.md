@@ -22,6 +22,11 @@ nav_order: 1
 
 * `Experience`를 학습하다보면 `GameMode`와 유사하다고 생각드는 부분이 많다.
 * 차이점은 아래서 차차 배워볼 것이고, `Experience`가 필요한 이유는 `GameMode`는 아래와 같이 많은 Object를 생성하기에 무겁다. 어떻게 보면 가벼운 버전의 `GameMode`라 생각하면 편하다
+* 보통 Experience에선
+	* Game Feature Plug-in을 Activate
+	* Pawn Data를 Load
+	* 정의된 Actions를 Load
+	* 여기에 중점을 두고 보자.
 
 ```cpp
 ALyraGameMode::ALyraGameMode(const FObjectInitializer& ObjectInitializer)
@@ -71,7 +76,8 @@ void ALyraGameMode::InitGame(const FString& MapName, const FString& Options, FSt
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
 
-	// 다음 틱에 HandleMatchAssignmentIfNotExpectingOne를 호출해 State를 만들어주는데 이렇게 한 이유는 로드가 다 끝난다음 호출하기 위해서 이다.
+	// 다음 틱에 HandleMatchAssignmentIfNotExpectingOne를 호출해 
+	// State를 만들어주는데 이렇게 한 이유는 로드가 다 끝난다음 호출하기 위해서 이다.
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::HandleMatchAssignmentIfNotExpectingOne);
 }
 ```
