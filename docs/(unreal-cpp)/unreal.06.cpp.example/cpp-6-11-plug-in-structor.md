@@ -14,10 +14,6 @@ nav_order: 2
 
 ---
 
-* [Get Code 🌟](https://github.com/Arthur880708/LyraClone/tree/2)
-
----
-
 ## 시작
 
 * Lyra의 Shooter Core Plug-in을 분석해 보자

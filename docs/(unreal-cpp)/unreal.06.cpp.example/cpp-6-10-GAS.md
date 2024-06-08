@@ -25,4 +25,4 @@ nav_order: 2
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_6/ucpp6-10-1.png"/>
 </p>
 
-
+* **중요** : GAS에 대한 이해가 있어야 다음강의를 잘 이해할수 있음.
