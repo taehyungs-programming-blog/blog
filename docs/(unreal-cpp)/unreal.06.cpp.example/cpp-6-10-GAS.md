@@ -26,3 +26,4 @@ nav_order: 2
 </p>
 
 * **중요** : GAS에 대한 이해가 있어야 다음강의를 잘 이해할수 있음.
+* [GAS 설명 페이지 🌟](https://taehyungs-programming-blog.github.io/blog/docs/(unreal-cpp)/unreal.00.cpp.grammer/27-00-ucpp-gas/)
