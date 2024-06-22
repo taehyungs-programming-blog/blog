@@ -28,7 +28,7 @@ nav_order: 2
 
 ---
 
-## ShooterCore Data Asset를 먼저 확인하자
+## 시작은 역시 ShooterCore Data Asset
 
 * Data Asset 이란?
     * 새로운 게임을 정의한다 생각하자.
@@ -44,11 +44,31 @@ nav_order: 2
 </p>
 
 * 뭔가 게임과 관련된 세팅이 잔뜩이다.
-* 그래서 이걸 어디서 쓰느냐? 그건 이제 확인해봐야 할 문제 ...
+  * 우선 이걸 이해하기 위해선 [여기 🌟](https://miro.com/app/board/uXjVPvPBawA=/)를 많이 참조하자
+
+```cpp
+UCLASS(BlueprintType, Const)
+class ULyraExperienceDefinition : public UPrimaryDataAsset
+```
+
+* `ULyraExperienceDefinition`에서 상속해 ShooterCore.data를 사용하게 된다.
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_6/ucpp6-11-6.png"/>
+</p>
+
+* 순서를 좀 정리해 보자면 ...
+  * 우선, ShooterGym으로 들어간다고 가정
+  * LyraExperienceDefinition의 B_BasicShooterTest를 통하여 ShooterCore.DataAsset 로드(Enabled)
+  * DA_ShooterGame_ShooterGym 에 등록된 데이터를 로드
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_6/ucpp6-11-7.png"/>
+</p>
 
 ---
 
-## 실제 예시로 살펴보자 (Weapon)
+## Example. Weapon
 
 * ID_Pistol을 먼저 살펴보자
 
