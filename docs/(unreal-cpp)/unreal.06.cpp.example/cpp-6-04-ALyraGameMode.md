@@ -99,31 +99,69 @@ public:
 ```
 
 ```cpp
-class AMyModularGameModeBase : public AModularGameModeBase
+// MyModularGameMode.h
+#pragma once
+
+#include "CoreMinimal.h"
+#include "ModularGameModeBase.h"
+#include "MyModularGameMode.generated.h"
+
+UCLASS()
+class MYGAME_API AMyModularGameMode : public AModularGameModeBase
 {
+    GENERATED_BODY()
+
 public:
-    AMyModularGameModeBase()
-    {
-        // 기본 게임 모드 설정
-        DefaultPawnClass = AMyCharacter::StaticClass();
-        PlayerStateClass = AMyPlayerState::StaticClass();
-        HUDClass = AMyHUD::StaticClass();
-    }
+    AMyModularGameMode();
 
-    virtual void BeginPlay() override
-    {
-        Super::BeginPlay();
-        // 모듈 초기화 로직을 호출
-        InitializeModules();
-    }
+protected:
+    virtual void BeginPlay() override;
+    virtual void Tick(float DeltaTime) override;
 
-    void InitializeModules()
-    {
-        // 각 모듈을 초기화하고 등록
-        // 예: PlayerSpawnerModule, TeamAssignmentModule, ScoreManagerModule 등
-    }
+    void StartGame();
+    void EndGame();
+
+private:
+    bool bIsGameOver;
 };
+```
 
+```cpp
+// MyModularGameMode.cpp
+AMyModularGameMode::AMyModularGameMode()
+{
+    PrimaryActorTick.bCanEverTick = true;
+    bIsGameOver = false;
+
+    // 컴포넌트 추가
+    AddComponentByClass(UMyPlayerSpawnerComponent::StaticClass());
+}
+
+void AMyModularGameMode::BeginPlay()
+{
+    Super::BeginPlay();
+    StartGame();
+}
+
+void AMyModularGameMode::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    if (bIsGameOver)
+    {
+        EndGame();
+    }
+}
+
+void AMyModularGameMode::StartGame()
+{
+    // 게임 시작 로직
+}
+
+void AMyModularGameMode::EndGame()
+{
+    // 게임 종료 로직
+}
 ```
 
 ---

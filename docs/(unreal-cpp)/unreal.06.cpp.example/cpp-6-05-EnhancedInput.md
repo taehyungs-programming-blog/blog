@@ -18,17 +18,6 @@ nav_order: 1
 
 ---
 
-## (Tip) Loading Screen
-
-* 이건 간단하다
-* Project Settings -> Game -> Common Loading Screen -> Display -> Loading Screen Widget
-
-<p align="center">
-  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_6/ucpp6-5-1.png"/>
-</p>
-
----
-
 ## UE4의 Input처리?
 
 * Project Settings -> Engine -> Input
@@ -134,3 +123,13 @@ void AThirdPersonExCharacter::Move(const FInputActionValue& Value)
 }
 ```
 
+---
+
+## (Tip) Loading Screen
+
+* 이건 간단하다
+* Project Settings -> Game -> Common Loading Screen -> Display -> Loading Screen Widget
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_6/ucpp6-5-1.png"/>
+</p>

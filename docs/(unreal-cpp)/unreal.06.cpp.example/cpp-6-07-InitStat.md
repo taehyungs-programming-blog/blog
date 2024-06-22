@@ -29,6 +29,91 @@ nav_order: 1
     * 상태 확인: 현재 상태를 확인하고 특정 상태에 따른 로직을 구현할 수 있습니다. 이를 통해 특정 상태에서만 실행되어야 하는 코드를 쉽게 관리할 수 있습니다.
     * 게임 프레임워크와의 통합: 게임 프레임워크의 다른 부분과 통합되어 초기화 과정에서 필요한 다양한 기능을 사용할 수 있습니다.
 
+```cpp
+UCLASS()
+class MYGAME_API AMyGameInitState : public AActor, public IGameFrameworkInitStateInterface
+{
+    GENERATED_BODY()
+
+public:
+    //~ Begin IGameFrameworkInitStateInterface interface
+    virtual FName GetFeatureName() const override;
+    virtual bool CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const override;
+    virtual void HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) override;
+    virtual void OnActorInitStateChanged(const FActorInitStateChangedParams& Params) override;
+    virtual void CheckDefaultInitialization() override;
+    //~ End IGameFrameworkInitStateInterface interface
+};
+```
+
+```cpp
+FName AMyGameInitState::GetFeatureName() const
+{
+    return FName(TEXT("MyGameFeature"));
+}
+
+bool AMyGameInitState::CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const
+{
+    // 상태 변경이 가능한지 여부를 결정하는 로직을 구현
+    // 예시: 특정 조건을 만족하는 경우에만 상태 변경을 허용
+    if (CurrentState != DesiredState)
+    {
+        return true;
+    }
+    return false;
+}
+
+void AMyGameInitState::HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState)
+{
+    // 상태 변경 시 필요한 로직을 구현
+    UE_LOG(LogTemp, Log, TEXT("Changing init state from %s to %s"), *CurrentState.ToString(), *DesiredState.ToString());
+    if (DesiredState == FGameplayTag::RequestGameplayTag(FName("Game.Initialized")))
+    {
+        // 초기화 상태로 변경되는 경우의 로직
+        UE_LOG(LogTemp, Log, TEXT("Initialization complete"));
+    }
+}
+
+void AMyGameInitState::OnActorInitStateChanged(const FActorInitStateChangedParams& Params)
+{
+    // 액터의 초기화 상태가 변경될 때 실행할 로직
+    UE_LOG(LogTemp, Log, TEXT("Actor init state changed to %s"), *Params.NewState.ToString());
+}
+
+void AMyGameInitState::CheckDefaultInitialization()
+{
+    // 기본 초기화 상태를 확인하고 필요한 경우 초기화 로직을 실행
+    UE_LOG(LogTemp, Log, TEXT("Checking default initialization"));
+    // 기본 초기화 상태로 설정
+    FGameplayTag InitialState = FGameplayTag::RequestGameplayTag(FName("Game.Default"));
+    HandleChangeInitState(nullptr, FGameplayTag(), InitialState);
+}
+
+```
+
+```cpp
+void AMyGameMode::BeginPlay()
+{
+    Super::BeginPlay();
+
+    // 게임 모드 시작 시 초기화 상태 설정
+    AMyGameInitState* InitStateActor = GetWorld()->SpawnActor<AMyGameInitState>();
+    if (InitStateActor)
+    {
+        InitStateActor->CheckDefaultInitialization();
+        
+        // 초기화 상태 변경 예시
+        FGameplayTag CurrentState = FGameplayTag::RequestGameplayTag(FName("Game.Default"));
+        FGameplayTag DesiredState = FGameplayTag::RequestGameplayTag(FName("Game.Initialized"));
+        
+        if (InitStateActor->CanChangeInitState(nullptr, CurrentState, DesiredState))
+        {
+            InitStateActor->HandleChangeInitState(nullptr, CurrentState, DesiredState);
+        }
+    }
+}
+```
+
 ---
 
 ## Lyra에서는 어떻게 상되는지 보자
@@ -38,16 +123,16 @@ nav_order: 1
 ```cpp
 UCLASS(Blueprintable, Meta=(BlueprintSpawnableComponent))
 class LYRAGAME_API ULyraHeroComponent : public UPawnComponent, public IGameFrameworkInitStateInterface
-```
+{
+	// ...
 
-```cpp
-//~ Begin IGameFrameworkInitStateInterface interface
-virtual FName GetFeatureName() const override { return NAME_ActorFeatureName; }
-virtual bool CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const override;
-virtual void HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) override;
-virtual void OnActorInitStateChanged(const FActorInitStateChangedParams& Params) override;
-virtual void CheckDefaultInitialization() override;
-//~ End IGameFrameworkInitStateInterface interface
+	//~ Begin IGameFrameworkInitStateInterface interface
+	virtual FName GetFeatureName() const override { return NAME_ActorFeatureName; }
+	virtual bool CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const override;
+	virtual void HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) override;
+	virtual void OnActorInitStateChanged(const FActorInitStateChangedParams& Params) override;
+	virtual void CheckDefaultInitialization() override;
+	//~ End IGameFrameworkInitStateInterface interface
 ```
 
 * 어디서 선언이 될까?
