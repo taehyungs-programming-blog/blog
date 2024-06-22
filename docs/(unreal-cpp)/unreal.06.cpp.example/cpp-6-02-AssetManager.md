@@ -21,7 +21,7 @@ nav_order: 1
 ## ULyraAssetManager란?
 
 * Asset(Resource)를 로드 / 메모리관리 등을 관장하게 된다.
-	* 메모리 관리 : 필요시 리소스를 ㄴ메모리에 올리고/내리고
+	* 메모리 관리 : 필요시 리소스를 메모리에 올리고/내리고
 * 그럼 Lyra에서 ULyraAssetManager를 어떻게 사용하는지 먼저 확인하자.
     * Project Settings -> Game -> Asset Manager -> Primary Asset Types to Scan에 Asset을 세팅한 것을 볼 수 있다.
     * 아직 뭔지는 모르겠지만 Project Setting에서 세팅을해 넘겨준다고 이해하자.
