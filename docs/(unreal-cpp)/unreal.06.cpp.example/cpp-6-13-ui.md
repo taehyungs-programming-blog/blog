@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "14. (Lyra) UI"
+title: "13. (Lyra) UI"
 parent: "(Example6 - Lyra 분석)"
 grand_parent: "(Unreal C++ 🚀)"
 nav_order: 2

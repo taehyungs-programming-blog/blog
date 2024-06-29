@@ -15,6 +15,7 @@ nav_order: 1
 ---
 
 * [Get Code 🌟](https://github.com/Arthur880708/LyraClone/tree/2)
+	* 이거말고 LyraStarterGame을 봐도 됩니다.
 
 ---
 
@@ -178,3 +179,20 @@ virtual void OnActorInitStateChanged(const FActorInitStateChangedParams& Params)
 
 * 왜 이렇게 할까?
     * 여러 Component를 별도로 관리하며 State를 통일해 주기 위해서이다.
+
+```cpp
+// 실제론 이렇게 변경
+void ULyraHeroComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Listen for when the pawn extension component changes init state
+	BindOnActorInitStateChanged(ULyraPawnExtensionComponent::NAME_ActorFeatureName, FGameplayTag(), false);
+
+	// Notifies that we are done spawning, then try the rest of initialization
+    // 여기서 State를 변경요청
+	ensure(TryToChangeInitState(LyraGameplayTags::InitState_Spawned));
+	CheckDefaultInitialization();
+}
+```
+

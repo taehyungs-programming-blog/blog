@@ -15,38 +15,14 @@ nav_order: 1
 ---
 
 * [Get Code 🌟](https://github.com/Arthur880708/LyraClone/tree/2)
+	* 이거말고 LyraStarterGame을 봐도 됩니다.
 
 ---
-
-## GameMode Vs Experience
-
-* `Experience`를 학습하다보면 `GameMode`와 유사하다고 생각드는 부분이 많다.
-* 차이점은 아래서 차차 배워볼 것이고, `Experience`가 필요한 이유는 `GameMode`는 아래와 같이 많은 Object를 생성하기에 무겁다. 어떻게 보면 가벼운 버전의 `GameMode`라 생각하면 편하다
-* 보통 Experience에선
-	* Game Feature Plug-in을 Activate
-	* Pawn Data를 Load
-	* 정의된 Actions를 Load
-	* 여기에 중점을 두고 보자.
-
-```cpp
-ALyraGameMode::ALyraGameMode(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-{
-	GameStateClass = ALyraGameState::StaticClass();
-	GameSessionClass = ALyraGameSession::StaticClass();
-	PlayerControllerClass = ALyraPlayerController::StaticClass();
-	ReplaySpectatorPlayerControllerClass = ALyraReplayPlayerController::StaticClass();
-	PlayerStateClass = ALyraPlayerState::StaticClass();
-	DefaultPawnClass = ALyraCharacter::StaticClass();
-	HUDClass = ALyraHUD::StaticClass();
-}
-```
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_6/ucpp6-8-1.png"/>
 </p>
 
----
 
 ## 코드에서 어디서 로딩해 줄까?
 
@@ -63,6 +39,7 @@ ALyraGameState::ALyraGameState(const FObjectInitializer& ObjectInitializer)
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
+	// ULyraExperienceManagerComponent - 여기서 생성
 	ExperienceManagerComponent = CreateDefaultSubobject<ULyraExperienceManagerComponent>(TEXT("ExperienceManagerComponent"));
 
 	ServerFPS = 0.0f;
