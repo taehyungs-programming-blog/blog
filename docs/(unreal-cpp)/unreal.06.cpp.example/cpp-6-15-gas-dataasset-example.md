@@ -19,7 +19,9 @@ nav_order: 2
 * 시작은 `ULyraGameData`이다.
 * Editor에서 DefaultGameData에 Effect를 등록해 두게 된다.
 
-<스샷>
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/unreal_cpp_6/ucpp6-15-1.png"/>
+</p>
 
 ```cpp
 UCLASS(BlueprintType, Const, Meta = (DisplayName = "Lyra Game Data", ShortTooltip = "Data asset containing global game data."))
