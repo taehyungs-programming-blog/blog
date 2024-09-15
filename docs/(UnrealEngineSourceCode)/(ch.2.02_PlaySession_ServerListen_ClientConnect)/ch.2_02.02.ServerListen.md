@@ -487,3 +487,93 @@ virtual bool InitBase(bool bInitAsClient, FNetworkNotify* InNotify, const FURL& 
     return true;
 }
 ```
+
+```cpp
+/**
+    * initialize a PacketHandler for serverside net drivers, for handling connectionless packets
+    * NOTE: only triggered by net-driver subclasses that support it - from within InitListen
+    */
+// as comment said, ConnectionlessHandler is for SERVER, not client
+// - this function is only called within the InitListen()
+virtual void InitConnectionlessHandler()
+{
+    // on PacketHandler's constructor, unreal actually pass the pointer of DDos
+        // DDos관련 처리를 어떻게 할지는 뺀 상태임 (nullptr) -> 규모가 너무커서 다음에...
+    ConnectionlessHandler = MakeUnique<PacketHandler>(nullptr);
+    if (ConnectionlessHandler.IsValid())
+    {
+        // before going further, try to understand what the 'PacketHandler' is:
+        //                                                                                                          
+        //  *** What is PacketHandler?                                                                              
+        //                                                                                                          
+        //     ┌───────────────────────┐   │   ┌──────────────────────────────────┐   │                             
+        //     │ NetCode(Game-related) │   │   │ Network Engine (Network-related) │   │                             
+        //     └───────────────────────┘   │   └──────────────────────────────────┘   │                             
+        //                                 │                                          │                             
+        //        ┌───────────┐            │      PacketHandler::Incoming()           │                             
+        //        │ ┌───────────┐      ◄───┼──────────────────────────────────────────┼──     Actual Network World: 
+        //        └─│ ┌─────────┴──┐       │                                          │        e.g. Router          
+        //          └─┤  Channels  │   ────┼──────────────────────────────────────────┼──►                          
+        //            └────────────┘       │      PacketHandler::Outgoing()           │                             
+        //                                 │                                          │                             
+        //                                 │                                          │                             
+        //                                                                                                          
+        //                     *** PacketHandler governs incoming/outgoing packets in unreal engine                 
+        // PacketHandler는 NetCode로 들어가는 관문이라 생각하면된다.
+        
+        // - MAX_PACKET_SIZE is what we covered last time: packet size considering MTU(MSS)
+        ConnectionlessHandler->Initialize(UE::Handler::Mode::Server, MAX_PACKET_SIZE, true, nullptr, nullptr, NetDriverDefinition);
+
+        // add handling for the stateless connect handshake, for connectionless packets, as the outermost layer
+        // HandlerComponent is a component of PacketHandler
+        // - you can think of it as like entity-component
+        //   - entity: PacketHandler and component: HandlerComponent
+        // - try to understand HandlerComponent conceptually:
+        // 
+        //   *** The relationship between PacketHandler and HandlerComponents                                                                             
+        //                                                                                                                                                
+        //     ┌───────────────┐                                                                                                                          
+        //     │ PacketHandler │                                                                                                                          
+        //     └──┬────────────┘                                                                                                                          
+        //        │                                                                                                                                       
+        //        └───HandlerComponents: TArray<HandlerComponent>                                                                                         
+        //             │                                                                                                                                  
+        //             ├───StatelessConnectHandlerComponent                                                                                               
+        //             │                                                                                                                                  
+        //             ├───EncryptHandlerComponent                                                                                                        
+        //             │                                                                                                                                  
+        //             └───...                                                                                                                            
+        //                                                                                                                                                
+        //                                                                                                                                                
+        //                    │                          │                                                                                                
+        //                    │      PacketHandler       │     Actual Network World:                                                                      
+        //                    │                          │                                                                                                
+        //                    │     Incoming/Outgoing    │                                                                                                
+        //                    │     ┌──────┐  ┌──────┐   │                                                                                                
+        //                  ◄─┼─────│      │──│      │───┼─────                                                                                           
+        //                  ──┼─────│      │──│      │───┼────►                                                                                           
+        //                    │     └───▲──┘  └───▲──┘   │                                                                                                
+        //                    │         │         │      │                                                                                                
+        //                    │         │         │      │                    ──┐                                                                         
+        //                              │         │                             │                                                                         
+        //                              │      StatelessConnectHandlerComponent │                                                                         
+        //                              │                                       │ you can think of HandlerComponent as gates:                             
+        //                              │                                       │  incoming/outgoing packets should take over, reaching to network world! 
+        //                            EncrpytHandlerComponent                   │                                                                         
+        //                                                                    ──┘                                                                         
+        // 
+        
+        TSharedPtr<HandlerComponent> NewComponent = 
+            ConnectionlessHandler->AddHandler(TEXT("Engine.EngineHandlerComponentFactory(StatelessConnectHandlerComponent)"), true);
+    
+        StatelessConnectComponent = StaticCastSharedPtr<StatelessConnectHandlerComponent>(NewComponent);
+        if (StatelessConnectComponent.IsValid())
+        {
+            StatelessConnectComponent.Pin()->SetDriver(this);
+        }
+
+        // we defer initialization of HandlerComponents, here we start to initialize HandlerComponents and make sure PacketHandler to be fully-initialized
+        ConnectionlessHandler->InitializeComponents();
+    }
+}
+```
