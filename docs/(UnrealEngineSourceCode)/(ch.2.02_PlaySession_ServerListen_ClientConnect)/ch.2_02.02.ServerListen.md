@@ -131,7 +131,10 @@ bool Listen(FURL& InURL)
     // - in dedicated server of unreal, it is totally same!
     // *** hiding server code is the first step to fight with hackers (cheating companys)
     // *** share typical MMORPG server-side anti-cheat cases
-#if WITH_SERVER_CODE || 1
+
+    // Unreal은 보통 Client와 Server가 같이 작업되는 형태가 많다.
+    // WITH_SERVER_CODE을 둠으로써 Client 바이너리에 Server코드가 같이 안딸려가는 효과가 있음!
+#if WITH_SERVER_CODE
     // create net driver
     // - "GameNetDriver" == NAME_GameNetDriver
     if (GEngine->CreateNamedNetDriver(this, NAME_GameNetDriver, NAME_GameNetDriver))
@@ -158,5 +161,329 @@ bool Listen(FURL& InURL)
 
     return true;
 #endif
+}
+```
+
+```cpp
+/** create a UNetDriver and associates a name with it */
+bool CreateNamedNetDriver(UWorld *InWorld, FName NetDriverName, FName NetDriverDefinition)
+{
+    // - note that second parameter is 'NetDriverName' and third parameter is 'NetDriverDefinition', which we'll cover it soon
+    return CreateNamedNetDriver_Local(this, GetWorldContextFromWorldChecked(InWorld), NetDriverName, NetDriverDefinition);
+}
+```
+
+```cpp
+bool CreateNamedNetDriver_Local(UEngine* Engine, FWorldContext& Context, FName NetDriverName, FName NetDriverDefinition)
+{
+    // we first try to find any existing net-driver
+    // *** see FWorldContext::ActiveNetDrivers briefly
+    // - see FindNamedNetDriver_Local briefly
+    //   - NetDriverName is "GameNetDriver"
+    UNetDriver* NetDriver = FindNamedNetDriver_Local(Context.ActiveNetDrivers, NetDriverName);
+
+    // in our case, our NetDriver is nullptr, so need to create new one
+    if (NetDriver == nullptr)
+    {
+        NetDriver = CreateNetDriver_Local(Engine, Context, NetDriverDefinition, NetDriverName);
+        if (NetDriver)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+```cpp
+/**
+* associate a world with this net driver
+* disassociation any previous world first
+*/
+// UNetDriver::SetWorld() is one of important methods you need to know:
+// - this method links tick-events of NetDriver to the world
+
+// 결국 NetDriver도 World에 기생하여 Tick Event를 수신해야 한다.
+virtual void SetWorld(UWorld* InWorld)
+{
+    // first, unlink all previously bound netdriver's tick events
+    if (World)
+    {
+        // remove old world association
+        UnregisterTickEvents(World);
+        World = nullptr;
+        WorldPackage = nullptr;
+        Notify = nullptr;
+    }
+
+    // let's see what kind of tick-events need to be bound to the world's tick
+    // - see RegisterTickEvents()
+    if (InWorld)
+    {
+        // setup new world association
+        World = InWorld;
+        WorldPackage = InWorld->GetOutermost();
+        Notify = InWorld;
+        RegisterTickEvents(InWorld);
+    }
+
+
+    // World-NetDriver 관계를 좀 더 살펴보자면 ..
+        // 궁금한점? ActiveNetDrivers를 배열로 관리할 필요가 있나?
+        // -> 있다, DemoNetDriver가 필요하기 때문,
+        // 그럼 Demo는 뭐하는 애지? -> 가령, replay를 할때 화면을 저장해 두고 할까? -> Nope! 패킷을 뒀다가 다시 실행하는 형태이다. 이때 사용된다.
+    // try to understand the relationship between World and NetDriver:
+    //
+    //    WorldContext: FWorldContext                                                      
+    //      │                                                                              
+    //      ├───World: UWorld                                                              
+    //      │                                                                              
+    //      ├───GameViewport: UGameViewportClient                                          
+    //      │                                                                              
+    //      └───ActiveNetDrivers: TArray<FNamedNetDriver>                                  
+    //          ───────────▲─────────────────────────────                                  
+    //                     │                                                               
+    //                     │                                                               
+    //                     │                                                               
+    //            *** World could have multiple NetDrivers:                                
+    //                - e.g. IpNetDriver, DemoNetDriver                                    
+    //                             ┌───────────┐                                           
+    //                             │ NetDriver │                                           
+    //                             └────▲──────┘                                           
+    //                                  │                                                  
+    //                         ┌────────┼──────────┐                                       
+    //                         │                   │                                       
+    //                  ┌──────┼──────┐    ┌───────┼───────┐                               
+    //                  │ IpNetDriver │    │ DemoNetDriver │                               
+    //                  └──────▲──────┘    └───────▲───────┘                               
+    //                         │                   │                                       
+    //                         │                   │                                       
+    //                         │              *** DemoNetDriver is used for replay         
+    //                         │                                                           
+    //                   *** IpNetDriver is "GameNetDriver" which we are interested in     
+    //                                                                         
+}
+
+/** world this net driver is associated with */
+TObjectPtr<class UWorld> World;
+TObjectPtr<class UPackage> WorldPackage;
+
+/** interface for communication network state to others (i.e. World usually, buy anything that implements FNetworkNotify) */
+class FNetworkNotify* Notify;
+
+/** handles to various registered delegates */
+FDelegateHandle TickDispatchDelegateHandle;
+FDelegateHandle PostTickDispatchDelegateHandle;
+FDelegateHandle TickFlushDelegateHandle;
+FDelegateHandle PostTickFlushDelegateHandle;
+
+/** amount of time to wait for a new net connection to be established before destroying the connection */
+float InitialConnectTimeout;
+
+/**
+    * amount of time to wait before considering an established connection time out
+    * typically shorter than the time to wait on a new connection because this connection should already have been setup and any interruption should be trapped quicker
+    */
+float ConnectionTimeout;
+
+/** connection to the server (this net driver is a client) */
+// by ServerConnection's validity, we can know whether this NetDriver is for server or for client
+// - for server: ServerConnection == nullptr
+// - for client: ServerConnection != nullptr
+TObjectPtr<class UNetConnection> ServerConnection;
+
+/** assigns driver unique IDs to client connections */
+FNetConnectionIdHandler ConnectionIdHandler;
+
+TSharedPtr<FNetGUIDCache> GuidCache;
+};
+```
+
+* 띠용? 그런데 궁금한게 Unreal은 UDP이고 Listen이 없지 않나?
+    * 그렇다! 이제 Unreal에서 UDP를 이용해 Listen을 어떻게 만드는지 보게 될 것이다!
+
+```cpp                      
+virtual bool InitListen(FNetworkNotify* InNotify, FURL& LocalURL, bool bReuseAddressAndPort, FString& Error) override
+{
+    // - NetDriver is world's network driver
+    // - in the low-level perspective, how to communicate in network?
+    // - NetDriver needs socket!!
+    //   - in InitBase(), the socket is created for the NetDriver :)
+    if (!InitBase(false, InNotify, LocalURL, bReuseAddressAndPort, Error))
+    {
+        return false;
+    }
+
+    InitConnectionlessHandler();
+
+    // update port!
+    LocalURL.Port = LocalAddr->GetPort();
+
+    return true;
+}
+```
+
+```cpp
+virtual bool InitBase(bool bInitAsClient, FNetworkNotify* InNotify, const FURL& URL, bool bReuseAddressAndPort, FString& Error)
+{
+    // read any timeout overrides from the URL
+    // InitialConnectTimeout and ConnectionTimeout are useful properties to see a glimpse of the reliable UDP
+    // - see InitialConnectTimeout and ConnectionTimeout variables briefly
+    // - try to understand some portions of reliable UDP with these two variables:
+    //
+    //   *** Reliable UDP:                                                                            
+    //                                                                                                
+    //       1. the UDP doesn't have connection: RELIABLE UDP have "connection"                       
+    //           - the reliable UDP make a connection in the software manner (not hardware)           
+    //             ┌────────┐                               ┌────────┐                                
+    //             │        ├───────────────────────────────┤        │                                
+    //             │ Client ◄───────────Connection──────────► Server │                                
+    //             │        ├───────────────────────────────┤        │                                
+    //             └────────┘                               └────────┘                                
+    //                                                                                                
+    //                 *** when ConnectionTimeout is 1.0, it means for 1 sec:                         
+    //                     when there is no packets to communicate for 1 sec, destroy the connection  
+    //                                                                        ──────────────────────  
+    //                                                                                                
+    //       2. the reliable UDP is based on the UDP: the UDP could happen "packet-loss"              
+    //           - if it allow endless time to make a connection, it could result in "Conjestion"     
+    //                                                                    ───────────────────────     
+    //           - how the reliable UDP constructs a connection?: "Handshake" manner similar to TCP   
+    //             e.g. 3-way hand-shake in TCP:                   ────────────────────────────────   
+    //                                                                                                
+    //             ┌────────┐                                         ┌────────┐                      
+    //             │ Client │                                         │ Server │                      
+    //             └────┬───┘                                         └────┬───┘                      
+    //                  │                                                  │                          
+    //                  │                                       Prepare ┌──┤                          
+    //                  │                                        LISTEN │  │                          
+    //                  │                                               └──►                          
+    //                  │                                                  │                          
+    //                  │             Send SYN (connect request)           │                          
+    //        SYN_SENT  ├─────────────────────────────────────────────────►│ LISTEN                   
+    //                  │                                                  │                          
+    //                  │             Send SYN+ACK                         │                          
+    //     ESTABLISHED  │◄─────────────────────────────────────────────────┤ SYN_RECV'ED              
+    //     (connection) │                                                  │                          
+    //                  │             Send ACK                             │                          
+    //                  ├─────────────────────────────────────────────────►│ ESTABLISHED              
+    //                  │                                                  │ (connection)             
+    //                  │                                                  │                          
+    //                  │       *** TCP's 3-way HandShaking                │                          
+    //                  │                                                  │                          
+    //                  │                                                  │                          
+    //                  │                                                  │                          
+    //                                                                                                
+
+    if (const TCHAR* InitialConnectTimeoutOverride = URL.GetOption(TEXT("InitialConnectTimeout="), nullptr))
+    {
+        float ParsedValue;
+        LexFromString(ParsedValue, InitialConnectTimeoutOverride);
+        if (ParsedValue != 0.f)
+        {
+            InitialConnectTimeout = ParsedValue;
+        }
+    }
+    if (const TCHAR* ConnectionTimeoutOverride = URL.GetOption(TEXT("ConnectionTimeout="), nullptr))
+    {
+        float ParsedValue;
+        LexFromString(ParsedValue, ConnectionTimeoutOverride);
+        if (ParsedValue != 0.0f)
+        {
+            ConnectionTimeout = ParsedValue;
+        }
+    }
+
+    // the timeout is very annoying when you debugging, "-NoTimeouts" is very useful cmdarg to remember!
+    // - there are multiple ways to prevent the time-outs while you are debugging:
+    //   1. use '-NoTimeouts" option
+    //   2. set break points on both client-app and server-app
+    //
+    // - in editor PIE build, when you use the option to run server in same process, you don't have to worry about this
+    //   - when you are in debugging mode, the server also in debugging mode!
+    if (URL.HasOption(TEXT("NoTimeouts")))
+    {
+        // 요게 필요한 이유는 Debug시에 브레이크 포인트 잡을경우를 대비해서 필요하다
+        bNoTimeouts = true;
+    }
+
+    // see InitConnectionClass() ***
+    bool bSuccess = InitConnectionClass();
+    if (!bInitAsClient)
+    {
+        // "!bInitAsClient" is 'true' when we are in server-code
+        // - we'll cover this ConnectionlessHandler soon!
+        ConnectionlessHandler.Reset();
+    }
+
+    // note that Notify means World:
+    // - UWorld inherits FNetworkNotify!
+    Notify = InNotify;
+
+    // see InitNetTraceId() briefly ***
+    InitNetTraceId();
+
+    return bSuccess;
+}
+```
+
+```cpp
+virtual bool InitBase(bool bInitAsClient, FNetworkNotify* InNotify, const FURL& URL, bool bReuseAddressAndPort, FString& Error) override
+{
+    // note that IpNetDriver inherits NetDriver, so it is natural to call NetDriver::InitBase()
+    //
+    // ClientConnect:
+    // - no need to see NetDriver::InitBase()
+    // - see briefly~ :)
+    //   *** focus on InitConnectionClass() call
+    if (!UNetDriver::InitBase(bInitAsClient, InNotify, URL, bReuseAddressAndPort, Error))
+    {
+        return false;
+    }
+
+    // in Windows, it returns FSocketSubsystemWindows
+    // we already saw SockeySubsystem in the last week (in Week 1)
+    ISocketSubsystem* SocketSubsystem = GetSocketSubsystem();
+    if (SocketSubsystem == nullptr)
+    {
+        return false;
+    }
+
+    // BindPort is assigned URL.Port (ServerPort) for server, GetClientPort() is called for client side
+    const int32 BindPort = bInitAsClient ? GetClientPort() : URL.Port;
+
+    // increase socket queue size, because we are polling rather than threading and thus we rely on the OS socket to buffer a lot of data
+    // by default, Desired[Recv|Send]Size are determined like this:
+    // - ClientDesiredSocketReceiveBufferBytes(ClientDesiredSocketSendBufferBytes): 32768(32KB)
+    // - ServerDesiredSocketReceiveBufferBytes(ServerDesiredSocketSendBufferBytes): 131072(128KB)
+    // - Send/Recv is same!
+
+    const int32 DesiredRecvSize = bInitAsClient ? ClientDesiredSocketReceiveBufferBytes : ServerDesiredSocketReceiveBufferBytes;
+    const int32 DesiredSendSize = bInitAsClient ? ClientDesiredSocketSendBufferBytes : ServerDesiredSocketSendBufferBytes;
+
+    // first see CreateAndBindSocketsFunc lambda definition before getting into Resolver->InitBindSockets:
+    // - actually, this lambda is called inside InitBindSockets()
+    // - see what variables are captured in the lambda:
+    //   1. BindPort
+    //   2. bResueAddressAndPort == false
+    //   3. DesiredRecvSize/DesiredSendSize
+
+    const EInitBindSocketsFlags InitBindFlags = bInitAsClient ? EInitBindSocketsFlags::Client : EInitBindSocketsFlags::Server;
+    FCreateAndBindSocketFunc CreateAndBindSocketsFunc = [this, BindPort, bReuseAddressAndPort, DesiredRecvSize, DesiredSendSize]
+        (TSharedRef<FInternetAddr> BindAddr, FString& Error) -> FUniqueSocket
+        {
+            return this->CreateAndBindSocket(BindAddr, BindPort, bReuseAddressAndPort, DesiredRecvSize, DesiredSendSize, Error);
+        };
+    
+    // see what the Resolver is ***
+    bool bInitBindSocketsSuccess = Resolver->InitBindSockets(MoveTemp(CreateAndBindSocketsFunc), InitBindFlags, SocketSubsystem, Error);
+    if (!bInitBindSocketsSuccess)
+    {
+        return false;
+    }
+
+    SetSocketAndLocalAddress(Resolver->GetFirstSocket());
+
+    return true;
 }
 ```
