@@ -10,6 +10,12 @@ nav_order: 3
 
 ---
 
+## 이번 장의 목표!
+
+* `SocketSubsystemModule`가 어디서 어떻게 생성되는지 확인해 보자!
+
+---
+
 ## Tip) Development 빌드 했는데 좀 더 디테일 한 디버그를 원한다?
 
 * Debug로 재빌드?
@@ -30,3 +36,4 @@ UE_ENABLE_OPTIMIZATION
     * UE내부적으로 다른 네트워크 작업이 많음(주소알리기 핑 날리기 등등...)
 * Project Settings -> Plugins -> UDP Messaging -> Transport -> Enable Transport를 False로
 
+---

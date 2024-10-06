@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "01-04. 왜 UE에서는 UDP를 기본으로 그리고 Socket 버전을 낮은 버전을 사용할까?"
+title: "01-05. 왜 UE에서는 UDP를 기본으로 그리고 Socket 버전을 낮은 버전을 사용할까?"
 parent: "([Network] 01.SocketSubsystemModule)"
 grand_parent: "(UE SourceCode 분석 🤖)"
 nav_order: 1

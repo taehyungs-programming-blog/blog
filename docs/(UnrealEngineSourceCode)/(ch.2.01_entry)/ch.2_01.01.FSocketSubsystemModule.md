@@ -34,19 +34,16 @@ class FSocketSubsystemModule : public IModuleInterface
     /** mapping of all currently loaded subsystems to their name */
     TMap<FName, class ISocketSubsystem*> SocketSubsystems;
 
-    virtual void StratupModule() override
+    // 시작은 여기!
+    virtual void StrartupModule() override
     {
         // initialize the platform defined socket subsystem first
+            // 먼저 플랫폼에서 정의된 소켓 서브시스템을 초기화합니다.
+
         // if you are running in windows platform, call CreateSocketSubsystem() in SocketSubsystemWindows.cpp
         // e.g. if you are running in MAC, it will call CreateSocketSubsystem() in SocketSubsystemMac.cpp
-        //
-        // how does it work?
-        // - I didn't try to find how to redirect CreateSocketSubsystem() in different platform
-        // - in the past, UE3 use the trick that in windows platform, only include SocketSubsystemWindows.h/.cpp 
-        //   and for Mac, SocketSubsystemMac.h/.cpp depending on compiler option using platform's MACRO (e.g. PLATFORM_WINDOWS)
-        // - I assume that it works in similar manner:
-        //   - **when you set BP in SocketSubsystemMac.h/.cpp, we'll notice that it FAILs to hit bp cuz missing PDB**
-        //     - from this observation, we can see the files(SocketSubsystemMac.h/.cpp) are not included to compile!
+            // Windows 플랫폼에서 실행 중이라면 SocketSubsystemWindows.cpp의 CreateSocketSubsystem()을 호출합니다.
+            // 예를 들어, MAC에서 실행 중이라면 SocketSubsystemMac.cpp의 CreateSocketSubsystem()을 호출할 것입니다.
 
         DefaultSocketSubsystem = CreateSocketSubsystem(*this);
     }
@@ -57,25 +54,49 @@ FName CreateSocketSubsystem(FSocketSubsystemModule& SocketSubsystemModule)
 {
     // we are in SocketSubsystemWindows.h/.cpp
     // - our DefaultSocketSubsystem's FNAME will be 'WINDOWS'
+        // 우리는 SocketSubsystemWindows.h/.cpp 파일 내에 있습니다
+        // - 우리의 DefaultSocketSubsystem의 FNAME은 'WINDOWS'가 될 것입니다
+
     FName SubsystemName(TEXT("WINDOWS"));
 
-    // create and register our singleton factory with the main online subsystem for easy access
-    // first we are looking into FSocketSubsystemWindows
+    
     FSocketSubsystemWindows* SocketSubsystem = FSocketSubsystemWindows::Create();
 
-    // now initialize SocketSubsystem, 
+
+    // FSocketSubsystemWindows 함수 관련하여는 다음장에서 설명.
     FString Error;
     if (SocketSubsystem->Init(Error))
     {
         // see briefly FSocketSubsystemModule::RegisterSocketSubsystem
         // - nothing special, just manage created socket-subsystems
+            // FSocketSubsystemModule::RegisterSocketSubsystem 참조 (1)
+            // - 특별한 것은 없고, 단지 생성된 소켓 서브시스템들을 관리합니다
+
         SocketSubsystemModule.RegisterSocketSubsystem(SubsystemName, SocketSubsystem);
         return SubsystemName;
     }
 
-    // if we reach here, it means we failed to initialize SocketSubsystemWindows
-    // - see briefly SocketSubsystemWindows::Destroy
+    // 실패! 소켓을 닫자
     FSocketSubsystemWindows::Destroy();
     return NAME_None;
+}
+```
+
+
+#### (1) FSocketSubsystemModule::RegisterSocketSubsystem
+
+```cpp
+/** register a new socket subsystem interface with the base level factory provider */
+virtual void RegisterSocketSubsystem(const FName FactoryName, class ISocketSubsystem* Factory, bool bMakeDefault=false)
+{
+    if (!SocketSubsystems.Contains(FactoryName))
+    {
+        SocketSubsystems.Add(FactoryName, Factory);
+    }
+
+    if (bMakeDefault)
+    {
+        DefaultSocketSubsystem = FactoryName;
+    }
 }
 ```
