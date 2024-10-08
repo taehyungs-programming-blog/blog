@@ -7,25 +7,32 @@ nav_order: 3
 ---
 
 ```cpp
+// 역시 시작은 StartPlayInEditorGameInstance로 부터 시작된다.
+
 /** called to actually start the game when doing play/simulate in editor */
+/** 에디터에서 플레이/시뮬레이션을 할 때 실제로 게임을 시작하기 위해 호출됨 */
 virtual FGameInstancePIEResult StartPlayInEditorGameInstance(ULocalPlayer* LocalPlayer, const FGameInstancePIEParameters& Params)
 {
     UEditorEngine* const EditorEngine = CastChecked<UEditorEngine>(GetEngine());
     {
         // for clients, just connect to the server
+        // 클라이언트의 경우, 단순히 서버에 연결
         // for networking, we add this:
+        // 네트워킹을 위해 이것을 추가합니다:
         // - in networking, client-side and server(or standalone) game has different path
+        // - 네트워킹에서 클라이언트 측과 서버(또는 독립 실행형) 게임은 다른 경로를 가집니다
         if (Params.NetMode == PIE_Client)
         {
             // in "Networking - ServerListen", skip this part, we'll cover this in "ClientConnect"
-
-            // << 여기서 부터 시작이다. >>
+            // "Networking - ServerListen"에서는 이 부분을 건너뛰고, "ClientConnect"에서 다룰 것입니다
 
             // BaseURL has (127.0.0.1:1777)
+            // BaseURL은 (127.0.0.1:1777)을 가집니다
             FURL BaseURL = WorldContext->LastURL;
             FString URLString(TEXT("127.0.0.1"));
 
             // we set our server port as 17777, which will be overriden
+            // 서버 포트를 17777로 설정하지만, 이는 덮어쓰여질 것입니다
             uint16 ServerPort = 0;
             if (Params.EditorPlaySettings->GetServerPort(ServerPort))
             {
@@ -33,10 +40,11 @@ virtual FGameInstancePIEResult StartPlayInEditorGameInstance(ULocalPlayer* Local
             }
 
             // before getting into UEngine::Browse, see rest of code below:
-            // - we are waiting to complete connect process
-            // - see UEngine::Browse (goto 001: ClientConnect)
+            // UEngine::Browse로 들어가기 전에, 아래 코드를 보세요:
             if (EditorEngine->Browse(*WorldContext, FURL(&BaseURL, *URLString, (ETravelType)TRAVEL_Absolute), Error) == EBrowseReturnVal::Pending)
             {
+                // - we are waiting to complete connect process
+                // - 연결 프로세스가 완료되기를 기다리고 있습니다
                 EditorEngine->TransitionType = ETransitionType::WaitingToConnect;
             }
             else
@@ -44,17 +52,14 @@ virtual FGameInstancePIEResult StartPlayInEditorGameInstance(ULocalPlayer* Local
                 return FGameInstancePIEResult::Failure();
             }
         }
-        else 
-        {
-            // ...
-        }
-    }
-}
 ```
 
 ```cpp
 /** browse to a specified URL, relative to the current one */
+/** 지정된 URL로 이동합니다. 현재 URL을 기준으로 상대적입니다 */
+
 // we can think of 'Browse' as browsing session game provided by server, so first connect to the server
+// 'Browse'를 서버가 제공하는 세션 게임을 탐색하는 것으로 생각할 수 있습니다. 따라서 먼저 서버에 연결합니다
 virtual EBrowseReturnVal::Type Browse(FWorldContext& WorldContext, FURL URL, FString& Error)
 {
     //...
@@ -70,12 +75,20 @@ virtual EBrowseReturnVal::Type Browse(FWorldContext& WorldContext, FURL URL, FSt
         // - to get map information, first we need to connect the server
         // - before connecting to server, we create UPendingNetGame, temporary stage
         //   - to connect the server, we need a NetDriver to communicate
-        
         //   - note that we are putting new instance of UPendingNetGame to WorldContext's PendingNetGame (*** see FWorldContext::PendingNetGame)
-        // - see UPendingNetGame::Initialize briefly
+
+        // UPendingNetGame을 생성합니다:
+        // - 서버는 우리가 로드해야 할 맵에 대한 정보를 가지고 있습니다
+        // - 맵 정보를 얻기 위해서는 먼저 서버에 연결해야 합니다
+        // - 서버에 연결하기 전에 UPendingNetGame을 생성합니다. 이는 임시 단계입니다
+        //   - 서버에 연결하기 위해서는 통신을 위한 NetDriver가 필요합니다
+        //   - 새로운 UPendingNetGame 인스턴스를 WorldContext의 PendingNetGame에 넣고 있음에 주목하세요 (*** FWorldContext::PendingNetGame 참조)
+        
         //   - before looking into InitNetDriver(), see that we'll return EBrowseReturnVal::Pending:
         //   - this is because, we don't know which map do we have to load!
-        
+
+        //   - InitNetDriver()를 살펴보기 전에, EBrowseReturnVal::Pending을 반환할 것임을 확인하세요:
+        //   - 이는 우리가 어떤 맵을 로드해야 할지 아직 모르기 때문입니다!
         WorldContext.PendingNetGame = NewObject<UPendingNetGame>();
         WorldContext.PendingNetGame->Initialize(URL);
         WorldContext.PendingNetGame->InitNetDriver();
@@ -83,109 +96,4 @@ virtual EBrowseReturnVal::Type Browse(FWorldContext& WorldContext, FURL URL, FSt
         return EBrowseReturnVal::Pending;
     }
 }
-```
-
-```cpp
-// note that UPendingNetGame inherits from FNetworkNotify which is similar to UWorld
-    // 잠깐 사용할 NetGame이라 생각하자.
-class UPendingNetGame : public UObject, FNetworkNotify
-{
-```
-
-```cpp
-void InitNetDriver()
-{
-    // try to create NetDriver
-    // we create client IpNetDriver with UPendingNetGame
-    // NAME_PendingNetDriver == "PendingNetDriver"
-    // NAME_GameNetDriver == "GameNetDriver"
-    // - CreateNamedNetDriver pass UPendingNetGame not UWorld (different from server)
-
-    if (GEngine->CreateNamedNetDriver(this, NAME_PendingNetDriver, NAME_GameNetDriver))
-    {
-        NetDriver = GEngine->FindNamedNetDriver(this, NAME_PendingNetDriver);
-    }
-
-    // see IpNetDriver::InitConnect (goto 005: ClientConnect)
-    if (NetDriver->InitConnect(this, URL, ConnectionError))
-    {
-        // @todo
-    }
-}
-```
-
-```cpp
-virtual bool InitConnect(FNetworkNotify* InNotify, const FURL& ConnectURL, FString& Error) override
-{
-    // we pass "bInitAsClient == true": (in server-side code, we pass it as 'false')
-    // - see UIpNetDriver::InitBase caring about bInitAsClient == ture, 
-        // 소켓을 만드는 과정이고 bInitAsClient == ture임을 기억하자
-        // Server에서 한 번 다룸 ㅎㅎ..
-    if (!InitBase(true, InNotify, ConnectURL, false, Error))
-    {
-        return false;
-    }
-
-    // create new connection
-    // NetConnectionClass is 'IpNetConnection'
-    // - see UNetDriver::ServerConnection (***)
-    //   - note that NetConnectionClass is loaded in InitConnectionClass()
-    ServerConnection = NewObject<UNetConnection>(GetTrasientPackage(), NetConnectionClass);
-
-    ServerConnection->InitLocalConnection(this, SocketPrivate.Get(), ConnectURL, USOCK_Pending);
-    
-    // @todo
-}
-```
-
----
-
-```cpp
-/** initialize this connection instance ***to*** a remote source */
-virtual void InitLocalConnection(UNetDriver* InDriver, class FSocket* InSocket, const FURL& InURL, EConnectionState InState, int32 InMaxPacket = 0, int32 InPacketOverhead = 0) override
-{
-    InitBase(InDriver, InSocket, InURL, InState,
-        // use the default packet size/overhead unless overriden by a child class
-        // *** note that even though we put InMaxPacket larger than MAX_PACKET_SIZE, it just clamp it!
-        // - do NOT modify MAX_PACKET_SIZE arbitrarily!
-        (InMaxPacket == 0 || InMaxPacket > MAX_PACKET_SIZE) ? MAX_PACKET_SIZE : InMaxPacket,
-        // *** 'UDP_HEADER_SIZE' ***
-        InPacketOverhead == 0 ? UDP_HEADER_SIZE : InPacketOverhead);
-    
-    // see where Resolver(NetConnectionAddressResolution) is initialized (UIpConnection::UIpConnection)
-    // - note that FNetConnectionAddressResolution is managed by FNetDriverAddressResolution:
-    // - we can understand the relationship like this:
-    //                                                             *** in general, NetDriverAddressResolution has socket to communicate                                                                      
-    //                                                ┌──────────────────────────────────────────────────────────┐                                                                                   
-    //                                                │                                                          │                                                                                   
-    //      ──────────────────────────────────────────┴───────────                                               │                                                                                   
-    //   ┌──FNetDriverAddressResolution : UNetDriver(UIpNetDriver)─────────────────────┐                         │                                                                                   
-    //   │                                                                             │                         │                                                                                   
-    //   │    ┌──────────────────────────────────────────────────────────────────────┐ │                         │                                                                                   
-    //   │    │ FNetConnectionAddressResolution : UNetConnection(UIpConnection) -- 0 ◄─┼─────────┐               │                                                                                   
-    //   │    └──────────────────────────────────────────────────────────────────────┘ │         │               │                                                                                   
-    //   │                                                                             │         ├───────────────┘                                                                                   
-    //   │    ┌──────────────────────────────────────────────────────────────────────┐ │         │     NetDriverAddressResolution's BoundSockets are broadcasted to NetConnectionAddressResolutions  
-    //   │    │ FNetConnectionAddressResolution : UNetConnection(UIpConnection) -- 1 ◄─┼─────────┘                                                                                                   
-    //   │    └──────────────────────────────────────────────────────────────────────┘ │                                                                                                             
-    //   │                                                                             │                                                                                                             
-    //   └─────────────────────────────────────────────────────────────────────────────┘                                                                                                             
-    //  
-                                                                                                                                                                                        
-    bool bResolverInit = Resolver->InitLocalConnection(InDriver->GetSocketSubsystem(), InSocket, InURL);
-    if (!ResolverInit)
-    {
-        Close();
-        return;
-    }
-
-    // UNetConnection::RemoteAddr cached TSharedPtr<FInternetAddr>
-    // - RemoteAddr point to same memory address with FNetConnectionAddressResolution::RemoteAddr
-    // - currently RemoteAddr is NOT resolved yet, but after resolution is finished, UNetConnection::RemoteAddr can access the resolved InternetAddr value
-    RemoteAddr = Resolver->GetRemoteAddr();
-
-    // initialize our send bunch
-    InitSendBuffer();
-}
-
 ```
