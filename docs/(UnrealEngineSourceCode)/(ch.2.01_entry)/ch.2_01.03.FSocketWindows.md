@@ -14,6 +14,8 @@ nav_order: 1
 
 ---
 
+* `FSocketSubsystemWindows`에서 Socket을 관리를 원한다. -> `FSocketWindows`를 통해 관리
+
 ```cpp
 /** implements a Windows/BSD network socket */
 //  FSocketWindows is just simple wrapper of SocketBSD, see FSocketBSD 
@@ -43,7 +45,7 @@ class FSocketBSD : public FSocket
 
 ```cpp
 /** this is our abstract base class that hides the platform specific socket implementation */
-/** 이것은 플랫폼별 소켓 구현을 숨기는 추상 기본 클래스입니다 *
+/** 이것은 플랫폼별 소켓 구현을 숨기는 추상 기본 클래스입니다 */
 class FSocket
 {
     /** indices the type of socket this is */
@@ -83,6 +85,8 @@ virtual void GetAddress(FInternetAddr& OutAddr) override
 }
 ```
 
+* 다음으론 `FInternetAddrBSD` 주소값을 어떻게 관리하는지에 대해 확인해볼 예정
+
 ```cpp
 // the wrapper of UDP's sendto 
 // UDP의 sendto 함수를 감싸는 래퍼
@@ -93,12 +97,13 @@ virtual bool SendTo(const uint8* Data, int32 Count, int32& BytesSent, const FInt
     const FInternetAddrBSD& BSDAddr = static_cast<const FInternetAddrBSD&>(Destination);
 
     // write the data and see how much was written
-    // 데이터를 쓰고 얼마나 쓰여졌는지 확인합니다
     // call sendto()
-    // sendto() 호출
     // - note that Count's unit is 'BYTE'
-    // - Count의 단위가 '바이트'임에 주의하세요
     // - SendFlags is usually 'None(==0)'
+
+    // 데이터를 쓰고 얼마나 쓰여졌는지 확인합니다
+    // sendto() 호출
+    // - Count의 단위가 '바이트'임에 주의하세요
     // - SendFlags는 보통 'None(==0)'입니다
     BytesSent = sendto(Socket, (const char*)Data, Count, SendFlags, (const sockaddr*)&(BSDAddr.Addr), BSDAddr.GetStorageSize());
 
@@ -121,8 +126,9 @@ virtual bool RecvFrom(uint8* Data, int32 BufferSize, int32& BytesRead, FInternet
     sockaddr* Addr = (sockaddr*)&(BSDAddr.Addr);
 
     // read into the buffer and set the source address
-    // 버퍼로 읽고 소스 주소를 설정합니다
     // recvfrom call: UDP recv
+
+    // 버퍼로 읽고 소스 주소를 설정합니다
     // recvfrom 호출: UDP 수신
     BytesRead = recvfrom(Socket, (char*)Data, BufferSize, TranslatedFlags, Addr, &Size);
     if (BytesRead >= 0)

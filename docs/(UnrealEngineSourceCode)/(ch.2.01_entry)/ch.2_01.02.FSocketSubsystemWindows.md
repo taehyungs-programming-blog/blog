@@ -14,6 +14,12 @@ nav_order: 1
 
 ---
 
+* 선-결론
+    * `FSocketSubsystemWindows`는 `FSocketSubsystemBSD`를 상속받아 구현되었다.
+    * 소캣을 OS별로 생성을 담당한다.
+
+---
+
 ```cpp
 // FSocketSubsystemWindows에 대해 좀 살펴보자
 class FSocketSubsystemWindows : public FSocketSubsystemBSD
@@ -37,14 +43,14 @@ class FSocketSubsystemWindows : public FSocketSubsystemBSD
     static FSocketSubsystemWindows* SocketSingleton;
 ```
 
+* Init을 변수로 둬서 한 번 만 호출되게 하고 Singletone을 유지하고 있다.
+
 ```cpp
-// 003 - Networking - SocketSubsystemModule * - FSocketSubsystemBSD
 //  BSD means unix-socket
 // - you'll notice that Unreal uses bsd-socket(unix) features in windows socket
 // - in other words, the Unreal doesn't use unique feature in windows socket
 // - so, the SocketSubsystemWindows is based on SocketSubsystemBSD
 
-// 003 - 네트워킹 - SocketSubsystemModule * - FSocketSubsystemBSD
 //  BSD는 유닉스 소켓을 의미합니다
 // - 언리얼이 윈도우 소켓에서 bsd-소켓(유닉스) 기능을 사용하는 것을 알 수 있습니다
 // - 다시 말해, 언리얼은 윈도우 소켓의 고유한 기능을 사용하지 않습니다
@@ -87,19 +93,19 @@ virtual bool Init(FString& Error) override
         bTriedToInit = true;
 
         // initialize WSA (Windows Socket API)
-        // 윈도우 소켓 API 초기화
         // in windows platform, we call WSAStartup to indicate whether this app use socket or not
-        // 윈도우 플랫폼에서는 WSAStartup을 호출하여 이 앱이 소켓을 사용하는지 여부를 나타냅니다
-        // - you should match WSACleanup (see below Shutdown() method)
-        // - Shutdown() 메서드에서 WSACleanup과 짝을 이뤄야 합니다 (아래 참조)
         // - as you can see first parameter, we request 1.1 version (not 2.2)
-        // - 첫 번째 매개변수에서 볼 수 있듯이, 우리는 1.1 버전을 요청합니다 (2.2가 아님)
         //   - 0x0101 is same as MAKEWORD(2,2) which is typically used in socket programming in windows
-        //   - 0x0101은 MAKEWORD(2,2)와 같으며, 이는 일반적으로 윈도우 소켓 프로그래밍에서 사용됩니다
         //     - 0x0202 is MAKEWORD(2,2)
-        //     - 0x0202는 MAKEWORD(2,2)입니다
         // from here, we know that UE uses low-version of socket library 1.1
+
+        // 윈도우 소켓 API 초기화
+        // 윈도우 플랫폼에서는 WSAStartup을 호출하여 이 앱이 소켓을 사용하는지 여부를 나타냅니다
+        // - 첫 번째 매개변수에서 볼 수 있듯이, 우리는 1.1 버전을 요청합니다 (2.2가 아님)
+        //   - 0x0101은 MAKEWORD(2,2)와 같으며, 이는 일반적으로 윈도우 소켓 프로그래밍에서 사용됩니다
+        //     - 0x0202는 MAKEWORD(2,2)입니다
         // 여기서 우리는 UE가 낮은 버전의 소켓 라이브러리 1.1을 사용한다는 것을 알 수 있습니다
+
         // 왜 그런지는 이후에 설명.
         WSADATA WSAData;
         int32 Code = WSAStartup(0x0101, &WSAData);
@@ -179,3 +185,5 @@ virtual FSocketBSD* InternalBSDSocketFactory(SOCKET Socket, ESocketType SocketTy
     return new FSocketWindows(Socket, SocketType, SocketDescription, SocketProtocol, this);
 }
 ```
+
+* 다음으론 `CreateSocket`의 응답은 `FSocket`인데 이건 어떻게 담기는지 확인해 보자.

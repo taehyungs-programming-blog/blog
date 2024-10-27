@@ -14,6 +14,8 @@ nav_order: 1
 
 ---
 
+* `FSocketWindows`에서는 주소값을 어떻게 관리 할까?
+
 ```cpp
 /** 
  * represents an internet ip address with support for ipv4/v6
@@ -52,9 +54,10 @@ class FInternetAddrBSD : public FInternetAddr
     // ... 기존 코드 ...
 
     /** the internet ip address structure */
-    /** 인터넷 IP 주소 구조체 */
     // note that sockaddr_storage is available in both windows/linux
     // - if you want to know the detail, see ws2def.h in windows platform
+
+    /** 인터넷 IP 주소 구조체 */
     // sockaddr_storage는 윈도우와 리눅스 모두에서 사용 가능합니다
     // - 자세한 내용을 알고 싶다면 윈도우 플랫폼의 ws2def.h를 참조하세요
     sockaddr_storage Addr;
