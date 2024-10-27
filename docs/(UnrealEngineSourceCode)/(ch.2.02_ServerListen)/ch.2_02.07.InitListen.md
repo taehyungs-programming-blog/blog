@@ -16,7 +16,11 @@ nav_order: 1
 
 * NetDriver까지 할당 및 Set완료! 이제 진짜 Listen준비
 
-```cpp                                                                                  
+```cpp
+class UIpNetDriver : public UNetDriver
+{
+    // ...
+
 virtual bool InitListen(FNetworkNotify* InNotify, FURL& LocalURL, bool bReuseAddressAndPort, FString& Error) override
 {
     // 
@@ -119,12 +123,13 @@ virtual bool InitBase(bool bInitAsClient, FNetworkNotify* InNotify, const FURL& 
 virtual bool InitBase(bool bInitAsClient, FNetworkNotify* InNotify, const FURL& URL, bool bReuseAddressAndPort, FString& Error)
 {
     // read any timeout overrides from the URL
-    // URL에서 타임아웃 오버라이드를 읽습니다
     // InitialConnectTimeout and ConnectionTimeout are useful properties to see a glimpse of the reliable UDP
-    // InitialConnectTimeout과 ConnectionTimeout은 신뢰할 수 있는 UDP의 개요를 볼 수 있는 유용한 속성입니다
     // - see InitialConnectTimeout and ConnectionTimeout variables briefly
-    // - InitialConnectTimeout과 ConnectionTimeout 변수를 간단히 살펴보세요
     // - try to understand some portions of reliable UDP with these two variables:
+
+    // URL에서 타임아웃 오버라이드를 읽습니다
+    // InitialConnectTimeout과 ConnectionTimeout은 신뢰할 수 있는 UDP의 개요를 볼 수 있는 유용한 속성입니다
+    // - InitialConnectTimeout과 ConnectionTimeout 변수를 간단히 살펴보세요
     // - 이 두 변수를 통해 신뢰할 수 있는 UDP의 일부를 이해해 보세요:
     //
     //   *** Reliable UDP:                                                                            
@@ -213,17 +218,19 @@ virtual bool InitBase(bool bInitAsClient, FNetworkNotify* InNotify, const FURL& 
     }
 
     // the timeout is very annoying when you debugging, "-NoTimeouts" is very useful cmdarg to remember!
-    // 디버깅 시 타임아웃은 매우 귀찮습니다. "-NoTimeouts"는 기억해둘 만한 유용한 명령줄 인수입니다!
     // - there are multiple ways to prevent the time-outs while you are debugging:
-    // - 디버깅 중 타임아웃을 방지하는 여러 가지 방법이 있습니다:
     //   1. use '-NoTimeouts" option
-    //   1. '-NoTimeouts" 옵션 사용
     //   2. set break points on both client-app and server-app
+
+    // 디버깅 시 타임아웃은 매우 귀찮습니다. "-NoTimeouts"는 기억해둘 만한 유용한 명령줄 인수입니다!
+    // - 디버깅 중 타임아웃을 방지하는 여러 가지 방법이 있습니다:
+    //   1. '-NoTimeouts" 옵션 사용
     //   2. 클라이언트 앱과 서버 앱 모두에 중단점 설정
-    //
+
     // - in editor PIE build, when you use the option to run server in same process, you don't have to worry about this
-    // - 에디터 PIE 빌드에서 서버를 동일한 프로세스에서 실행하는 옵션을 사용하면 이에 대해 걱정할 필요가 없습니다
     //   - when you are in debugging mode, the server also in debugging mode!
+
+    // - 에디터 PIE 빌드에서 서버를 동일한 프로세스에서 실행하는 옵션을 사용하면 이에 대해 걱정할 필요가 없습니다
     //   - 디버깅 모드일 때 서버도 디버깅 모드입니다!
     if (URL.HasOption(TEXT("NoTimeouts")))
     {
@@ -236,8 +243,9 @@ virtual bool InitBase(bool bInitAsClient, FNetworkNotify* InNotify, const FURL& 
     if (!bInitAsClient)
     {
         // "!bInitAsClient" is 'true' when we are in server-code
-        // "!bInitAsClient"는 서버 코드에 있을 때 'true'입니다
         // - we'll cover this ConnectionlessHandler soon!
+        
+        // "!bInitAsClient"는 서버 코드에 있을 때 'true'입니다
         // - 곧 이 ConnectionlessHandler를 다룰 것입니다!
         ConnectionlessHandler.Reset();
     }

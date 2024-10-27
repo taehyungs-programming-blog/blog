@@ -16,15 +16,15 @@ virtual FGameInstancePIEResult StartPlayInEditorGameInstance(ULocalPlayer* Local
     UEditorEngine* const EditorEngine = CastChecked<UEditorEngine>(GetEngine());
     {
         // for clients, just connect to the server
-        // 클라이언트의 경우, 단순히 서버에 연결
         // for networking, we add this:
-        // 네트워킹을 위해 이것을 추가합니다:
         // - in networking, client-side and server(or standalone) game has different path
+
+        // 클라이언트의 경우, 단순히 서버에 연결
+        // 네트워킹을 위해 이것을 추가합니다:
         // - 네트워킹에서 클라이언트 측과 서버(또는 독립 실행형) 게임은 다른 경로를 가집니다
         if (Params.NetMode == PIE_Client)
         {
-            // in "Networking - ServerListen", skip this part, we'll cover this in "ClientConnect"
-            // "Networking - ServerListen"에서는 이 부분을 건너뛰고, "ClientConnect"에서 다룰 것입니다
+            // 이제 여기를 볼 차례
 
             // BaseURL has (127.0.0.1:1777)
             // BaseURL은 (127.0.0.1:1777)을 가집니다
@@ -55,6 +55,10 @@ virtual FGameInstancePIEResult StartPlayInEditorGameInstance(ULocalPlayer* Local
 ```
 
 ```cpp
+class UEngine : public UObject, public FExec
+{
+    //...
+
 /** browse to a specified URL, relative to the current one */
 /** 지정된 URL로 이동합니다. 현재 URL을 기준으로 상대적입니다 */
 

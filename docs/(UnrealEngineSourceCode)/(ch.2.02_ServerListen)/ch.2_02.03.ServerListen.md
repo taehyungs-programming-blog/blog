@@ -15,6 +15,20 @@ nav_order: 1
 ---
 
 ```cpp
+/** above function but called a frame later, to stop PIE login from happening from a network callback */
+// 위 함수는 네트워크 콜백에서 PIE 로그인이 발생하는 것을 방지하기 위해 한 프레임 후에 호출됩니다.
+virtual void OnLoginPIEComplete_Deferred(int32 LocalUserNum, bool bWasSuccessful, FString ErrorString, FPieLoginStruct DataStruct)
+{
+    // create a new GameInstance for this
+    // this is the main entry to create PIE Game instance in the same process with the editor executable
+
+    // 이를 위해 새로운 GameInstance를 생성합니다.
+    // 이것은 에디터 실행 파일과 동일한 프로세스에서 PIE 게임 인스턴스를 생성하는 주요 진입점입니다.
+    CreateInnerProcessPIEGameInstance(PlayInEditorSessionInfo->OriginalRequestParams, DataStruct.GameInstancePIEParameters, DataStruct.PIEInstanceIndex);
+}
+```
+
+```cpp
 /** create an GameInstance with the given settings. a window is created if this isn't server */
 UGameInstance* CreateInnerProcessPIEGameInstance(FRequestPlaySessionParams& InParams, const FGameInstancePIEParameters& InPIEParameters, int32 InPIEInstanceIndex)
 {
@@ -40,13 +54,16 @@ virtual FGameInstancePIEResult StartPlayInEditorGameInstance(ULocalPlayer* Local
     UEditorEngine* const EditorEngine = CastChecked<UEditorEngine>(GetEngine());
     {
         // for clients, just connect to the server
-        // 클라이언트의 경우, 단순히 서버에 연결
         // for networking, we add this:
         // - in networking, client-side and server(or standalone) game has different path
+
+        // 클라이언트의 경우, 단순히 서버에 연결
         // 네트워킹을 위해 이것을 추가합니다:
         // - 네트워킹에서 클라이언트 측과 서버(또는 독립 실행형) 게임은 다른 경로를 가집니다
         if (Params.NetMode == PIE_Client)
         {
+            // 이후 ClientConnect에서 다룰 것입니다
+            
             // in "Networking - ServerListen", skip this part, we'll cover this in "ClientConnect"
             // "Networking - ServerListen"에서는 이 부분을 건너뛰고, "ClientConnect"에서 다룰 것입니다
 
@@ -63,6 +80,7 @@ virtual FGameInstancePIEResult StartPlayInEditorGameInstance(ULocalPlayer* Local
 
             // before getting into UEngine::Browse, see rest of code below:
             // - we are waiting to complete connect process
+
             // UEngine::Browse로 들어가기 전에 아래 코드를 보세요:
             // - 연결 프로세스가 완료되기를 기다리고 있습니다
             if (EditorEngine->Browse(*WorldContext, FURL(&BaseURL, *URLString, (ETravelType)TRAVEL_Absolute), Error) == EBrowseReturnVal::Pending)

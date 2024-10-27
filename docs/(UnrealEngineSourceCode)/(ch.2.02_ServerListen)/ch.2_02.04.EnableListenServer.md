@@ -15,8 +15,39 @@ nav_order: 1
 ---
 
 * Listen의 시작!
+* (주의) `EnableListenServer`는 GameInstance의 함수입니다.
+* GameInstance과 World의 NetWork 관리 체계
+    * GameInstance - 
+        * 게임 전체의 수명주기를 관리
+        *   여러 World/Level 간의 영속성 있는 데이터와 상태를 유지
+        * 네트워크 연결의 고수준 설정을 담당 (예: EnableListenServer)
+    * World - 
+        * 실제 게임플레이가 일어나는 공간을 관리
+        * Actor, Component 등 게임플레이 요소들의 컨테이너
+        * 실제 네트워크 통신의 저수준 구현을 담당 (NetDriver, Listen 등)    
+    
+```
+GameInstance (고수준)
+    ↓
+    - 네트워크 설정 관리
+    - 연결 상태 유지
+    - World 간 전환 관리
+    
+World (저수준)
+    ↓ 
+    - 실제 네트워크 통신 처리
+    - NetDriver 관리
+    - 리플리케이션 처리
+```
+
+* 실전으로 보자!
 
 ```cpp
+class UGameInstance : public UObject, public FExec
+{
+
+// ...
+
 /**
     * turns on/off listen server capability for a game instance
     * - by default, this will set up the persistent URL state so it persists across server travels and spawn the appropriate network listener
@@ -88,6 +119,10 @@ virtual bool EnableListenServer(bool bEnable, int32 PortOverride = 0)
 ```
 
 ```cpp
+class UWorld final : public UObject, public FNetworkNotify
+{
+    // ...
+    
 /** start listening for connections */
 /** 연결 수신 대기 시작 */
 bool Listen(FURL& InURL)

@@ -14,6 +14,48 @@ nav_order: 1
 
 ---
 
+### `UNetConnection`의 주요 역할
+
+* 네트워크 연결 관리
+    * 클라이언트와 서버 간의 연결을 관리하는 핵심 클래스
+    * 연결 상태 관리 (USOCK_Invalid, USOCK_Closed, USOCK_Pending, USOCK_Open)
+    * 패킷 송수신 처리
+
+* 채널 시스템 관리
+    * 여러 종류의 네트워크 통신 채널을 관리
+    * 신뢰성 있는 데이터 전송을 위한 시스템 제공
+
+```cpp
+TArray<TObjectPtr<UChannel>> Channels;
+TArray<int32> OutReliable;
+TArray<int32> InReliable;
+```
+
+* 패킷 핸들링
+
+```cpp
+TUniquePtr<PacketHandler> Handler;
+TWeakPtr<StatelessConnectHandlerComponent> StatelessConnectComponent;
+```
+
+* UPlayer 상속 이유?
+    * PlayerController 연결
+
+```cpp
+// UPlayer 클래스의 구조
+class UPlayer {
+    TObjectPtr<APlayerController> PlayerController;
+}
+```
+
+* UPlayer를 상속받음으로써 각 네트워크 연결이 특정 PlayerController와 연관될 수 있음
+    * 이를 통해 서버는 각 클라이언트 연결을 실제 게임 내 플레이어와 매핑할 수 있음
+* 플레이어 관리 구조
+    * 서버에서 각 클라이언트 연결을 플레이어 단위로 관리할 수 있게 됨
+    * 네트워크 연결과 게임플레이 로직을 자연스럽게 연결하는 구조 제공
+
+---
+
 ```cpp
 /** state of a connection */
 /** 연결의 상태 */
@@ -64,6 +106,7 @@ class UNetConnection : public UPlayer
         // - it it becomes 1, it means all incoming/outgoing packets requested from channels, use reliable UDP:
         //   - which is very inefficient!
         // - only when replay-related NetConnection is set, bInternalAck is enabled as 'true'
+
         // bInternalAck는 보통 0입니다:
         // - 1이 되면, 채널에서 요청된 모든 수신/발신 패킷이 신뢰할 수 있는 UDP를 사용한다는 의미입니다:
         //   - 이는 매우 비효율적입니다!
@@ -89,8 +132,9 @@ class UNetConnection : public UPlayer
     virtual void InitBase(UNetDriver* InDriver, class FSocket* InSocket, const FURL& InURL, EConnectionState InState, int32 InMaxPacket = 0, int32 InPacketOverhead = 0)
     {
         // owning NetDriver
-        // 소유하는 NetDriver
         // see member variable Driver breifly
+
+        // 소유하는 NetDriver
         // Driver 멤버 변수를 간단히 살펴보세요
         Driver = InDriver;
 

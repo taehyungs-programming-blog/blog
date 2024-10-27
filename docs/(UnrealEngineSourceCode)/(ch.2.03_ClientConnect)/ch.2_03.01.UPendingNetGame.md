@@ -14,6 +14,30 @@ nav_order: 1
 
 ---
 
+### `UPendingNetGame`의 주요 역할
+
+* 클라이언트 연결 관리
+    * 클라이언트가 서버에 연결을 시도할 때 사용되는 임시 객체입니다
+    * 서버 연결 과정에서 필요한 NetDriver를 생성하고 관리합니다
+
+* 연결 상태 추적
+
+```cpp
+bool bSuccessfullyConnected;  // 서버 연결 성공 여부
+bool bSentJoinRequest;        // Join 요청 전송 여부
+bool bLoadedMapSuccessfully;  // 맵 로딩 완료 여부
+```
+
+* 네트워크 전환 단계 관리
+    * UWorld로 전환되기 전의 중간 단계 역할을 합니다
+    * 연결 성공 → 맵 로딩 → UWorld 전환 과정을 관리합니다
+    
+* 네트워크 드라이버 초기화
+    * 클라이언트용 IpNetDriver를 생성하고 초기화합니다
+    * 이 NetDriver는 연결 성공 후에도 재사용됩니다
+
+---
+
 ```cpp
 // note that UPendingNetGame inherits from FNetworkNotify which is similar to UWorld
 // UPendingNetGame가 UWorld와 유사한 FNetworkNotify를 상속받는다는 점에 주목하세요
@@ -70,8 +94,9 @@ class UPendingNetGame : public UObject, FNetworkNotify
     bool bSentJoinRequest;
 
     /** set when we call LoadMapCompleted */
-    /** LoadMapCompleted를 호출할 때 설정됨 */
     // when we finally loading map, we'll transition from UPendingNetGame to UWorld(loaded map)
+
+    /** LoadMapCompleted를 호출할 때 설정됨 */
     // 맵 로딩이 완료되면 UPendingNetGame에서 UWorld(로드된 맵)로 전환됩니다
     bool bLoadedMapSuccessfully;
 
@@ -91,33 +116,32 @@ bool CreateNamedNetDriver(UPendingNetGame *PendingNetGame, FName NetDriverName, 
 ## (2) InitConnect
 
 ```cpp
-    virtual bool InitConnect(FNetworkNotify* InNotify, const FURL& ConnectURL, FString& Error) override
+virtual bool InitConnect(FNetworkNotify* InNotify, const FURL& ConnectURL, FString& Error) override
+{
+    // we pass "bInitAsClient == true": (in server-side code, we pass it as 'false')
+    // - see UIpNetDriver::InitBase caring about bInitAsClient == ture,
+
+    // "bInitAsClient == true"로 전달합니다: (서버 측 코드에서는 'false'로 전달합니다)
+    // - UIpNetDriver::InitBase에서 bInitAsClient == true에 대해 처리하는 부분을 확인하세요 
+    if (!InitBase(true, InNotify, ConnectURL, false, Error))
     {
-        // we pass "bInitAsClient == true": (in server-side code, we pass it as 'false')
-        // - see UIpNetDriver::InitBase caring about bInitAsClient == ture,
-
-        // "bInitAsClient == true"로 전달합니다: (서버 측 코드에서는 'false'로 전달합니다)
-        // - UIpNetDriver::InitBase에서 bInitAsClient == true에 대해 처리하는 부분을 확인하세요 
-        if (!InitBase(true, InNotify, ConnectURL, false, Error))
-        {
-            return false;
-        }
-
-        // create new connection
-        // NetConnectionClass is 'IpNetConnection'
-        // - see UNetDriver::ServerConnection (***)
-        // - see UIpConnection
-        //   - note that NetConnectionClass is loaded in InitConnectionClass()
-
-        // 새 연결 생성
-        // NetConnectionClass는 'IpNetConnection'입니다
-        // - UNetDriver::ServerConnection 참조 (***)
-        // - UIpConnection 참조
-        //   - NetConnectionClass는 InitConnectionClass()에서 로드된다는 점에 주목하세요
-        ServerConnection = NewObject<UNetConnection>(GetTrasientPackage(), NetConnectionClass);
-
-        ServerConnection->InitLocalConnection(this, SocketPrivate.Get(), ConnectURL, USOCK_Pending);
-        
+        return false;
     }
+
+    // create new connection
+    // NetConnectionClass is 'IpNetConnection'
+    // - see UNetDriver::ServerConnection (***)
+    // - see UIpConnection
+    //   - note that NetConnectionClass is loaded in InitConnectionClass()
+
+    // 새 연결 생성
+    // NetConnectionClass는 'IpNetConnection'입니다
+    // - UNetDriver::ServerConnection 참조 (***)
+    // - UIpConnection 참조
+    //   - NetConnectionClass는 InitConnectionClass()에서 로드된다는 점에 주목하세요
+    ServerConnection = NewObject<UNetConnection>(GetTrasientPackage(), NetConnectionClass);
+
+    ServerConnection->InitLocalConnection(this, SocketPrivate.Get(), ConnectURL, USOCK_Pending);
+    
 }
 ```

@@ -66,9 +66,10 @@ void RequestPlaySession(const FRequestPlaySessionParams& InParams)
     }
 
     // now we duplicate their EditorPlaySettings so that we can mutate it as part of startup to help rule out invalid configuration combinations
-    // 이제 EditorPlaySettings를 복제하여 시작 과정의 일부로 변경할 수 있게 합니다. 이는 잘못된 구성 조합을 배제하는 데 도움이 됩니다
     // we cannot use the CDO directly, so duplicate the CDO and use the duplicated instance instead:
     // - FObjectDuplicationParameters + StaticDuplicateObjectEx = duplication of UObject
+
+    // 이제 EditorPlaySettings를 복제하여 시작 과정의 일부로 변경할 수 있게 합니다. 이는 잘못된 구성 조합을 배제하는 데 도움이 됩니다
     // CDO를 직접 사용할 수 없으므로, CDO를 복제하고 복제된 인스턴스를 대신 사용합니다:
     // - FObjectDuplicationParameters + StaticDuplicateObjectEx = UObject의 복제
     FObjectDuplicationParameters DuplicationParams(PlaySessionRequest->EditorPlaySettings, GetTransientPackage());
@@ -102,6 +103,7 @@ void StartQueuedPlaySessionRequest()
 
     // ensure the request is always reset after an attempt (which may fail), so that we don't get stuck in an infinite loop of start attempts
     // to accept another session request, it is natural to clear up right?
+    
     // 시도 후(실패할 수 있음) 항상 요청을 리셋하여, 시작 시도의 무한 루프에 빠지지 않도록 합니다
     // 다른 세션 요청을 받아들이기 위해 정리하는 것이 자연스럽죠?
     PlaySessionRequest.Reset();
@@ -124,15 +126,17 @@ virtual void StartQueuedPlaySessionRequestImpl()
     PlayInEditorSessionInfo->OriginalRequestParams = PlaySessionRequest.GetValue();
 
     // we'll branch primarily based on the Session Destination, because it affects which settings we apply and how
-    // 세션 목적지에 따라 주로 분기합니다, 이는 어떤 설정을 적용할지와 어떻게 적용할지에 영향을 미치기 때문입니다
     // what we are interested in is PIE, whose SessionDestination is "InProcess"
+
+    // 세션 목적지에 따라 주로 분기합니다, 이는 어떤 설정을 적용할지와 어떻게 적용할지에 영향을 미치기 때문입니다
     // 우리가 관심 있는 것은 PIE입니다, 이것의 SessionDestination은 "InProcess"입니다
     switch (PlaySessionRequest->SessionDestination)
     {
     case EPlaySessionDestinationType::InProcess:
         // create one-or-more PIE/SIE sessions inside of the current process
-        // 현재 프로세스 내에서 하나 이상의 PIE/SIE 세션을 생성합니다
         // now we start to PIE!
+        
+        // 현재 프로세스 내에서 하나 이상의 PIE/SIE 세션을 생성합니다
         // 이제 PIE를 시작합니다!
         StartPlayInEditorSession(PlaySessionRequest.GetValue());
         break;

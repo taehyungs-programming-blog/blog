@@ -15,6 +15,10 @@ nav_order: 1
 ---
 
 ```cpp
+class UIpNetDriver : public UNetDriver
+{
+    // ...
+    
 /**
     * initialize a PacketHandler for serverside net drivers, for handling connectionless packets
     * NOTE: only triggered by net-driver subclasses that support it - from within InitListen
@@ -23,8 +27,10 @@ nav_order: 1
     * 서버 측 넷 드라이버를 위한 PacketHandler를 초기화하여 연결 없는 패킷을 처리합니다.
     * 참고: InitListen 내에서 이를 지원하는 넷 드라이버 하위 클래스에 의해서만 트리거됩니다.
     */
+
 // as comment said, ConnectionlessHandler is for SERVER, not client
 // - this function is only called within the InitListen()
+
 // 주석에서 언급했듯이, ConnectionlessHandler는 서버용이며 클라이언트용이 아닙니다.
 // - 이 함수는 InitListen() 내에서만 호출됩니다.
 virtual void InitConnectionlessHandler()

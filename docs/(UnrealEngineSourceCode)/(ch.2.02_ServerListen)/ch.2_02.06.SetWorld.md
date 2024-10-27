@@ -14,6 +14,8 @@ nav_order: 1
 
 ---
 
+* `NetDriver`클래스의 함수임을 기억하자
+
 ```cpp
 /**
     * associate a world with this net driver
@@ -43,9 +45,7 @@ virtual void SetWorld(UWorld* InWorld)
     }
 
     // let's see what kind of tick-events need to be bound to the world's tick
-    // - see RegisterTickEvents()
     // 월드의 틱에 어떤 종류의 틱 이벤트를 바인딩해야 하는지 살펴봅시다
-    // - RegisterTickEvents()를 참조하세요
     if (InWorld)
     {
         // setup new world association

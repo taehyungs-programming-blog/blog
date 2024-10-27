@@ -43,12 +43,14 @@ virtual void StartPlayInEditorSession(FRequestPlaySessionParams& InRequestParams
 
     // now that we've gotten all of the editor house-keeping out of the way we can finally start creating world instances and multi-player clients
     // as comment saids, we are starting to run gameplay or multi-player clients (including server)
+
     // 이제 에디터의 모든 정리 작업이 끝났으므로 월드 인스턴스와 멀티플레이어 클라이언트를 생성하기 시작할 수 있습니다
     // 주석에서 말한 대로, 게임플레이나 멀티플레이어 클라이언트(서버 포함)를 실행하기 시작합니다
     {
         // first, we handle starting a dedicated server, this can exist as either a separate process, or as an internal world
         // bUserWantsSingleProcess is 'true':
         // - if we consider that the PIE is running in one(same) process, it is natrual to get it as 'true'
+
         // 먼저, 전용 서버 시작을 처리합니다. 이는 별도의 프로세스로 존재하거나 내부 월드로 존재할 수 있습니다
         // bUserWantsSingleProcess는 'true'입니다:
         // - PIE가 하나의(동일한) 프로세스에서 실행된다고 고려하면, 이것이 'true'가 되는 것이 자연스럽습니다
@@ -58,6 +60,7 @@ virtual void StartPlayInEditorSession(FRequestPlaySessionParams& InRequestParams
 
         // in networking, we get 'NetMode' as PIE_Client:
         // - this property reflects PIE settings, see the EDITOR build
+
         // 네트워킹에서는 'NetMode'를 PIE_Client로 얻습니다:
         // - 이 속성은 PIE 설정을 반영합니다. EDITOR 빌드를 참조하세요
         EPlayNetMode NetMode;
@@ -65,6 +68,7 @@ virtual void StartPlayInEditorSession(FRequestPlaySessionParams& InRequestParams
 
         // standalone requires no server, and ListenServer doesn't require a separate server
         // PIE_Client means networking game, so we needs a server!
+
         // 독립 실행형은 서버가 필요 없고, ListenServer는 별도의 서버가 필요 없습니다
         // PIE_Client는 네트워킹 게임을 의미하므로, 서버가 필요합니다!
         const bool bNetModeRequiresSeparateServer = NetMode == EPlayNetMode::PIE_Client;
@@ -78,6 +82,7 @@ virtual void StartPlayInEditorSession(FRequestPlaySessionParams& InRequestParams
             // if they do want single process, it will get handled below as part of client startup
             // in usual case, the PIE's server is running in same process (as we saw the above, bUseWantsSingleProcess is 'true')
             // - note that when debugging the PIE, it is more convenient for server and clients reside in the same process!
+
             // 단일 프로세스를 원하지 않는 경우 서버를 별도의 프로세스로 실행합니다
             // 단일 프로세스를 원하는 경우, 아래에서 클라이언트 시작의 일부로 처리됩니다
             // 일반적인 경우, PIE의 서버는 동일한 프로세스에서 실행됩니다 (위에서 본 것처럼 bUseWantsSingleProcess가 'true'입니다)
@@ -95,6 +100,7 @@ virtual void StartPlayInEditorSession(FRequestPlaySessionParams& InRequestParams
         // now that the dedicated server was (optionally) started, we'll start as many requested clients as we can
         // - because the user indicated they wanted PIE/PINW we'll put the first client in the editor repecting that setting
         // - any additional clients will either be in-process new windows, or separate processes based on settings
+
         // 이제 전용 서버가 (선택적으로) 시작되었으므로, 요청된 만큼의 클라이언트를 시작합니다
         // - 사용자가 PIE/PINW를 원한다고 표시했으므로 첫 번째 클라이언트를 해당 설정을 존중하여 에디터에 배치합니다
         // - 추가 클라이언트는 설정에 따라 프로세스 내 새 창이나 별도의 프로세스가 됩니다
@@ -126,12 +132,14 @@ virtual void StartPlayInEditorSession(FRequestPlaySessionParams& InRequestParams
         {
             // if they are running single-process and they need a server, the first instance will be the server
             // when you set the server running in same process, InstanceIndex 0 is for the server instance!
+
             // 단일 프로세스로 실행 중이고 서버가 필요한 경우, 첫 번째 인스턴스가 서버가 됩니다
             // 서버를 동일한 프로세스에서 실행하도록 설정하면 InstanceIndex 0이 서버 인스턴스입니다!
             const bool bClientIsServer = (InstanceIndex == 0) && (NetMode == EPlayNetMode::PIE_ListenServer || bRequiresExtraListenServer);
 
             // if they're the server, we want to override them to be a ListenServer:
             // - this will get ignored if they're secretly a dedicated server so it's okay
+            
             // 서버인 경우 ListenServer로 오버라이드하려고 합니다:
             // - 비밀리에 전용 서버인 경우 이는 무시되므로 괜찮습니다
             EPlayNetMode LocalNetMode = NetMode;

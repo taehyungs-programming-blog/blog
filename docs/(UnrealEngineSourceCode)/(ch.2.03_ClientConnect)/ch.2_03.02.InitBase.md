@@ -15,6 +15,11 @@ nav_order: 1
 ---
 
 ```cpp
+class UIpNetDriver : public UNetDriver
+{
+    // ...
+    // 사실여기는 ServerListen에서도 다뤘다.
+
 virtual bool InitBase(bool bInitAsClient, FNetworkNotify* InNotify, const FURL& URL, bool bReuseAddressAndPort, FString& Error) override
 {
     if (!UNetDriver::InitBase(bInitAsClient, InNotify, URL, bReuseAddressAndPort, Error))
