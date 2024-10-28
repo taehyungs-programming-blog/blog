@@ -24,10 +24,11 @@ virtual void InitLocalConnection(UNetDriver* InDriver, class FSocket* InSocket, 
         InPacketOverhead == 0 ? UDP_HEADER_SIZE : InPacketOverhead);
     
     // see where Resolver(NetConnectionAddressResolution) is initialized (UIpConnection::UIpConnection)
-    // Resolver(NetConnectionAddressResolution)가 초기화되는 위치를 확인하세요 (UIpConnection::UIpConnection)
     // - note that FNetConnectionAddressResolution is managed by FNetDriverAddressResolution:
-    // - FNetConnectionAddressResolution은 FNetDriverAddressResolution에 의해 관리된다는 점에 주목하세요:
     // - we can understand the relationship like this:
+
+    // Resolver(NetConnectionAddressResolution)가 초기화되는 위치를 확인하세요 (UIpConnection::UIpConnection)
+    // - FNetConnectionAddressResolution은 FNetDriverAddressResolution에 의해 관리된다는 점에 주목하세요:
     // - 우리는 이 관계를 다음과 같이 이해할 수 있습니다:
     //                                                             *** in general, NetDriverAddressResolution has socket to communicate                                                                      
     //                                                             *** 일반적으로 NetDriverAddressResolution은 통신을 위한 소켓을 가지고 있습니다
@@ -55,10 +56,11 @@ virtual void InitLocalConnection(UNetDriver* InDriver, class FSocket* InSocket, 
     }
 
     // UNetConnection::RemoteAddr cached TSharedPtr<FInternetAddr>
-    // UNetConnection::RemoteAddr는 TSharedPtr<FInternetAddr>를 캐시합니다
     // - RemoteAddr point to same memory address with FNetConnectionAddressResolution::RemoteAddr
-    // - RemoteAddr는 FNetConnectionAddressResolution::RemoteAddr와 동일한 메모리 주소를 가리킵니다
     // - currently RemoteAddr is NOT resolved yet, but after resolution is finished, UNetConnection::RemoteAddr can access the resolved InternetAddr value
+    
+    // UNetConnection::RemoteAddr는 TSharedPtr<FInternetAddr>를 캐시합니다
+    // - RemoteAddr는 FNetConnectionAddressResolution::RemoteAddr와 동일한 메모리 주소를 가리킵니다
     // - 현재 RemoteAddr는 아직 해결되지 않았지만, 해결이 완료되면 UNetConnection::RemoteAddr는 해결된 InternetAddr 값에 접근할 수 있습니다
     RemoteAddr = Resolver->GetRemoteAddr();
 
