@@ -8,7 +8,7 @@ nav_order: 2
 
 ## 주요 클래스 관계도
 
-```plantuml
+```
 @startuml
 class UNetDriver {
   +ClientConnections[]
@@ -68,7 +68,7 @@ end note
 
 ## 흐름도
 
-```plantuml
+```
 @startuml
 participant "Network Socket" as Socket
 participant "PacketHandler" as Handler
