@@ -16,6 +16,15 @@ nav_order: 5
 
 {% raw %}
 
+## 너무 복잡한게 설명한거 같아서 다시 간단히 설명
+
+* 두 가지가 존재 
+  * Unicode : UTF-16으로 고정했다 생각
+  * Multi-bytes : UTF-8을 베이스로 확장한다 생각 (EUC-KR이 이에 해당한다.)
+* Windows Programming기준 Unicode로 구현이 훨씬 수월함 -> 대부분 Unicode이기에 문자열이 깨지는 것을 최소화 할 수 있음
+
+---
+
 * [참고 페이지 🌎](https://taehyungs-programming-blog.github.io/blog/docs/cpp/win32api/2022-01-13-win32-7/#unicode%EC%97%90-%EA%B4%80%ED%95%98%EC%97%AC)
 
 💥 쓸때마다 헷갈리는 문자집합 이제 좀 정리하자.
