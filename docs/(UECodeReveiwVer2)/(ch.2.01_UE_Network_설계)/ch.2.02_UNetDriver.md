@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "02-01. UNetDriver"
+title: "02-02. UNetDriver"
 parent: "([Network] 01. UE Network 설계)"
-grand_parent: "(UnrealEngine Code-Review 2025 Ver. 🐍)"
+grand_parent: "(UnrealEngine Code-Review Ver.2)"
 nav_order: 1
 ---
 

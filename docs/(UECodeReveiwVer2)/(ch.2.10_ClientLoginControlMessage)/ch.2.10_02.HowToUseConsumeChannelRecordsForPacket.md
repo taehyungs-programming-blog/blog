@@ -2,7 +2,7 @@
 layout: default
 title: "10-02. ConsumeChannelRecordsForPacket를 어떻게 쓰나?"
 parent: "([Network] 10. ClientLoginControlMessage)"
-grand_parent: "(UnrealEngine Code-Review 2025 Ver. 🐍)"
+grand_parent: "(UnrealEngine Code-Review Ver.2)"
 nav_order: 1
 ---
 

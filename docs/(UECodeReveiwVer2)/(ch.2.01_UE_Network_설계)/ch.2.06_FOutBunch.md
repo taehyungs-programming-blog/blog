@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "02-05. FOutBunch"
+title: "02-06. FOutBunch"
 parent: "([Network] 01. UE Network 설계)"
-grand_parent: "(UnrealEngine Code-Review 2025 Ver. 🐍)"
+grand_parent: "(UnrealEngine Code-Review Ver.2)"
 nav_order: 1
 ---
 

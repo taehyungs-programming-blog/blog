@@ -1,64 +1,12 @@
 ---
 layout: default
 title: "([Network] 01. UE Network 설계)"
-parent: "(UnrealEngine Code-Review 2025 Ver. 🐍)"
+parent: "(UnrealEngine Code-Review Ver.2)"
 has_children: true
 nav_order: 2
 ---
 
 ## 주요 클래스 관계도
-
-```
-@startuml
-class UNetDriver {
-  +ClientConnections[]
-  +ServerConnection
-  +CreateChannel()
-}
-
-class UNetConnection {
-  +Channels[]
-  +OpenChannels[]
-  +SendBuffer
-  +PacketHandler
-}
-
-class UChannel {
-  +Connection
-  +SendBunch()
-  +ReceivedBunch()
-}
-
-class UControlChannel
-class UActorChannel
-class UVoiceChannel
-
-class PacketHandler {
-  +HandlerComponents[]
-  +Outgoing()
-  +Incoming()
-}
-
-UNetDriver "1" *-- "*" UNetConnection : manages >
-UNetConnection "1" *-- "*" UChannel : owns >
-UNetConnection "1" *-- "1" PacketHandler : has >
-
-UChannel <|-- UControlChannel
-UChannel <|-- UActorChannel
-UChannel <|-- UVoiceChannel
-
-note right of UNetDriver
-  서버: ClientConnections[] 보유
-  클라이언트: ServerConnection 보유
-end note
-
-note right of UChannel
-  Control Channel: 연결 제어
-  Actor Channel: 액터 복제
-  Voice Channel: 음성 데이터
-end note
-@enduml
-```
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/network/ue_network_2025_1_1.png"/>
@@ -67,28 +15,6 @@ end note
 ---
 
 ## 흐름도
-
-```
-@startuml
-participant "Network Socket" as Socket
-participant "PacketHandler" as Handler
-participant "NetConnection" as Connection
-participant "Channel" as Channel
-participant "Game Logic" as Game
-
-== 수신 흐름 (Incoming) ==
-Socket -> Handler: Raw Packet
-Handler -> Connection: Processed Packet
-Connection -> Channel: Bunch
-Channel -> Game: Game Data
-
-== 송신 흐름 (Outgoing) ==
-Game -> Channel: Game Data
-Channel -> Connection: Bunch
-Connection -> Handler: Packet
-Handler -> Socket: Processed Packet
-@enduml
-```
 
 <p align="center">
   <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/network/ue_network_2025_1_2.png"/>
@@ -179,4 +105,86 @@ public:
         Socket->Send(Writer.GetData(), Writer.GetNumBytes());
     }
 };
+```
+
+---
+
+## Tip) PlantUML Code
+
+### 주요 클래스 관계도
+
+```
+@startuml
+class UNetDriver {
+  +ClientConnections[]
+  +ServerConnection
+  +CreateChannel()
+}
+
+class UNetConnection {
+  +Channels[]
+  +OpenChannels[]
+  +SendBuffer
+  +PacketHandler
+}
+
+class UChannel {
+  +Connection
+  +SendBunch()
+  +ReceivedBunch()
+}
+
+class UControlChannel
+class UActorChannel
+class UVoiceChannel
+
+class PacketHandler {
+  +HandlerComponents[]
+  +Outgoing()
+  +Incoming()
+}
+
+UNetDriver "1" *-- "*" UNetConnection : manages >
+UNetConnection "1" *-- "*" UChannel : owns >
+UNetConnection "1" *-- "1" PacketHandler : has >
+
+UChannel <|-- UControlChannel
+UChannel <|-- UActorChannel
+UChannel <|-- UVoiceChannel
+
+note right of UNetDriver
+  서버: ClientConnections[] 보유
+  클라이언트: ServerConnection 보유
+end note
+
+note right of UChannel
+  Control Channel: 연결 제어
+  Actor Channel: 액터 복제
+  Voice Channel: 음성 데이터
+end note
+@enduml
+```
+
+### 흐름도
+
+```
+@startuml
+participant "Network Socket" as Socket
+participant "PacketHandler" as Handler
+participant "NetConnection" as Connection
+participant "Channel" as Channel
+participant "Game Logic" as Game
+
+== 수신 흐름 (Incoming) ==
+Socket -> Handler: Raw Packet
+Handler -> Connection: Processed Packet
+Connection -> Channel: Bunch
+Channel -> Game: Game Data
+
+== 송신 흐름 (Outgoing) ==
+Game -> Channel: Game Data
+Channel -> Connection: Bunch
+Connection -> Handler: Packet
+Handler -> Socket: Processed Packet
+@enduml
 ```
