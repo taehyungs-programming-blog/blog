@@ -1,7 +1,7 @@
 ---
 layout: default
-title: "03-01. PendingNetGame::NotifyControlMessage"
-parent: "([Network] 03. NMT Challenge)"
+title: "[MSG] NMT_Challenge (PendingNetGame::NotifyControlMessage)"
+parent: "([Network] 03. UE Net의 주요 메시지 정리)"
 grand_parent: "(UnrealEngine Code-Review Ver.2)"
 nav_order: 1
 ---

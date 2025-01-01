@@ -1,9 +1,17 @@
 ---
 layout: default
-title: "([Network] 03. NMT_Challenge)"
-parent: "(UnrealEngine Code-Review Ver.2)"
-has_children: true
-nav_order: 3
+title: "[MSG] NMT_Challenge"
+parent: "([Network] 03. UE Net의 주요 메시지 정리)"
+grand_parent: "(UnrealEngine Code-Review Ver.2)"
+nav_order: 1
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
 ---
 
 <p align="center">
