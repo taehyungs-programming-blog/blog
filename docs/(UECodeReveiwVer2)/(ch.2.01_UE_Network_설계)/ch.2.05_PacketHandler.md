@@ -120,3 +120,31 @@ public:
     }
 };
 ```
+
+---
+
+## 그런데 왜? PacketHandler에서 BeginHandshaking을 관리할까?
+
+* 중앙 집중식 핸드셰이크 관리
+    * PacketHandler는 여러 HandlerComponent들을 관리하는 중앙 매니저 역할
+    * 각 HandlerComponent들의 핸드셰이크 과정을 조율하고 순서를 제어
+* 일관된 초기화 프로세스
+
+```cpp
+void BeginHandshaking(FPacketHandlerHandshakeComplete InHandshakeDel)
+{
+    bBeganHandshaking = true;
+    HandshakeCompleteDel = InHandshakeDel;
+
+    // HandlerComponent들을 순차적으로 초기화
+    for (int32 i = HanderComponents.Num() - 1; i >= 0; --i)
+    {
+        HandleComponent& CurComponent = *HandlerComponents[i];
+        if (CurComponent.RequiresHandshake() && !CurComponent.IsInitialized())
+        {
+            CurComponent.NotifyHandshakeBegin();
+            break;
+        }
+    }
+}
+```
