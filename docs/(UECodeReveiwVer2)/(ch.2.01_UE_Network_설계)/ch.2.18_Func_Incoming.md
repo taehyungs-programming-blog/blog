@@ -1,0 +1,74 @@
+---
+layout: default
+title: "02-18. [Func] Incoming"
+parent: "([Network] 01. UE Network 설계)"
+grand_parent: "(UnrealEngine Code-Review Ver.2)"
+nav_order: 2
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/unreal/network/ue_network_2025_2_1_7.png"/>
+</p>
+
+```cpp
+void UIpConnection::ReceivedPacket(FBitReader& Reader)
+{
+    // ... 생략 ...
+
+    // 패킷 핸들러가 있으면 Incoming() 호출
+    if (Handler.IsValid())
+    {
+        Handler->Incoming(Reader); 
+    }
+
+    // ... 생략 ...
+}
+```
+
+---
+
+## Tip) PlantUML
+
+```
+@startuml
+skinparam DefaultFontName "Malgun Gothic"
+
+participant "UIpNetConnection" as conn
+participant "PacketHandler" as handler
+participant "StatelessConnectHandlerComponent" as stateless
+
+note over conn
+  ReceivedPacket() 호출 시점:
+  1. UIpNetDriver::ReceivedRawPacket()
+  2. FSocketReceiver::HandleReceivedData()
+  3. FIOSSocketReceiver::Run()
+end note
+
+conn -> conn: ReceivedPacket()
+activate conn
+
+conn -> handler: Incoming()
+activate handler
+
+handler -> stateless: Incoming()
+activate stateless
+note right: 핸드셰이크 패킷 처리
+
+stateless --> handler
+deactivate stateless
+
+handler --> conn
+deactivate handler
+
+deactivate conn
+
+@enduml
+```

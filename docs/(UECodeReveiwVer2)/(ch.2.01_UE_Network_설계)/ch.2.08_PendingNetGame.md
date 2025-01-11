@@ -105,6 +105,110 @@ virtual void TickWorldTravel(FWorldContext& Context, float DeltaSeconds)
 
 ---
 
+## Q) 그런데 Unreal은 왜 이런 임시객체를 만든걸까? 그냥 Connection을 다 맡겨버리면 안되나?
+
+* 상태 관리의 분리
+    * UWorld와 게임플레이 상태를 완전히 분리하여 관리
+    * 연결 과정에서 발생할 수 있는 실패나 오류를 게임 월드와 독립적으로 처리
+* 맵 로딩과 전환 처리
+    * 새로운 맵을 로딩하는 동안 임시 상태를 관리
+    * 맵 로딩이 완료되면 UWorld로 깔끔하게 전환
+* 연결 프로세스의 단계별 관리
+    * 핸드쉐이크, 조인 요청 등 연결 단계를 명확하게 구분하여 관리
+    * 각 단계별로 필요한 처리를 독립적으로 수행
+* 리소스 관리
+    * 연결 과정에서 사용되는 NetDriver를 임시로 관리
+    * 연결이 성공하면 UWorld로 깔끔하게 이관
+
+```cpp
+// 좋지 않은 예시 - UWorld에서 직접 처리할 경우
+class UWorld {
+    bool bIsConnecting;
+    bool bIsLoadingMap;
+    bool bIsHandshaking;
+    UNetDriver* NetDriver;
+    
+    void ConnectToServer(const FURL& URL) {
+        // 연결 중에 게임플레이도 처리해야 함
+        bIsConnecting = true;
+        InitNetDriver();
+        BeginHandshake();
+        // 맵 로딩도 처리해야 함
+        LoadNewMap();
+        // 게임플레이 상태와 연결 상태가 뒤섞임
+    }
+
+    void Tick() {
+        if (bIsConnecting) {
+            // 연결 처리
+            ProcessConnection();
+        }
+        
+        // 일반 게임플레이 틱
+        ProcessGameplay();
+        
+        if (bIsLoadingMap) {
+            // 맵 로딩 처리
+            ProcessMapLoading();
+        }
+    }
+};
+```
+
+```cpp
+// 좋은 예시 - UPendingNetGame 사용
+class UGameInstance {
+    UWorld* CurrentWorld;
+    UPendingNetGame* PendingGame;
+    
+    void ConnectToServer(const FURL& URL) {
+        // 연결 처리를 완전히 분리
+        PendingGame = NewObject<UPendingNetGame>();
+        PendingGame->Initialize(URL);
+        
+        // 연결 성공 시 콜백
+        PendingGame->OnConnectionSuccess.BindLambda([this]() {
+            // 새로운 월드로 전환
+            CurrentWorld = PendingGame->TransitionToWorld();
+            PendingGame = nullptr;
+        });
+    }
+    
+    void Tick() {
+        if (PendingGame) {
+            // 연결 처리는 PendingGame에서 독립적으로
+            PendingGame->Tick();
+        }
+        else if (CurrentWorld) {
+            // 일반 게임플레이는 World에서
+            CurrentWorld->Tick();
+        }
+    }
+};
+
+class UPendingNetGame {
+    void Tick() {
+        // 연결 관련 처리만 집중
+        ProcessHandshake();
+        ProcessMapLoading();
+        NetDriver->Tick();
+        
+        if (bLoadedMapSuccessfully && bSuccessfullyConnected) {
+            OnConnectionSuccess.Execute();
+        }
+    }
+    
+    UWorld* TransitionToWorld() {
+        UWorld* NewWorld = CreateNewWorld();
+        // NetDriver를 새로운 월드로 이관
+        NewWorld->NetDriver = NetDriver;
+        return NewWorld;
+    }
+};
+```
+
+---
+
 ## Tip) PlantUML Code
 
 ```

@@ -1,0 +1,260 @@
+---
+layout: default
+title: "02-19. [Obj] FNetControlMessage"
+parent: "([Network] 01. UE Network 설계)"
+grand_parent: "(UnrealEngine Code-Review Ver.2)"
+nav_order: 2
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+* FNetControlMessage는 언리얼 엔진의 네트워크 통신에서 사용되는 템플릿 클래스
+* 주로 클라이언트와 서버 간의 제어 메시지를 주고받는 데 사용
+* 주요 특징:
+    * 제어 채널(Control Channel)을 통해 전송되는 메시지를 처리
+    * 다양한 네트워크 메시지 타입(NMT_)을 지원
+    * 직렬화/역직렬화 기능 제공
+
+```cpp
+// 메시지 전송 예시
+// 클라이언트에서 서버로 Hello 메시지 보내기
+FNetControlMessage<NMT_Hello>::Send(Connection, 
+    IsLittleEndian,      // 엔디안 정보
+    NetworkVersion,      // 네트워크 버전
+    EncryptionToken,     // 암호화 토큰
+    NetworkFeatures      // 네트워크 기능
+);
+
+// 메시지 수신 처리 예시
+// 서버에서 Hello 메시지 받기
+FNetControlMessage<NMT_Hello>::Receive(Connection, 
+    [](const bool IsLittleEndian, 
+       const uint32 RemoteNetworkVersion,
+       const FString& EncryptionToken,
+       const EEngineNetworkRuntimeFeatures RemoteNetworkFeatures)
+    {
+        // 메시지 처리 로직
+        // IsLittleEndian 확인
+        // 네트워크 버전 검증
+        // 암호화 토큰 처리
+        // 네트워크 기능 확인
+    }
+);
+```
+
+---
+
+## Example
+
+```cpp
+// 커스텀 메시지 타입 정의
+enum ENetMessageTypes
+{
+    NMT_GameStart = 10,
+    NMT_PlayerJoin = 11,
+    NMT_PlayerData = 12
+};
+
+// 메시지 구조체 정의
+struct FPlayerJoinData
+{
+    FString PlayerName;
+    int32 PlayerID;
+    
+    // 직렬화를 위한 연산자 정의
+    friend FArchive& operator<<(FArchive& Ar, FPlayerJoinData& Data)
+    {
+        Ar << Data.PlayerName;
+        Ar << Data.PlayerID;
+        return Ar;
+    }
+};
+```
+
+```cpp
+class FGameNetworkManager
+{
+public:
+    // 메시지 송신 예시
+    void SendPlayerJoinMessage(UNetConnection* Connection, const FString& PlayerName, int32 PlayerID)
+    {
+        FPlayerJoinData JoinData;
+        JoinData.PlayerName = PlayerName;
+        JoinData.PlayerID = PlayerID;
+        
+        FNetControlMessage<NMT_PlayerJoin>::Send(Connection, JoinData);
+    }
+    
+    // 메시지 수신 처리 설정
+    void SetupMessageHandlers(UNetConnection* Connection)
+    {
+        // PlayerJoin 메시지 수신 핸들러
+        Connection->Handler->SetReceiveHandler(NMT_PlayerJoin, 
+            FMessageHandler::CreateLambda([this](FInBunch& Bunch, UNetConnection* Connection)
+            {
+                FPlayerJoinData ReceivedData;
+                Bunch << ReceivedData; // 역직렬화
+                
+                // 수신된 데이터 처리
+                HandlePlayerJoin(ReceivedData.PlayerName, ReceivedData.PlayerID);
+            }));
+    }
+
+private:
+    void HandlePlayerJoin(const FString& PlayerName, int32 PlayerID)
+    {
+        UE_LOG(LogNet, Log, TEXT("플레이어 참가: %s (ID: %d)"), *PlayerName, PlayerID);
+        // 추가 처리 로직...
+    }
+};
+```
+
+```cpp
+void AMyGameMode::PostLogin(APlayerController* NewPlayer)
+{
+    Super::PostLogin(NewPlayer);
+    
+    UNetConnection* Connection = NewPlayer->GetNetConnection();
+    if (Connection)
+    {
+        // 새로운 플레이어 접속 시 모든 클라이언트에게 알림
+        FString PlayerName = NewPlayer->GetPlayerName();
+        int32 PlayerID = NewPlayer->GetUniqueID();
+        
+        // 모든 클라이언트에게 메시지 브로드캐스트
+        for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+        {
+            if (APlayerController* PC = It->Get())
+            {
+                if (UNetConnection* OtherConnection = PC->GetNetConnection())
+                {
+                    NetworkManager.SendPlayerJoinMessage(OtherConnection, PlayerName, PlayerID);
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+## 내부 구현은 어떻게 되어있을까?
+
+```cpp
+template<uint8 MessageType>
+class FNetControlMessage
+{
+public:
+    // 메시지 전송을 위한 정적 함수
+    template<typename... Types>
+    static bool Send(UNetConnection* Connection, Types... Args)
+    {
+        if (!Connection || !Connection->Handler)
+        {
+            return false;
+        }
+
+        // 메시지 번들 생성
+        FOutBunch Bunch(Connection, false);
+        Bunch.bReliable = 1;      // 신뢰성 있는 전송
+        Bunch.bControl = 1;       // 컨트롤 채널 사용
+        
+        // 메시지 타입 기록
+        Bunch.WriteByte(MessageType);
+        
+        // 가변 인자 직렬화
+        WriteArgs(Bunch, Args...);
+        
+        // 메시지 전송
+        return Connection->Handler->SendControlMessage(Bunch);
+    }
+
+    // 메시지 수신을 위한 정적 함수
+    template<typename HandlerType>
+    static bool Receive(UNetConnection* Connection, HandlerType&& Handler)
+    {
+        if (!Connection)
+        {
+            return false;
+        }
+
+        // 메시지 처리기 등록
+        Connection->Handler->SetReceiveHandler(
+            MessageType,
+            FMessageHandler::CreateLambda(
+                [Handler = MoveTemp(Handler)](FInBunch& Bunch, UNetConnection* Conn)
+                {
+                    // 메시지 데이터 역직렬화 및 핸들러 호출
+                    ReadArgsAndCall(Bunch, Handler);
+                }
+            )
+        );
+
+        return true;
+    }
+
+private:
+    // 인자 직렬화 헬퍼 함수들
+    template<typename T>
+    static void WriteArgs(FOutBunch& Bunch, const T& Arg)
+    {
+        Bunch << Arg;
+    }
+
+    template<typename T, typename... Rest>
+    static void WriteArgs(FOutBunch& Bunch, const T& Arg, Rest... Args)
+    {
+        Bunch << Arg;
+        WriteArgs(Bunch, Args...);
+    }
+
+    // 인자 역직렬화 및 핸들러 호출 헬퍼
+    template<typename HandlerType, typename... Types>
+    static void ReadArgsAndCall(FInBunch& Bunch, HandlerType&& Handler)
+    {
+        std::tuple<std::decay_t<Types>...> Args;
+        // 각 인자 역직렬화
+        (Bunch << ... << std::get<Types>(Args));
+        
+        // 핸들러 호출
+        std::apply(Handler, Args);
+    }
+};
+```
+
+```cpp
+class UNetConnection
+{
+    // 컨트롤 메시지 처리
+    bool ProcessControlMessage(uint8* Data, int32 DataSize)
+    {
+        FInBunch Bunch(this, Data, DataSize);
+        
+        // 메시지 타입 읽기
+        uint8 MessageType;
+        Bunch << MessageType;
+        
+        // 등록된 핸들러 찾기
+        if (auto Handler = MessageHandlers.Find(MessageType))
+        {
+            // 핸들러 실행
+            (*Handler)(Bunch, this);
+            return true;
+        }
+        
+        return false;
+    }
+    
+    // 메시지 핸들러 맵
+    TMap<uint8, FMessageHandler> MessageHandlers;
+};
+```
+
+
+
