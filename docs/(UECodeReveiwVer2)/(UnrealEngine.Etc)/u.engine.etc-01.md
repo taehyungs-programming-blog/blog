@@ -2,7 +2,7 @@
 layout: default
 title: "01. UE_LOG"
 parent: "(Engine Source Code 자잘한 부분)"
-grand_parent: "(UE SourceCode 분석 🤖)"
+grand_parent: "(UnrealEngine Code-Review Ver.2)"
 nav_order: 1
 ---
 
