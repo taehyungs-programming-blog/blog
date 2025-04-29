@@ -1,0 +1,413 @@
+---
+layout: default
+title: "(11. FClassNetCache)"
+parent: "(UE Code-Review 🤖)"
+has_children: true
+nav_order: 2
+permalink: docs/review/ue/ver4/11/FClassNetCache
+---
+
+## 우선 FClassNetCache, 란 뭘까?
+
+```cpp
+// MyCharacter.h 이런객체가 있다 가정하자.
+UCLASS()
+class MYGAME_API AMyCharacter : public ACharacter
+{
+    GENERATED_BODY()
+
+public:
+    AMyCharacter();
+
+    // 네트워크를 통해 복제될 속성들 -> 이걸 어떻게 처리할까?
+    UPROPERTY(Replicated)
+    float Health;
+    
+    UPROPERTY(ReplicatedUsing=OnRep_Ammo)
+    int32 Ammo;
+    
+    // 복제되지 않는 속성
+    UPROPERTY()
+    float LocalOnlyValue;
+    
+    // 조건부 복제 속성
+    UPROPERTY(Replicated)
+    FVector LastHitLocation;
+    
+    // 복제 콜백 함수
+    UFUNCTION()
+    void OnRep_Ammo();
+    
+    // 데미지 처리 함수
+    void TakeDamage(float DamageAmount, FVector HitLocation);
+    
+    // 복제 속성 설정
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    
+    // 디버깅 함수
+    void DebugNetworkCache();
+};
+
+// MyCharacter.cpp
+#include "MyCharacter.h"
+#include "Net/UnrealNetwork.h"
+
+AMyCharacter::AMyCharacter()
+{
+    Health = 100.0f;
+    Ammo = 30;
+    LocalOnlyValue = 0.0f;
+}
+
+void AMyCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    
+    // 기본 복제
+    DOREPLIFETIME(AMyCharacter, Health);
+    DOREPLIFETIME(AMyCharacter, Ammo);
+    
+    // 조건부 복제 (소유자에게만)
+    DOREPLIFETIME_CONDITION(AMyCharacter, LastHitLocation, COND_OwnerOnly);
+}
+
+void AMyCharacter::OnRep_Ammo()
+{
+    // 탄약이 변경되었을 때 UI 업데이트 등의 작업
+    UE_LOG(LogTemp, Display, TEXT("탄약이 %d로 변경됨"), Ammo);
+}
+
+void AMyCharacter::TakeDamage(float DamageAmount, FVector HitLocation)
+{
+    // 서버에서만 실행
+    if (HasAuthority())
+    {
+        // 체력 감소
+        Health -= DamageAmount;
+        LastHitLocation = HitLocation;
+        
+        // 체력이 0 이하면 사망 처리
+        if (Health <= 0)
+        {
+            Health = 0;
+            // 사망 처리 코드...
+        }
+        
+        // 변경된 속성은 자동으로 복제됨
+        // 별도의 RPC 호출 없이도 모든 클라이언트에 전파됨
+    }
+}
+
+void AMyCharacter::DebugNetworkCache()
+{
+    // 네트워크 캐시 정보 출력
+    UNetDriver* NetDriver = GetNetDriver();
+    if (!NetDriver || !NetDriver->NetCache)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("NetDriver 또는 NetCache가 없음"));
+        return;
+    }
+    
+    // 클래스 캐시 가져오기
+    const FClassNetCache* ClassCache = NetDriver->NetCache->GetClassNetCache(GetClass());
+    if (!ClassCache)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("클래스 캐시를 찾을 수 없음"));
+        return;
+    }
+    
+    // 캐시 정보 출력
+    UE_LOG(LogTemp, Display, TEXT("=== %s의 네트워크 캐시 정보 ==="), *GetClass()->GetName());
+    UE_LOG(LogTemp, Display, TEXT("필드 수: %d"), ClassCache->Fields.Num());
+    UE_LOG(LogTemp, Display, TEXT("필드 베이스: %d"), ClassCache->FieldsBase);
+    
+    // 복제 가능한 속성 출력
+    for (int32 i = 0; i < ClassCache->Fields.Num(); i++)
+    {
+        const FFieldNetCache& FieldCache = ClassCache->Fields[i];
+        FField* Field = FieldCache.Field.ToField();
+        
+        if (Field && Field->IsA<FProperty>())
+        {
+            FProperty* Property = CastField<FProperty>(Field);
+            UE_LOG(LogTemp, Display, TEXT("속성[%d]: %s (인덱스: %d)"),
+                i, *Property->GetName(), FieldCache.FieldNetIndex);
+        }
+    }
+}
+
+// 게임 모드에서 사용 예시
+void AMyGameMode::BeginPlay()
+{
+    Super::BeginPlay();
+    
+    // 캐릭터 생성 시 네트워크 캐시가 자동으로 초기화됨
+    AMyCharacter* Character = GetWorld()->SpawnActor<AMyCharacter>(DefaultPawnClass);
+    
+    // 디버깅 목적으로 캐시 정보 출력
+    if (Character)
+    {
+        Character->DebugNetworkCache();
+    }
+}
+
+// 클라이언트에서 데미지 요청 예시 (RPC 사용)
+void AMyPlayerController::RequestDamage(AActor* Target, float Amount, FVector HitLocation)
+{
+    // 서버에 RPC 요청
+    ServerRequestDamage(Target, Amount, HitLocation);
+}
+
+// 서버 RPC 구현
+UFUNCTION(Server, Reliable)
+void AMyPlayerController::ServerRequestDamage(AActor* Target, float Amount, FVector HitLocation)
+{
+    // 서버에서만 실행됨
+    if (!HasAuthority())
+        return;
+        
+    // 타겟이 유효한지 확인
+    AMyCharacter* Character = Cast<AMyCharacter>(Target);
+    if (Character)
+    {
+        // 데미지 적용
+        Character->TakeDamage(Amount, HitLocation);
+        
+        // 데미지 적용 후 Health와 LastHitLocation이 변경됨
+        // 이 변경된 속성들은 자동으로 모든 클라이언트에 복제됨
+        // Health는 모든 클라이언트에, LastHitLocation은 소유자에게만 복제됨
+    }
+}
+```
+
+* 뭐 대략 이런것이다.
+
+---
+
+## FClassNetCache는 어떻게 동작하게 될까?
+
+* `FClassNetCacheMgr`를 통해 NetDriver에서 관리된다.
+
+```cpp
+virtual void PostInitProperties() override
+{
+    // ...
+    
+    // 대략 이런식 생성
+    GuidCache = TSharedPtr<FNetGUIDCache>(new FNetGUIDCache(this));
+    NetCache = TSharedPtr<FClassNetCacheMgr>(new FClassNetCacheMgr());
+}
+```
+
+```cpp
+class FClassNetCache
+{
+    // ...
+
+
+    // FClassNetCache의 필드는 아래와 같고 중요한건 FieldsBase의 이해가 필요하다
+    int32 FieldsBase;
+
+    const FClassNetCache* Super;
+    TWeakObjectPtr<const UClass> Class;
+    uint32 ClassChecksum;
+    TArray<FFieldNetCache> Fields;
+
+    TMap<void*, FFieldNetCache> FieldMap;
+    TMap<uint32, FFieldNetCache> FieldChecksumMap;
+
+    int32 GetMaxIndex() const
+    {
+        return FieldsBase + Fields.Num();
+    }
+};
+```
+
+### FieldsBase의 목적
+
+* FieldsBase는 클래스 계층 구조에서 현재 클래스가 상속받은 모든 복제 가능한 속성(Fields)의 기본 인덱스를 나타냄. 
+* 이것은 네트워크 복제 시스템이 각 클래스의 복제 가능한 속성들을 고유하게 식별하고 추적할 수 있게 해준다.
+
+* 작동 방식
+
+```
+//    class UObject ◄─────── UObject has zero Fields(net-related)                       
+//    {                                                                                 
+//    };                                                                                
+//                                        ┌─────── 10 Fields exist:                     
+//    class AActor : UObject              │           bReplicateMovement, bHidden, ...  
+//    {                                   │        : its FieldsBase is '0'              
+//        ...◄────────────────────────────┘                                             
+//    };                                                                                
+//                                                                                      
+//    class ATestC : public AActor                                                      
+//    {                                                                                 
+//        UPROPERTY(replicated)◄────────────────── 1 Fields exists:                     
+//        int32 F;                                 : its FieldsBase is '10'             
+//    };                                                                                
+//                                                                                      
+//    class ATestB : public ATestC                                                      
+//    {                                                                                 
+//        UPROPERTY(replicated)◄────────────────── 1 Fields exists:                     
+//        int32 C;                                 : its FieldsBase is '11'             
+//                                                                                      
+//        int32 D;                                                                      
+//    };                                                                                
+//                                                                                      
+//    class ATestA : public ATestB                                                      
+//    {                                                                                 
+//        UPROPERTY(replicated)◄────────────────── 2 Fields exists:                     
+//        int32 A;                                 : its FieldsBase is '12'             
+//                                                                                      
+//        UPROPERTY(replicated)                                                         
+//        int32 B;                                                                      
+//    };  
+```
+
+* UObject 클래스는 복제 가능한 속성이 없으므로 FieldsBase는 0
+* AActor 클래스는 10개의 복제 가능한 속성(bReplicateMovement, bHidden 등)을 가지고 있으며, 이 클래스의 FieldsBase는 0입니다.
+* ATestC 클래스는 AActor를 상속받고 1개의 복제 가능한 속성(F)을 추가합니다. 이 클래스의 FieldsBase는 10 (부모 클래스 AActor의 속성 수).
+* ATestB 클래스는 ATestC를 상속받고 1개의 복제 가능한 속성(C)을 추가합니다. 이 클래스의 FieldsBase는 11 (부모 클래스들의 총 속성 수).
+* ATestA 클래스는 ATestB를 상속받고 2개의 복제 가능한 속성(A, B)을 추가합니다. 이 클래스의 FieldsBase는 12 (부모 클래스들의 총 속성 수).
+
+---
+
+## 이후 설명에 들어가기 전, Unreal의 Property에 대해 알아보자
+
+### FProperty 구조
+
+* UTest 클래스 예시를 통해 FProperty의 구조를 설명
+    * 아래는 그냥 가정임
+
+```
+class UTest : UObject              UTest::StaticClass: UClass                                                                                        
+{                                                        │                                                                                           
+    UPROPERTY(Replicated)                                │                                                                                           
+    bool A;                                              └──FProperty* PropertyLink                                                                  
+                                                            ┌───────────────────────────────────────┐    ┌───────────────────────────────────────┐   
+    bool B;                                                 │ FBoolProperty                         │  ┌─► FBoolProperty                         │   
+                                                            │   ClassPrivate.Name==BoolProperty     │  │ │   ClassPrivate.Name==BoolProperty     │   
+    UPROPERTY()                                             │        Owner.Object==UTest            │  │ │        Owner.Object==UTest            │   
+    bool C;                                                 │         NamePrivate=="A"              │  │ │         NamePrivate=="C"              │   
+};                                                          │                Next───────────────────┼──┘ │                Next                   │   
+                                                            │      OffsetInternal==0                │    │      OffsetInternal==2                │   
+                                                            │                      +sizeof(UObject) │    │                      +sizeof(UObject) │   
+                                                            │         ElementSize==1                │    │         ElementSize==1                │   
+                                                            │            ArrayDim==1                │    │            ArrayDim==1                │   
+                                                            │       PropertyFlags==CPF_Net          │    │       PropertyFlags==CPF_None         │   
+                                                            └───────────────────────────────────────┘    └───────────────────────────────────────┘   
+```
+
+* 이 다이어그램은 FProperty의 주요 멤버 변수들을 보여준다
+    * ClassPrivate: 프로퍼티 타입 정보
+    * Owner: 프로퍼티를 소유한 객체
+    * NamePrivate: 프로퍼티 이름
+    * Next: 다음 프로퍼티 링크
+    * OffsetInternal: 메모리 오프셋
+    * ElementSize: 요소 크기
+    * ArrayDim: 배열 차원
+    * PropertyFlags: 프로퍼티 플래그(예: CPF_Net은 네트워크 복제 가능)
+
+---
+
+### FArrayProperty 구조
+
+```
+// 1. Inner:FProperty*:
+//                                                         
+//             ┌────────────────────────────────────────┐  
+//           ──┴─                                       │  
+//    TArray<Type>        FArrayProperty                │  
+//    ───┬──                ▲ │                         │  
+//       │                  │ └──Inner:FProperty*◄──────┘  
+//       └──────────────────┘                              
+```
+
+- `FArrayProperty`는 `TArray<Type>`을 나타내는 프로퍼티 클래스.
+- Inner 멤버 변수는 배열 내부 요소의 타입을 나타내는 `FProperty 포인터`이다.
+- 이 구조를 통해 배열의 요소 타입에 대한 정보를 저장한다.
+
+```
+// 2. FArrayProperty_Super:
+//
+//    FArrayProperty_Super==TProperty<FScriptArray, FProperty>                                                                      
+//                          ────┬──── ─────┬──────  ──────┬──                                                                       
+//                              │          │              │                                                                         
+//                              │          └────────────┐ └─────────────────┐                                                       
+//                              │                       │                   │                                                       
+//                              │                       ▼                   ▼                                                       
+//                              └──►template<typename InTCppType, class TInPropertyBaseClass>                                       
+//                                  class TProperty : public TInPropertyBaseClass, public TPropertyTypeFundermentals<InTCppType>    
+//                                                                                                                                  
+//                                                                                                                                  
+//                                      FField                                                                                      
+//                                         ▲                                                                                        
+//                                         │                                                                                        
+//                                         │                                                                                        
+//                                     FProperty  TPropertyTypeFundermentals<FScriptArray>                                          
+//                                         ▲           ▲                                                                            
+//                                         │           │                                                                            
+//                                   Super │           │ ***it contains template values:                                            
+//                                         └─────┬─────┘     1.CPPSize=sizeof(FScriptArray)                                         
+//                                               │           2.CPPAlignment=alignof(FScriptArray)                                       
+//                                               │                                                                                  
+//                                               │                                                                                  
+//                                        FArrayProperty_Super                                                                      
+//                                        ==TProperty<FScriptArray,FProperty>                                                       
+```
+
+- `FArrayProperty`는 `FArrayProperty_Super`를 상속받는다.
+- FArrayProperty_Super는 `TProperty<FScriptArray, FProperty>`의 타입 별칭.
+- 이 템플릿 구조는 다음과 같은 상속 관계를 형성합니다: 
+    - FField → FProperty → TProperty<FScriptArray, FProperty> 
+    - TPropertyTypeFundamentals<FScriptArray>도 함께 상속
+
+```
+// 3. FProperty::ElementSize is updated by TPropertyTypeFundermentals::CPPSize   
+```
+    
+* 메모리 크기 설정
+- `FProperty::ElementSize`는 `TPropertyTypeFundamentals::CPPSize`에 의해 업데이트된다.
+- 이는 TProperty의 생성자에서 `SetElementSize()` 함수를 통해 이루어진다.
+
+---
+
+### FField에 대해
+
+```cpp
+class FField
+{
+    // 기본 필드 클래스와 필드 타입 클래스 정의
+    typedef FField BaseFieldClass;
+    typedef FFieldClass FieldTypeClass;
+
+    /** 이 FField의 타입을 나타내는 클래스 객체에 대한 포인터 */
+    FFieldClass* ClassPrivate;
+
+    /** 이 필드의 소유자 */
+    FFieldVariant Owner;
+
+    /** 연결 리스트의 다음 필드 */
+    FField* Next;
+
+    /** 이 필드의 이름 */
+    FName NamePrivate;
+};
+```
+
+* FField는 언리얼 엔진의 멤버 변수 인터페이스를 제공. 코드에 있는 주석 그림에서 볼 수 있듯이, 클래스의 프로퍼티들은 FField의 파생 클래스인 FProperty로 표현되며, 이들은 연결 리스트 형태로 구성된다.
+
+```cpp
+class UTest : UObject
+{
+    UPROPERTY()
+    bool A;
+
+    bool B;  // UPROPERTY가 없음
+
+    UPROPERTY()
+    bool C;
+};
+
+// 이 클래스의 프로퍼티 A와 C는 FBoolProperty 객체로 표현되며, 이들은 Next 포인터를 통해 연결. B는 UPROPERTY 매크로가 없으므로 리플렉션 시스템에 포함되지 않는다
+```
