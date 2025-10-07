@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "15. Tick 이론론"
+title: "15. Tick 이론"
 parent: "(Unreal Framwork의 이해)"
 grand_parent: "(Unreal C++ 🚀)"
 nav_order: 2
