@@ -340,3 +340,172 @@ UE Tick 시스템은 다음과 같은 원칙으로 설계되어 있습니다:
 1. **bCanEverTick = false**: Tick이 전혀 필요하지 않은 경우
 2. **bCanEverTick = true, bStartWithTickEnabled = false**: 조건부 Tick이 필요한 경우
 3. **bCanEverTick = true, bStartWithTickEnabled = true**: 항상 Tick이 필요한 경우
+
+---
+
+### 1. FTickTaskLevel
+
+`FTickTaskLevel`은 특정 레벨(ULevel)에 대한 틱 작업을 관리하는 구조체
+
+#### 주요 특징:
+- **레벨별 독립성**: 각 레벨은 자체적인 틱 작업 목록을 가짐
+- **효율적인 메모리 관리**: 레벨 로딩/언로딩 시 틱 작업의 할당과 해제를 최적화
+- **격리된 실행**: 레벨 간 틱 작업의 독립적인 처리 보장
+
+#### 구조:
+```cpp
+struct FTickTaskLevel
+{
+    // 레벨 내의 모든 틱 함수들을 추적
+    TArray<FTickFunction*> TickFunctions;
+    
+    // 레벨별 틱 작업 관리
+    void RegisterTickFunction(FTickFunction* TickFunction);
+    void UnregisterTickFunction(FTickFunction* TickFunction);
+};
+```
+
+### 2. FTickTaskSequencer
+
+`FTickTaskSequencer`는 틱 작업의 실행 순서를 조율하는 핵심 컴포넌트
+
+#### 주요 기능:
+- **순서 조율**: 각 틱 그룹(Tick Group)에 대한 작업 관리
+- **우선순위 처리**: 종속성이 있는 작업들의 올바른 실행 순서 보장
+- **병렬 처리**: 독립적인 작업들의 동시 실행 지원
+
+#### Tick Group 예시:
+- **TG_PrePhysics**: 물리 연산 전 실행
+- **TG_DuringPhysics**: 물리 연산 중 실행
+- **TG_PostPhysics**: 물리 연산 후 실행
+- **TG_PostUpdateWork**: 모든 업데이트 완료 후 실행
+
+#### 구조:
+```cpp
+class FTickTaskSequencer
+{
+    // 각 틱 그룹별 작업 관리
+    TMap<ETickingGroup, TArray<FTickFunction*>> TickGroups;
+    
+    // 작업 순서 조율
+    void SortTickGroups();
+    void ExecuteTickGroup(ETickingGroup Group);
+};
+```
+
+### 3. FTickTaskManager
+
+`FTickTaskManager`는 전체 틱 시스템을 총괄하는 매니저 클래스
+
+#### 주요 책임:
+- **전역 관리**: 모든 레벨의 `FTickTaskLevel` 관리
+- **프레임별 처리**: 매 프레임마다 틱 작업의 수집과 실행
+- **생명주기 관리**: 틱 작업의 등록, 해제, 실행 순서 조율
+
+#### 핵심 메서드:
+
+##### StartFrame()
+```cpp
+void FTickTaskManager::StartFrame()
+{
+    // 프레임 시작 시 모든 틱 작업 준비
+    // 레벨별 틱 작업 수집
+    // 실행 순서 최적화
+}
+```
+
+##### RunTickGroup()
+```cpp
+void FTickTaskManager::RunTickGroup(ETickingGroup Group)
+{
+    // 특정 틱 그룹의 모든 작업 실행
+    // 병렬 처리 가능한 작업들 동시 실행
+    // 종속성 있는 작업들 순차 실행
+}
+```
+
+##### EndFrame()
+```cpp
+void FTickTaskManager::EndFrame()
+{
+    // 프레임 종료 시 정리 작업
+    // 다음 프레임을 위한 준비
+    // 메모리 정리 및 상태 초기화
+}
+```
+
+## 시스템 아키텍처
+
+### 계층 구조
+```
+FTickTaskManager (전역 관리자)
+    ├── FTickTaskLevel (레벨별 관리)
+    │   ├── TickFunction 1
+    │   ├── TickFunction 2
+    │   └── ...
+    └── FTickTaskSequencer (순서 조율)
+        ├── TG_PrePhysics
+        ├── TG_DuringPhysics
+        ├── TG_PostPhysics
+        └── TG_PostUpdateWork
+```
+
+### 실행 흐름
+1. **프레임 시작**: `StartFrame()` 호출
+2. **틱 작업 수집**: 모든 레벨에서 틱 함수 수집
+3. **순서 조율**: `FTickTaskSequencer`가 실행 순서 결정
+4. **그룹별 실행**: 각 틱 그룹을 순서대로 실행
+5. **프레임 종료**: `EndFrame()` 호출
+
+## 성능 최적화
+
+### 병렬 처리
+- 독립적인 틱 작업들의 동시 실행
+- 멀티스레딩을 통한 성능 향상
+- CPU 코어 활용도 극대화
+
+### 메모리 효율성
+- 레벨별 틱 작업 격리
+- 동적 할당 최소화
+- 캐시 친화적인 데이터 구조
+
+### 실행 순서 최적화
+- 종속성 분석을 통한 최적 실행 순서 결정
+- 불필요한 대기 시간 제거
+- 프레임 시간 안정성 보장
+
+## 사용 예시
+
+### 틱 함수 등록
+```cpp
+// 액터의 틱 함수 등록
+void AMyActor::BeginPlay()
+{
+    Super::BeginPlay();
+    
+    // 틱 함수 등록
+    PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.TickGroup = TG_PrePhysics;
+    PrimaryActorTick.TickInterval = 0.0f; // 매 프레임 실행
+}
+```
+
+### 커스텀 틱 그룹 사용
+```cpp
+// 커스텀 틱 함수 생성
+FTickFunction MyTickFunction;
+MyTickFunction.TickGroup = TG_PostPhysics;
+MyTickFunction.bCanEverTick = true;
+MyTickFunction.bStartWithTickEnabled = true;
+MyTickFunction.SetTickFunctionEnable(true);
+```
+
+## 결론
+
+Unreal Engine의 Tick 시스템은 `FTickTaskLevel`, `FTickTaskSequencer`, `FTickTaskManager`의 세 가지 핵심 구성 요소로 이루어진 정교한 아키텍처를 가지고 있습니다. 이 시스템은:
+
+- **확장성**: 새로운 틱 작업의 쉬운 추가
+- **성능**: 병렬 처리와 최적화된 실행 순서
+- **안정성**: 레벨별 격리와 종속성 관리
+- **유연성**: 다양한 틱 그룹과 우선순위 지원
+
