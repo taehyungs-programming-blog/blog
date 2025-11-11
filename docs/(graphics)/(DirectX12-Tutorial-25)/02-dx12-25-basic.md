@@ -220,3 +220,152 @@ float4 PSMain(float2 uv : TEXCOORD) : SV_Target
 └──────────────────────────┘
 
 ```
+
+---
+
+# D3D12 Command List / Command Queue 정리 (예시 코드 포함)
+
+## 1. 개념 요약
+
+### 1.1 Command List
+
+- **역할**: GPU에 보낼 명령(`Draw`, `Dispatch`, `Copy`, `ResourceBarrier` 등)을 **CPU가 미리 기록**해 두는 객체  
+- **수명**:
+  1. `Reset()` → 기록 시작
+  2. 각종 명령 기록
+  3. `Close()` → 기록 종료
+  4. Command Queue에 제출(Execute)
+- **Command Allocator** 위에 명령을 쓰는 “뷰” 같은 존재이며, 실제 메모리는 Allocator가 가짐
+
+### 1.2 Command Queue
+
+- **역할**: Close된 Command List들을 **GPU에 제출하는 큐**
+- **특징**:
+  - `ExecuteCommandLists()`를 통해 여러 Command List를 한 번에 제출 가능
+  - GPU는 큐에 들어온 순서대로 실행
+  - Fence를 이용해 CPU와 GPU 간 동기화를 수행
+
+### 1.3 타입
+
+- 공통 타입 (List / Queue 모두 동일 타입 사용):
+  - `D3D12_COMMAND_LIST_TYPE_DIRECT` : 일반적인 그래픽스 + 복사 작업
+  - `D3D12_COMMAND_LIST_TYPE_COMPUTE`: Compute 전용
+  - `D3D12_COMMAND_LIST_TYPE_COPY`   : Copy 전용 (업로드/다운로드, 스트리밍 등)
+
+---
+
+## 2. 기본 초기화 예시
+
+아래 코드는 **C++14 / WRL::ComPtr** 기준의 단순 예시입니다.  
+(에러 체크를 단순하게 하기 위해 `ThrowIfFailed` 헬퍼를 사용합니다.)
+
+```cpp
+// d3d12_example.h
+
+#pragma once
+
+#include <wrl.h>
+#include <d3d12.h>
+#include <dxgi1_6.h>
+#include <stdexcept>
+
+using Microsoft::WRL::ComPtr;
+
+inline void ThrowIfFailed(HRESULT hr) {
+  if (FAILED(hr)) {
+    throw std::runtime_error("D3D12 call failed");
+  }
+}
+
+struct D3DContext {
+  ComPtr<IDXGIFactory6> factory;
+  ComPtr<ID3D12Device> device;
+
+  // Queue
+  ComPtr<ID3D12CommandQueue> direct_queue;
+
+  // Allocator / List (단일 프레임 예시)
+  ComPtr<ID3D12CommandAllocator> command_allocator;
+  ComPtr<ID3D12GraphicsCommandList> command_list;
+
+  // Fence
+  ComPtr<ID3D12Fence> fence;
+  HANDLE fence_event = nullptr;
+  UINT64 fence_value = 0;
+};
+```
+
+```cpp
+// d3d12_example.cpp
+
+#include "d3d12_example.h"
+
+void InitD3D(D3DContext* ctx) {
+  // 1. DXGI Factory 생성
+  UINT dxgi_flags = 0;
+#if defined(_DEBUG)
+  {
+    ComPtr<ID3D12Debug> debug_controller;
+    if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debug_controller)))) {
+      debug_controller->EnableDebugLayer();
+      dxgi_flags |= DXGI_CREATE_FACTORY_DEBUG;
+    }
+  }
+#endif
+
+  ThrowIfFailed(CreateDXGIFactory2(dxgi_flags, IID_PPV_ARGS(&ctx->factory)));
+
+  // 2. 하드웨어 어댑터 선택 (단순 예시: 첫 번째 사용 가능한 HW 어댑터)
+  ComPtr<IDXGIAdapter1> adapter;
+  for (UINT adapter_index = 0;
+       ctx->factory->EnumAdapters1(adapter_index, &adapter) != DXGI_ERROR_NOT_FOUND;
+       ++adapter_index) {
+    DXGI_ADAPTER_DESC1 desc = {};
+    adapter->GetDesc1(&desc);
+
+    if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) {
+      // WARP 어댑터는 여기서 스킵
+      continue;
+    }
+
+    if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0,
+                                    IID_PPV_ARGS(&ctx->device)))) {
+      break;
+    }
+  }
+
+  // 3. Command Queue 생성 (DIRECT 타입)
+  D3D12_COMMAND_QUEUE_DESC queue_desc = {};
+  queue_desc.Type  = D3D12_COMMAND_LIST_TYPE_DIRECT;
+  queue_desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+
+  ThrowIfFailed(ctx->device->CreateCommandQueue(
+      &queue_desc, IID_PPV_ARGS(&ctx->direct_queue)));
+
+  // 4. Command Allocator / Command List 생성
+  ThrowIfFailed(ctx->device->CreateCommandAllocator(
+      D3D12_COMMAND_LIST_TYPE_DIRECT,
+      IID_PPV_ARGS(&ctx->command_allocator)));
+
+  ThrowIfFailed(ctx->device->CreateCommandList(
+      0,
+      D3D12_COMMAND_LIST_TYPE_DIRECT,
+      ctx->command_allocator.Get(),
+      /*pInitialState=*/nullptr,
+      IID_PPV_ARGS(&ctx->command_list)));
+
+  // Command List는 생성 직후 open 상태이므로, 우선 Close해 둠
+  ThrowIfFailed(ctx->command_list->Close());
+
+  // 5. Fence 생성 및 이벤트 생성
+  ThrowIfFailed(ctx->device->CreateFence(
+      0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&ctx->fence)));
+  ctx->fence_value = 1;
+
+  ctx->fence_event = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+  if (ctx->fence_event == nullptr) {
+    ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()));
+  }
+}
+
+```
