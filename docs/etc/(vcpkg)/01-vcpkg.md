@@ -1,8 +1,9 @@
 ---
 layout: default
 title: "vcpkg 사용중 주의 사항"
-parent: "Etc 🛠"
-nav_order: 10
+parent: "(vcpkg)"
+grand_parent: "Etc 🛠"
+nav_order: 1
 ---
 
 ## Table of contents

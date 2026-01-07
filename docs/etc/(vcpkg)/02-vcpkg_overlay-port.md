@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "01. Prerequisite"
-parent: "(Vulkan)"
-grand_parent: "(Graphics 😎)"
+title: "overlay port"
+parent: "(vcpkg)"
+grand_parent: "Etc 🛠"
 nav_order: 1
 ---
 
@@ -14,31 +14,7 @@ nav_order: 1
 
 ---
 
-## 내 gpu가 Vulkan 특정 버전을 지원하는지 확인
-
-* [Gpu Info Vulkan](https://vulkan.gpuinfo.org/)
-
----
-
-## Vulkan SDK Download
-
-* [Vulkan SDK Down](https://vulkan.lunarg.com/)
-    * SDK Installer로 받으면 됩니다
-    * 구성요소 (SDL2 등) 모두 설치하는게 좋습니다
-
----
-
-> [참고소스 git](https://github.com/HongLabInc/HonglabVulkan)
-
-## visual studio vcpkg 지정
-
-* 옵션 -> vcpkg 패키지 관리자 -> 일반 -> vcpkg.exe의 사용자 지정 경로 사용
-* 프로젝트 속성 -> 구성 속성 -> vcpkg -> Use Vcpkg Manifest -> Yes
-    * 만약 구성 속성에 vcpkg가 안보인다면 `vcpkg integrate install`를 해야함
-* 여기까지 하면 프로젝트의 하위에 vcpkg.json이 있다면 빌드시 자동으로 vcpkg 빌드가 된다.
-    * 만약 vcpkg 빌드가 되지 않는다면(특히 puqixml) 시스템로캘을 영어로 + vs도 영어로 바꾸고 다시 시도.
-
-### Tips) vcpkg 특정 라이브러리 빌드 실패 시 Overlay Port로 해결하기 (builtin-baseline 환경)
+## vcpkg 특정 라이브러리 빌드 실패 시 Overlay Port로 해결하기 (builtin-baseline 환경)
 
 * vcpkg를 사용하다 보면 cmake의 압축 해제 실패 등으로 특정 라이브_러리_ 설치에 계속 실패하는 경우가 있다. 
 * 특히, 프로젝트의 안정성을 위해 vcpkg.json의 builtin-baseline으로 vcpkg 버전을 고정해 둔 상태라면 vcpkg를 무작정 업데이트할 수도 없어 문제가 더욱 까다로워진다.
@@ -47,7 +23,7 @@ nav_order: 1
 
 > 이 글에서는 pugixml 라이브러리가 압축 해제 오류로 빌드에 실패하는 상황을 가정하고, 오버레이 포트를 이용해 수동으로 빌드하는 방법을 단계별로 정리한다.
 
-#### 문제 상황
+### 문제 상황
 
 * Visual Studio에서 프로젝트를 빌드할 때, vcpkg가 pugixml 라이브러리를 설치하는 과정에서 아래와 같은 CMake Error가 발생하며 빌드에 실패.
 
@@ -58,9 +34,7 @@ EXEC : error : building pugixml:x64-windows failed with: BUILD_FAILED
 
 ```
 
-#### 해결 방법: Overlay Port 구성
-
-> 자잘한건 AI한테 물어보자.
+### 해결 방법: Overlay Port 구성
 
 * vcpkg가 자동으로 소스 코드를 다운로드하고 압축 해제하는 과정을 건너뛰고, 우리가 직접 준비한 소스 코드를 사용하도록 설정을 재정의.
 
@@ -162,6 +136,3 @@ file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 file(COPY "${SOURCE_PATH}/LICENSE.md" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
 file(RENAME "${CURRENT_PACKAGES_DIR}/share/${PORT}/LICENSE.md" "${CURRENT_PACKAGES_DIR}/share/${PORT}/copyright")
 ```
-
----
-
