@@ -28,6 +28,7 @@ fn main()
 }
 ```
 
+{% raw %}
 ```rust
 fn main()
 {	
@@ -56,6 +57,7 @@ fn main()
 	println!("{{v1}}");	// {v1}
 }
 ```
+{% endraw %}
 
 ```rust
 fn main()

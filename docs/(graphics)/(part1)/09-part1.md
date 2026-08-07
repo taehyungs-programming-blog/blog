@@ -18,6 +18,7 @@ nav_order: 1
 
 ## 들어가기 전
 
+{% raw %}
 ```cpp
 Raytracer(const int &width, const int &height)
     : width(width), height(height)
@@ -53,6 +54,7 @@ Raytracer(const int &width, const int &height)
     light = Light{{0.0f, 1.0f, 0.2f}}; // 화면 뒷쪽
 }
 ```
+{% endraw %}
 
 ```cpp
 class Square : public Object

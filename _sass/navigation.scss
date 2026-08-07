@@ -224,16 +224,16 @@
 [class="site-nav"]::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background: #F5F6FB;
+  background: #f5f6fb;
 }
 [class="site-nav"]::-webkit-scrollbar-thumb {
-  border-radius: 3.5px;
   background-color: #ced4da;
+  border-radius: 3.5px;
 
   &:hover {
     background-color: #adb5bd;
   }
 }
 [class="site-nav"]::-webkit-scrollbar-track {
-  background: #F5F6FB;
+  background: #f5f6fb;
 }
