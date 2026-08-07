@@ -1,0 +1,130 @@
+#!/bin/sh
+
+set -eu
+
+ROOT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+cd "$ROOT_DIR"
+
+HOST="${HOST:-127.0.0.1}"
+PORT="${PORT:-4000}"
+BUNDLER_VERSION="${BUNDLER_VERSION:-2.1.4}"
+LOG_FILE="${LOG_FILE:-.jekyll-local.log}"
+PID_FILE="${PID_FILE:-.jekyll-local.pid}"
+WAIT_TIMEOUT="${WAIT_TIMEOUT:-180}"
+
+if command -v lsof >/dev/null 2>&1; then
+  existing_pids=$(lsof -tiTCP:"$PORT" -sTCP:LISTEN 2>/dev/null || true)
+  if [ -n "$existing_pids" ]; then
+    echo "Port $PORT is already in use."
+    lsof -nP -iTCP:"$PORT" -sTCP:LISTEN || true
+    echo "Stop the local server first: script/local-stop"
+    echo "Or use a different port: PORT=4001 script/local-serve"
+    exit 1
+  fi
+fi
+
+if ! command -v bundle >/dev/null 2>&1; then
+  echo "Bundler is required but was not found in PATH."
+  echo "Install Ruby/Bundler, then rerun this script."
+  exit 1
+fi
+
+if ! bundle _"$BUNDLER_VERSION"_ -v >/dev/null 2>&1; then
+  echo "Installing bundler $BUNDLER_VERSION for the current user..."
+  gem install --user-install bundler -v "$BUNDLER_VERSION"
+fi
+
+bundle _"$BUNDLER_VERSION"_ config set --local path .bundle/vendor
+bundle _"$BUNDLER_VERSION"_ config set --local force_ruby_platform true
+bundle _"$BUNDLER_VERSION"_ install
+bundle _"$BUNDLER_VERSION"_ exec rake search:init
+
+baseurl=$(ruby -ryaml -e 'print(YAML.load_file("_config.yml")["baseurl"] || "")' 2>/dev/null || printf "")
+check_host="$HOST"
+if [ "$check_host" = "0.0.0.0" ]; then
+  check_host="127.0.0.1"
+fi
+local_url="http://$check_host:$PORT$baseurl/"
+
+: > "$LOG_FILE"
+rm -f "$PID_FILE"
+
+export HOST PORT BUNDLER_VERSION LOG_FILE PID_FILE
+ruby <<'RUBY'
+Process.daemon(true, true)
+STDIN.reopen("/dev/null")
+STDOUT.reopen(ENV.fetch("LOG_FILE"), "a")
+STDERR.reopen(STDOUT)
+File.write(ENV.fetch("PID_FILE"), Process.pid)
+exec(
+  "bundle",
+  "_#{ENV.fetch("BUNDLER_VERSION")}_",
+  "exec",
+  "jekyll",
+  "serve",
+  "--host",
+  ENV.fetch("HOST"),
+  "--port",
+  ENV.fetch("PORT")
+)
+RUBY
+
+echo "Starting local Jekyll server on port $PORT..."
+echo "Log file: $LOG_FILE"
+
+attempt=0
+while [ "$attempt" -lt 10 ]; do
+  if [ -s "$PID_FILE" ]; then
+    break
+  fi
+  sleep 1
+  attempt=$((attempt + 1))
+done
+
+if [ ! -s "$PID_FILE" ]; then
+  echo "Jekyll server did not write a PID file."
+  echo "Last log lines:"
+  tail -n 40 "$LOG_FILE" || true
+  exit 1
+fi
+
+server_pid=$(cat "$PID_FILE")
+
+attempt=0
+while [ "$attempt" -lt "$WAIT_TIMEOUT" ]; do
+  if ! kill -0 "$server_pid" 2>/dev/null; then
+    echo "Jekyll server exited before it was ready."
+    echo "Last log lines:"
+    tail -n 40 "$LOG_FILE" || true
+    rm -f "$PID_FILE"
+    exit 1
+  fi
+
+  if command -v curl >/dev/null 2>&1; then
+    if curl -fsS -I "$local_url" >/dev/null 2>&1; then
+      echo "Local server: $local_url"
+      echo "Stop server: script/local-stop"
+      exit 0
+    fi
+  elif command -v lsof >/dev/null 2>&1; then
+    if lsof -tiTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; then
+      echo "Local server: $local_url"
+      echo "Stop server: script/local-stop"
+      exit 0
+    fi
+  fi
+
+  if [ $((attempt % 10)) -eq 0 ]; then
+    echo "Waiting for Jekyll build..."
+  fi
+
+  sleep 1
+  attempt=$((attempt + 1))
+done
+
+echo "Timed out waiting for Jekyll server."
+echo "Last log lines:"
+tail -n 40 "$LOG_FILE" || true
+kill "$server_pid" 2>/dev/null || true
+rm -f "$PID_FILE"
+exit 1

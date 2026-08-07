@@ -1,0 +1,95 @@
+#!/bin/sh
+
+set -eu
+
+PORT="${PORT:-4000}"
+PID_FILE="${PID_FILE:-.jekyll-local.pid}"
+
+pids=""
+
+if [ -f "$PID_FILE" ]; then
+  pids=$(cat "$PID_FILE" 2>/dev/null || true)
+fi
+
+if command -v lsof >/dev/null 2>&1; then
+  port_pids=$(lsof -tiTCP:"$PORT" -sTCP:LISTEN 2>/dev/null || true)
+  pids="$pids $port_pids"
+fi
+
+pids=$(printf "%s\n" $pids | sed '/^$/d' | sort -u | tr '\n' ' ')
+
+if [ -z "$pids" ]; then
+  echo "No local server is listening on port $PORT."
+  rm -f "$PID_FILE"
+  exit 0
+fi
+
+jekyll_pids=""
+
+for pid in $pids; do
+  command_line=$(ps -p "$pid" -o command= 2>/dev/null || true)
+  if [ -z "$command_line" ]; then
+    continue
+  fi
+  case "$command_line" in
+    *"jekyll serve"*)
+      jekyll_pids="$jekyll_pids $pid"
+      ;;
+    *)
+      echo "Port $PORT is used by a non-Jekyll process:"
+      echo "  PID $pid: $command_line"
+      echo "Refusing to stop it."
+      exit 1
+      ;;
+  esac
+done
+
+if [ -z "$jekyll_pids" ]; then
+  echo "No local Jekyll server is running on port $PORT."
+  rm -f "$PID_FILE"
+  exit 0
+fi
+
+echo "Stopping local Jekyll server on port $PORT:$jekyll_pids"
+kill $jekyll_pids 2>/dev/null || true
+
+attempt=0
+while [ "$attempt" -lt 10 ]; do
+  sleep 1
+  remaining=""
+  for pid in $jekyll_pids; do
+    if kill -0 "$pid" 2>/dev/null; then
+      remaining="$remaining $pid"
+    fi
+  done
+  if command -v lsof >/dev/null 2>&1; then
+    port_pids=$(lsof -tiTCP:"$PORT" -sTCP:LISTEN 2>/dev/null || true)
+    remaining="$remaining $port_pids"
+  fi
+  remaining=$(printf "%s\n" $remaining | sed '/^$/d' | sort -u | tr '\n' ' ')
+  if [ -z "$remaining" ]; then
+    rm -f "$PID_FILE"
+    echo "Stopped."
+    exit 0
+  fi
+  attempt=$((attempt + 1))
+done
+
+force_pids=""
+
+for pid in $remaining; do
+  command_line=$(ps -p "$pid" -o command= 2>/dev/null || true)
+  case "$command_line" in
+    *"jekyll serve"*)
+      force_pids="$force_pids $pid"
+      ;;
+  esac
+done
+
+if [ -n "$force_pids" ]; then
+  echo "Server did not stop cleanly; forcing:$force_pids"
+  kill -9 $force_pids 2>/dev/null || true
+fi
+
+rm -f "$PID_FILE"
+echo "Stopped."

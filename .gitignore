@@ -2,6 +2,8 @@
 .bundle
 .ruby-version
 .jekyll-cache
+.jekyll-local.log
+.jekyll-local.pid
 .sass-cache
 _site
 Gemfile.lock
