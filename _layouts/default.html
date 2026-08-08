@@ -102,25 +102,7 @@ layout: table_wrappers
     <div id="main-content-wrap" class="main-content-wrap">
       {% unless page.url == "/" %}
         {% if page.parent %}
-          {%- for node in pages_list -%}
-            {%- if page.parent == node.title or page.grand_parent == node.title -%}
-              {%- assign first_level_url = node.url | absolute_url -%}
-            {%- endif -%}
-            {%- if page.grand_parent and page.parent == node.title and page.grand_parent == node.parent -%}
-              {%- assign second_level_url = node.url | absolute_url -%}
-            {%- endif -%}
-          {%- endfor -%}
-          <nav aria-label="Breadcrumb" class="breadcrumb-nav">
-            <ol class="breadcrumb-nav-list">
-              {% if page.grand_parent %}
-                <li class="breadcrumb-nav-list-item"><a href="{{ first_level_url }}">{{ page.grand_parent }}</a></li>
-                <li class="breadcrumb-nav-list-item"><a href="{{ second_level_url }}">{{ page.parent }}</a></li>
-              {% else %}
-                <li class="breadcrumb-nav-list-item"><a href="{{ first_level_url }}">{{ page.parent }}</a></li>
-              {% endif %}
-              <li class="breadcrumb-nav-list-item"><span>{{ page.title }}</span></li>
-            </ol>
-          </nav>
+          {% include breadcrumbs.html pages=pages_list %}
         {% endif %}
       {% endunless %}
       <div id="main-content" class="main-content" role="main">
@@ -134,7 +116,9 @@ layout: table_wrappers
           <hr>
           <h2 class="text-delta">Table of contents</h2>
           <ul>
-            {%- assign children_list = pages_list | where: "parent", page.title | where: "grand_parent", page.parent -%}
+            {%- assign children_list = pages_list
+                  | where_exp:"child", "child.parent == page.title and child.grand_parent == page.parent and child.great_grand_parent == page.grand_parent and child.great_great_grand_parent == page.great_grand_parent"
+                  | sort:"nav_order" -%}
             {% for child in children_list %}
               <li>
                 <a href="{{ child.url | absolute_url }}">{{ child.title }}</a>{% if child.summary %} - {{ child.summary }}{% endif %}

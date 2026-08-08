@@ -60,7 +60,8 @@
       }
     }
 
-    .nav-list-expander {
+    .nav-list-expander,
+    .nav-list-expander-link {
       position: absolute;
       @if $nav-list-expander-right {
         right: 0;
@@ -109,7 +110,8 @@
           color: $nav-child-link-color;
         }
 
-        .nav-list-expander {
+        .nav-list-expander,
+        .nav-list-expander-link {
           color: $nav-child-link-color;
         }
       }

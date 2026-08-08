@@ -1,0 +1,58 @@
+{%- assign pages_list = include.pages -%}
+{%- assign first_level_title = nil -%}
+{%- assign second_level_title = nil -%}
+{%- assign third_level_title = nil -%}
+{%- assign fourth_level_title = nil -%}
+{%- assign first_level_url = nil -%}
+{%- assign second_level_url = nil -%}
+{%- assign third_level_url = nil -%}
+{%- assign fourth_level_url = nil -%}
+
+{%- if page.great_great_grand_parent -%}
+  {%- assign first_level_title = page.great_great_grand_parent -%}
+  {%- assign second_level_title = page.great_grand_parent -%}
+  {%- assign third_level_title = page.grand_parent -%}
+  {%- assign fourth_level_title = page.parent -%}
+{%- elsif page.great_grand_parent -%}
+  {%- assign first_level_title = page.great_grand_parent -%}
+  {%- assign second_level_title = page.grand_parent -%}
+  {%- assign third_level_title = page.parent -%}
+{%- elsif page.grand_parent -%}
+  {%- assign first_level_title = page.grand_parent -%}
+  {%- assign second_level_title = page.parent -%}
+{%- else -%}
+  {%- assign first_level_title = page.parent -%}
+{%- endif -%}
+
+{%- for node in pages_list -%}
+  {%- if first_level_title and node.title == first_level_title and node.parent == nil -%}
+    {%- assign first_level_url = node.url | absolute_url -%}
+  {%- endif -%}
+  {%- if second_level_title and node.title == second_level_title and node.parent == first_level_title and node.grand_parent == nil -%}
+    {%- assign second_level_url = node.url | absolute_url -%}
+  {%- endif -%}
+  {%- if third_level_title and node.title == third_level_title and node.parent == second_level_title and node.grand_parent == first_level_title and node.great_grand_parent == nil -%}
+    {%- assign third_level_url = node.url | absolute_url -%}
+  {%- endif -%}
+  {%- if fourth_level_title and node.title == fourth_level_title and node.parent == third_level_title and node.grand_parent == second_level_title and node.great_grand_parent == first_level_title and node.great_great_grand_parent == nil -%}
+    {%- assign fourth_level_url = node.url | absolute_url -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    {%- if first_level_title -%}
+      <li class="breadcrumb-nav-list-item"><a href="{{ first_level_url }}">{{ first_level_title }}</a></li>
+    {%- endif -%}
+    {%- if second_level_title -%}
+      <li class="breadcrumb-nav-list-item"><a href="{{ second_level_url }}">{{ second_level_title }}</a></li>
+    {%- endif -%}
+    {%- if third_level_title -%}
+      <li class="breadcrumb-nav-list-item"><a href="{{ third_level_url }}">{{ third_level_title }}</a></li>
+    {%- endif -%}
+    {%- if fourth_level_title -%}
+      <li class="breadcrumb-nav-list-item"><a href="{{ fourth_level_url }}">{{ fourth_level_title }}</a></li>
+    {%- endif -%}
+    <li class="breadcrumb-nav-list-item"><span>{{ page.title }}</span></li>
+  </ol>
+</nav>

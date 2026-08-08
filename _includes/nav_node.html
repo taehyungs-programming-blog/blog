@@ -1,0 +1,48 @@
+{%- assign node = include.node -%}
+{%- assign pages_list = include.pages -%}
+{%- assign depth = include.depth | default: 1 -%}
+{%- assign max_depth = include.max_depth | default: 5 -%}
+{%- assign next_depth = depth | plus: 1 -%}
+{%- assign can_render_children = false -%}
+{%- if node.has_children and depth < max_depth -%}
+  {%- assign can_render_children = true -%}
+{%- endif -%}
+
+{%- assign active_node = false -%}
+{%- if page.url == node.url -%}
+  {%- assign active_node = true -%}
+{%- elsif page.parent == node.title and page.grand_parent == node.parent and page.great_grand_parent == node.grand_parent and page.great_great_grand_parent == node.great_grand_parent -%}
+  {%- assign active_node = true -%}
+{%- elsif page.grand_parent == node.title and page.great_grand_parent == node.parent and page.great_great_grand_parent == node.grand_parent -%}
+  {%- assign active_node = true -%}
+{%- elsif page.great_grand_parent == node.title and page.great_great_grand_parent == node.parent -%}
+  {%- assign active_node = true -%}
+{%- elsif page.great_great_grand_parent == node.title -%}
+  {%- assign active_node = true -%}
+{%- endif -%}
+
+{%- assign render_node_children = include.render_full_nav -%}
+{%- if active_node -%}
+  {%- assign render_node_children = true -%}
+{%- endif -%}
+{%- assign children_nodes = "" | split:"X" -%}
+{%- if can_render_children and render_node_children -%}
+  {%- assign children_nodes = pages_list
+        | where_exp:"child", "child.parent == node.title and child.grand_parent == node.parent and child.great_grand_parent == node.grand_parent and child.great_great_grand_parent == node.great_grand_parent" -%}
+{%- endif -%}
+
+<li class="nav-list-item{% if active_node %} active{% endif %}">
+  {%- if can_render_children -%}
+    {%- if render_node_children -%}
+      <a href="#" class="nav-list-expander"><svg viewBox="0 0 24 24"><use xlink:href="#svg-arrow-right"></use></svg></a>
+    {%- else -%}
+      <a href="{{ node.url | absolute_url }}" class="nav-list-expander-link"><svg viewBox="0 0 24 24"><use xlink:href="#svg-arrow-right"></use></svg></a>
+    {%- endif -%}
+  {%- endif -%}
+  <a href="{{ node.url | absolute_url }}" class="nav-list-link{% if page.url == node.url %} active{% endif %}">{{ node.title }}</a>
+  {%- if can_render_children and render_node_children -%}
+    <ul class="nav-list">
+      {%- include nav_items.html nodes=children_nodes pages=pages_list depth=next_depth max_depth=max_depth render_full_nav=include.render_full_nav -%}
+    </ul>
+  {%- endif -%}
+</li>

@@ -1,0 +1,41 @@
+{%- assign nodes = include.nodes -%}
+
+{%- comment -%}
+  The values of `title` and `nav_order` can be numbers or strings.
+  Jekyll gives build failures when sorting on mixtures of different types,
+  so numbers and strings need to be sorted separately.
+{%- endcomment -%}
+{%- assign string_ordered_nodes = nodes
+      | where_exp:"item", "item.nav_order == nil" -%}
+{%- assign nav_ordered_nodes = nodes
+      | where_exp:"item", "item.nav_order != nil" -%}
+{%- assign nav_ordered_groups = nav_ordered_nodes
+      | group_by_exp:"item", "item.nav_order | jsonify | slice: 0" -%}
+{%- assign number_ordered_nodes = "" | split:"X" -%}
+{%- for group in nav_ordered_groups -%}
+  {%- if group.name == '"' -%}
+    {%- assign string_ordered_nodes = string_ordered_nodes | concat: group.items -%}
+  {%- else -%}
+    {%- assign number_ordered_nodes = number_ordered_nodes | concat: group.items -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- assign sorted_number_ordered_nodes = number_ordered_nodes | sort:"nav_order" -%}
+{%- assign string_ordered_groups = string_ordered_nodes
+      | group_by_exp:"item", "item.nav_order | default: item.title | append:''" -%}
+{%- if site.nav_sort == 'case_insensitive' -%}
+  {%- assign sorted_string_ordered_groups = string_ordered_groups | sort_natural:"name" -%}
+{%- else -%}
+  {%- assign sorted_string_ordered_groups = string_ordered_groups | sort:"name" -%}
+{%- endif -%}
+{%- assign sorted_string_ordered_nodes = "" | split:"X" -%}
+{%- for group in sorted_string_ordered_groups -%}
+  {%- assign sorted_string_ordered_nodes = sorted_string_ordered_nodes | concat: group.items -%}
+{%- endfor -%}
+
+{%- assign nodes_list = sorted_number_ordered_nodes | concat: sorted_string_ordered_nodes -%}
+{%- for node in nodes_list -%}
+  {%- unless node.nav_exclude -%}
+    {%- include nav_node.html node=node pages=include.pages depth=include.depth max_depth=include.max_depth render_full_nav=include.render_full_nav -%}
+  {%- endunless -%}
+{%- endfor -%}
