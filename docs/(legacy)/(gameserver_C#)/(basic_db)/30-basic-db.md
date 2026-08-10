@@ -1,0 +1,120 @@
+---
+layout: default
+title: "30. [튜닝] Sorting"
+parent: "(DB 연결 기초)"
+grand_parent: "(GameServer C# 🎯)"
+great_grand_parent: "Legacy Archive"
+nav_order: 4
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+* Sorting을 줄여보자.
+* **줄여야 하는 이유??** 👉 너무 용량이 커질 경우 메모리로 커버가 안되면 디스크에서 읽어서 Sorting이 일어나는데 이때 속도가 늦어지게 된다.
+* **INDEX**를 잘 활용한다면 **Sorting이 필요없을 수 있다.**
+
+* Sorting이 일어나는 경우 👉 
+    * SORT MERGE JOIN
+    * ORDER BY
+    * GROUP BY
+    * DISTINCT
+    * UNION
+    * RANKING WINDOWS FUNCTION
+    * MIN MAX
+
+---
+
+```sql
+-- order by
+    -- order by 순서로 정렬
+USE BaseballData
+
+SELECT *
+FROM players
+ORDER BY college;
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-30-1.png"/>
+</p>
+
+---
+
+```sql
+-- group by
+SELECT college, COUNT(college) AS 'count'
+FROM players
+WHERE college LIKE 'C%'
+GROUP BY college;
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-30-2.png"/>
+</p>
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-30-3.png"/>
+</p>
+
+---
+
+```sql
+-- distinct
+    -- 중복을 제거
+SELECT DISTINCT college
+FROM players
+WHERE college LIKE 'C%';
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-30-4.png"/>
+</p>
+
+---
+
+```sql
+-- union
+    -- 두 집합을 합치며 중복되는 부분을 제거하며 Sort사용
+SELECT college
+FROM players
+WHERE college LIKE 'C%'
+UNION   -- 중복이 없다고 확신한다면 UNION ALL을 사용시 Sort가 없다
+SELECT college
+FROM players
+WHERE college LIKE 'B%';
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-30-5.png"/>
+</p>
+
+---
+
+```sql
+-- RANKING WINDOWS FUNCTION
+SELECT ROW_NUMBER() OVER (ORDER BY college)
+FROM players;
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-30-6.png"/>
+</p>
+
+---
+
+```sql
+-- clustered index에 걸려있기에 sorting이 없다
+SELECT *
+FROM batting
+ORDER BY playerID, yearID;
+```
+
+<p align="center">
+  <img src="https://taehyungs-programming-blog.github.io/blog/assets/images/database/basic-30-7.png"/>
+</p>
