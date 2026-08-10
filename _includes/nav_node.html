@@ -28,7 +28,10 @@
 {%- assign children_nodes = "" | split:"X" -%}
 {%- if can_render_children and render_node_children -%}
   {%- assign children_nodes = pages_list
-        | where_exp:"child", "child.parent == node.title and child.grand_parent == node.parent and child.great_grand_parent == node.grand_parent and child.great_great_grand_parent == node.great_grand_parent" -%}
+        | where:"parent", node.title
+        | where:"grand_parent", node.parent
+        | where:"great_grand_parent", node.grand_parent
+        | where:"great_great_grand_parent", node.great_grand_parent -%}
 {%- endif -%}
 
 <li class="nav-list-item{% if active_node %} active{% endif %}">

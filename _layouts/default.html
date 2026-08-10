@@ -117,7 +117,10 @@ layout: table_wrappers
           <h2 class="text-delta">Table of contents</h2>
           <ul>
             {%- assign children_list = pages_list
-                  | where_exp:"child", "child.parent == page.title and child.grand_parent == page.parent and child.great_grand_parent == page.grand_parent and child.great_great_grand_parent == page.great_grand_parent"
+                  | where:"parent", page.title
+                  | where:"grand_parent", page.parent
+                  | where:"great_grand_parent", page.grand_parent
+                  | where:"great_great_grand_parent", page.great_grand_parent
                   | sort:"nav_order" -%}
             {% for child in children_list %}
               <li>
