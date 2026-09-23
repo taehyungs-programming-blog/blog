@@ -3,6 +3,7 @@ layout: default
 title: "오래 운영할 Open API 생태계 설계"
 parent: "Backend"
 nav_order: 5
+permalink: "/(backend)/open-api-ecosystem/"
 ---
 # 오래 운영할 Open API 생태계 설계
 

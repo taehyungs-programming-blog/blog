@@ -3,6 +3,7 @@ layout: default
 title: "가맹점 변경 없이 레거시 결제창 전면 재작성하기"
 parent: "Backend"
 nav_order: 6
+permalink: "/(backend)/payments-legacy-checkout/"
 ---
 # 가맹점 변경 없이 레거시 결제창 전면 재작성하기
 

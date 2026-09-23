@@ -3,6 +3,7 @@ layout: default
 title: "대규모 정산 배치 성능 개선"
 parent: "Backend"
 nav_order: 4
+permalink: "/(backend)/settlement-batch-performance/"
 ---
 # 대규모 정산 배치 성능 개선
 

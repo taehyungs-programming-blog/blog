@@ -3,6 +3,7 @@ layout: default
 title: "정산 데이터 고해상도와 조회 성능 개선"
 parent: "Backend"
 nav_order: 3
+permalink: "/(backend)/settlement-high-resolution-data/"
 ---
 # 정산 데이터 고해상도와 조회 성능 개선
 

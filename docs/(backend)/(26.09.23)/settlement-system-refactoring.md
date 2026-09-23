@@ -3,6 +3,7 @@ layout: default
 title: "거대한 공통 쿼리에서 비즈니스 로직 분리하기"
 parent: "Backend"
 nav_order: 1
+permalink: "/(backend)/settlement-system-refactoring/"
 ---
 # 거대한 공통 쿼리에서 비즈니스 로직 분리하기
 

@@ -3,6 +3,7 @@ layout: default
 title: "레거시 결제 원장을 확장 가능한 시스템으로 전환하기"
 parent: "Backend"
 nav_order: 5
+permalink: "/(backend)/payments-legacy-ledger/"
 ---
 # 레거시 결제 원장을 확장 가능한 시스템으로 전환하기
 

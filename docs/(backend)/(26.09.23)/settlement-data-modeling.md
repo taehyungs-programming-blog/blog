@@ -3,6 +3,7 @@ layout: default
 title: "정산 시스템의 데이터 모델링 개선"
 parent: "Backend"
 nav_order: 2
+permalink: "/(backend)/settlement-data-modeling/"
 ---
 # 정산 시스템의 데이터 모델링 개선
 
