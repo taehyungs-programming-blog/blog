@@ -1,9 +1,9 @@
 ---
 layout: default
 title: "Meta의 RTC AV1 도입 정리"
-parent: "Backend"
-nav_order: 14
-permalink: "/(backend)/meta-av1/"
+parent: "Media & RTC"
+nav_order: 2
+permalink: "/(media)/meta-av1/"
 ---
 
 # Meta의 RTC AV1 도입 정리

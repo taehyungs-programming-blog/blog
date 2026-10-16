@@ -1,9 +1,9 @@
 ---
 layout: default
 title: "Escaping the Fork: Meta의 WebRTC 현대화 (50+ 사용 사례)"
-parent: "Backend"
-nav_order: 15
-permalink: "/(backend)/meta-webrtc-branch/"
+parent: "Media & RTC"
+nav_order: 1
+permalink: "/(media)/meta-webrtc-branch/"
 ---
 
 # Escaping the Fork: Meta의 WebRTC 현대화 (50+ 사용 사례)

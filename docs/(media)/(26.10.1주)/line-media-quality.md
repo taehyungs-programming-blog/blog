@@ -1,9 +1,9 @@
 ---
 layout: default
 title: "LINE 통화 영상 재생 품질 개선 사례"
-parent: "Backend"
-nav_order: 16
-permalink: "/(backend)/line-media-quality/"
+parent: "Media & RTC"
+nav_order: 3
+permalink: "/(media)/line-media-quality/"
 ---
 
 # LINE 통화 영상 재생 품질 개선 사례

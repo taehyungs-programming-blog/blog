@@ -1,9 +1,9 @@
 ---
 layout: default
 title: "Instagram Live 인제스트에 MoQ 적용 (Meta) 정리"
-parent: "Backend"
-nav_order: 20
-permalink: "/(backend)/meta-moq/"
+parent: "Media & RTC"
+nav_order: 5
+permalink: "/(media)/meta-moq/"
 ---
 
 # Instagram Live 인제스트에 MoQ 적용 (Meta) 정리

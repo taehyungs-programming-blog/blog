@@ -1,3 +1,11 @@
+---
+layout: default
+title: "LINE 앱의 잡음 제거(NS) 성능 측정 방법"
+parent: "Media & RTC"
+nav_order: 4
+permalink: "/(media)/line-ns/"
+---
+
 # LINE 앱의 잡음 제거(NS) 성능 측정 방법
 
 #* 목차
